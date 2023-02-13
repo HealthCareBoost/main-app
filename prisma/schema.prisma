@@ -16,12 +16,6 @@ datasource db {
 
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -39,6 +33,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -46,7 +41,9 @@ model Session {
     sessionToken String   @unique
     userId       String
     expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    
+    @@index([userId])
 }
 
 model User {
@@ -54,15 +51,112 @@ model User {
     name          String?
     email         String?   @unique
     emailVerified DateTime?
+    // Password ?
+    // User Recipes
+    // Favorite (Boolean)
+    // Made (Boolean)
     image         String?
     accounts      Account[]
     sessions      Session[]
+    recipes       Recipe[]
 }
 
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+    identifier      String
+    token           String  @unique
+    expires         DateTime
 
     @@unique([identifier, token])
+}
+
+model Recipe {
+    id              String  @id @default(cuid())
+    name            String
+    creator_id      String
+    description     String
+    images          RecipeImage[]
+    user            User    @relation(fields: [creator_id], references: [id], onDelete: Cascade)
+    // Preparation Time
+    // Difficulty Level 
+    
+    @@index([creator_id])
+}
+
+model RecipeImage {
+    id              Int  @id @default(autoincrement())
+    recipe_id       String
+    recipe          Recipe    @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
+
+    @@index([recipe_id])
+}
+
+model Ingredients {
+    id                  Int  @id @default(autoincrement())
+    name                String
+    calories            Float
+    fat                 Float
+    protein             Float
+    carbohydrates       Float
+}
+
+enum MeasurementUnits {
+    GR
+    KG
+    MG
+    CUPS
+    ML
+    L
+}
+
+model  RecipeIngredient {
+    recipe_id       String
+    ingredient_id   Int
+    quantity        Float    
+    measurement_unit MeasurementUnits
+
+    @@unique([recipe_id, ingredient_id])
+}
+
+model Category {
+    id          Int  @id @default(autoincrement())
+    name        String
+}
+
+model RecipeCategory {
+    recipe_id     String
+    category_id   Int
+
+    @@unique([recipe_id, category_id])
+}
+
+model UserRecipe {
+    recipe_id     String
+    category_id   Int
+
+    @@unique([recipe_id, category_id])
+}
+
+model UserPreferences {
+    user_id         String
+    recipe_id       String
+    made            Boolean
+    favorite        Boolean
+
+    @@unique([user_id, recipe_id])
+}
+
+enum MealTypes {
+    BREAKFAST
+    DINNER
+    LUNCH
+    SNACK
+}
+
+model UserDailyDiet {
+    user_id       String
+    date          DateTime
+    recipe_id     String
+    meal_type     MealTypes
+
+    @@unique([user_id, date, recipe_id])
 }
