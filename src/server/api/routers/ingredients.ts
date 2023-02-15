@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import axios from "axios";
 import { env } from "../../../env/server.mjs";
+import * as fs from "fs";
 
 export const ingredientsRouter = createTRPCRouter({
   addIngredient: publicProcedure
@@ -93,7 +94,7 @@ export const ingredientsRouter = createTRPCRouter({
       }
     }),
 
-  getAll: publicProcedure.query(({ ctx }) => {
+  getAll: publicProcedure.query(async ({ ctx }) => {
     return ctx.prisma.ingredients.findMany();
   }),
 
@@ -101,7 +102,7 @@ export const ingredientsRouter = createTRPCRouter({
     return ctx.prisma.recipeIngredient.findMany();
   }),
 
-  getSecretMessage: protectedProcedure.query(() => {
+  updateIngredient: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
 });

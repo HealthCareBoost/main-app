@@ -70,16 +70,27 @@ model VerificationToken {
 }
 
 model Recipe {
-    id              String  @id @default(cuid())
-    name            String
-    creator_id      String
-    description     String
-    images          RecipeImage[]
-    user            User    @relation(fields: [creator_id], references: [id], onDelete: Cascade)
+    id                      String  @id @default(cuid())
+    name                    String
+    creator_id              String
     // Preparation Time
-    // Difficulty Level 
-    // video ??
+    // Difficulty Level - easy, medium, hard, expert
+    cooking_time_minutes    Int
+    description             String
+    images                  RecipeImage[]
+    recipe_steps            RecipeSteps[]
+    user                    User    @relation(fields: [creator_id], references: [id], onDelete: Cascade)
+    video_url               String
     @@index([creator_id])
+}
+
+model RecipeSteps {
+    id                    Int  @id @default(autoincrement())
+    recipe_id             String
+    description           String
+    recipe                Recipe    @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
+
+    @@index([recipe_id])  
 }
 
 model RecipeImage {
