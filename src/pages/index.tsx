@@ -4,9 +4,17 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "../utils/api";
+import { useEffect } from "react";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const mutation = api.ingredients.addIngredient.useMutation();
+
+  // test
+  useEffect(() => {
+    const name = "egg";
+    mutation.mutate({ ingredientName: name });
+  }, []);
 
   return (
     <>
@@ -79,5 +87,5 @@ const AuthShowcase: React.FC = () => {
         {sessionData ? "Sign out" : "Sign in"}
       </button>
     </div>
-  );
+  );dded new api route for ingredients and create function with fetching nutrition values
 };

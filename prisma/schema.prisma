@@ -78,7 +78,7 @@ model Recipe {
     user            User    @relation(fields: [creator_id], references: [id], onDelete: Cascade)
     // Preparation Time
     // Difficulty Level 
-    
+    // video ??
     @@index([creator_id])
 }
 
@@ -92,11 +92,19 @@ model RecipeImage {
 
 model Ingredients {
     id                  Int  @id @default(autoincrement())
+    name                String  @unique
+    nutrition           Nutrients[]
+}
+
+model Nutrients {
+    id                  Int  @id @default(autoincrement())
     name                String
-    calories            Float
-    fat                 Float
-    protein             Float
-    carbohydrates       Float
+    amount              Float
+    unit                String
+    ingredient_id       Int
+    ingredient          Ingredients    @relation(fields: [ingredient_id], references: [id], onDelete: Cascade)
+
+    @@index([ingredient_id])
 }
 
 enum MeasurementUnits {

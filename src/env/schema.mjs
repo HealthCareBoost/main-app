@@ -6,6 +6,9 @@ import { z } from "zod";
  */
 export const serverSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
+  FOOD_API_HOST: z.string(),
+  FOOD_API_KEY: z.string(),
+  FOOD_API_URL: z.string(),
 });
 
 /**
@@ -15,6 +18,9 @@ export const serverSchema = z.object({
  */
 export const serverEnv = {
   NODE_ENV: process.env.NODE_ENV,
+  FOOD_API_HOST: process.env.FOOD_API_HOST,
+  FOOD_API_KEY: process.env.FOOD_API_KEY,
+  FOOD_API_URL: process.env.FOOD_API_URL,
 };
 
 /**
