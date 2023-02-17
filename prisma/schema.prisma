@@ -78,20 +78,21 @@ model Recipe {
     cooking_time_minutes    Int
     description             String
     images                  RecipeImage[]
-    recipe_steps            RecipeSteps[]
+    // recipe_steps            RecipeSteps[]
+    recipe_steps            String
     user                    User    @relation(fields: [creator_id], references: [id], onDelete: Cascade)
     video_url               String
     @@index([creator_id])
 }
 
-model RecipeSteps {
-    id                    Int  @id @default(autoincrement())
-    recipe_id             String
-    description           String
-    recipe                Recipe    @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
+// model RecipeSteps {
+//     id                    Int  @id @default(autoincrement())
+//     recipe_id             String
+//     description           String
+//     recipe                Recipe    @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
 
-    @@index([recipe_id])  
-}
+//     @@index([recipe_id])  
+// }
 
 model RecipeImage {
     id              Int  @id @default(autoincrement())
@@ -125,6 +126,36 @@ enum MeasurementUnits {
     CUPS
     ML
     L
+// Teaspoon (tsp)
+// Tablespoon (tbsp)
+// Fluid ounce (fl oz)
+// Cup (c)
+// Pint (pt)
+// Quart (qt)
+// Gallon (gal)
+// Milliliter (ml)
+// Liter (l)
+// Gram (g)
+// Kilogram (kg)
+// Ounce (oz)
+// Pound (lb)
+// Pinch
+// Dash
+// Smidgen
+// Drop
+// Sprinkle
+// Handful
+// Clove (for garlic)
+// Head (for lettuce, cabbage, etc.)
+// Slice
+// Wedge
+// Piece
+// Can (typically for canned goods, such as beans or tomatoes)
+// Package (typically for pre-packaged goods, such as pasta or cheese)
+// Stick (typically for butter or margarine)
+// Dozen (typically for eggs or baked goods, such as cookies or donuts)
+// Bunch (for herbs or vegetables)
+// Stalk (for celery or asparagus)
 }
 
 model  RecipeIngredient {
@@ -134,6 +165,53 @@ model  RecipeIngredient {
     measurement_unit MeasurementUnits
 
     @@unique([recipe_id, ingredient_id])
+}
+
+enum Categories {
+Appetizers
+Desserts
+Vegetarian 
+Vegan
+// Appetizers
+// Main dishes
+// Desserts
+// Vegetarian or Vegan
+// Holiday
+// Breakfast
+// Beverages
+// Side dishes
+// Snacks
+// Soups and stews
+// Salads
+// Pasta and noodles
+// Rice and grains
+// Sandwiches and wraps
+// Burgers and sandwiches
+// Seafood
+// Chicken
+// Beef
+// Pork
+// Lamb
+// Game meats (such as venison or elk)
+// Casseroles and one-pot meals
+// Slow cooker and Instant Pot recipes
+// Baked goods (such as bread, cakes, and cookies)
+// Gluten-free
+// Dairy-free
+// Low-carb
+// High-protein
+// Budget-friendly
+// Quick and easy
+// Classic recipes
+// International cuisine (such as Italian, Mexican, or Chinese)
+// Grilling and barbecue
+// Pressure cooking
+// Fermented foods (such as yogurt, kimchi, or sauerkraut)
+// Preserves and canning
+// Pickling
+// Meal prep and make-ahead recipes
+// Comfort food
+// Healthy and nutritious recipes.
 }
 
 model Category {
