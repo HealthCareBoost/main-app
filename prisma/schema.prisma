@@ -59,6 +59,9 @@ model User {
     accounts      Account[]
     sessions      Session[]
     recipes       Recipe[]
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @default(now())
+    is_deleted    Boolean   @default(false)  
 }
 
 model VerificationToken {
@@ -81,7 +84,11 @@ model Recipe {
     // recipe_steps            RecipeSteps[]
     recipe_steps            String
     user                    User    @relation(fields: [creator_id], references: [id], onDelete: Cascade)
+    categories              RecipeCategory[]
     video_url               String
+    createdAt               DateTime  @default(now())
+    updatedAt               DateTime  @default(now())
+    is_deleted              Boolean   @default(false)   
     @@index([creator_id])
 }
 
@@ -98,13 +105,24 @@ model RecipeImage {
     id              Int  @id @default(autoincrement())
     recipe_id       String
     recipe          Recipe    @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
-
+    image_path      String
+    filename        String
+    originalname    String
+    encoding        String
+    size_in_bytes   Int
+    image_type      String
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @default(now())
+    is_deleted      Boolean   @default(false)  
     @@index([recipe_id])
 }
 
 model Ingredients {
     id                  Int  @id @default(autoincrement())
     name                String  @unique
+    createdAt           DateTime  @default(now())
+    updatedAt           DateTime  @default(now())
+    is_deleted          Boolean   @default(false)  
     nutrition           Nutrients[]
 }
 
@@ -217,20 +235,19 @@ Vegan
 model Category {
     id          Int  @id @default(autoincrement())
     name        String
+    recipies    RecipeCategory[]
 }
 
 model RecipeCategory {
     recipe_id     String
     category_id   Int
+    category      Category    @relation(fields: [category_id], references: [id])
+    recipe        Recipe    @relation(fields: [recipe_id], references: [id])
 
-    @@unique([recipe_id, category_id])
-}
-
-model UserRecipe {
-    recipe_id     String
-    category_id   Int
-
-    @@unique([recipe_id, category_id])
+    @@id([recipe_id, category_id])
+    // @@unique([recipe_id, category_id])
+    @@index([category_id])
+    @@index([recipe_id])
 }
 
 model UserPreferences {
@@ -238,7 +255,8 @@ model UserPreferences {
     recipe_id       String
     made            Boolean
     favorite        Boolean
-
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @default(now())
     @@unique([user_id, recipe_id])
 }
 
@@ -254,6 +272,6 @@ model UserDailyDiet {
     date          DateTime
     recipe_id     String
     meal_type     MealTypes
-
+    
     @@unique([user_id, date, recipe_id])
 }

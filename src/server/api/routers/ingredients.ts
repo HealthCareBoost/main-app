@@ -98,9 +98,25 @@ export const ingredientsRouter = createTRPCRouter({
     return ctx.prisma.ingredients.findMany();
   }),
 
-  getAllForRecipeByID: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.recipeIngredient.findMany();
-  }),
+  getAllForRecipeByID: publicProcedure
+    .input(z.object({ recipe_id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.recipeIngredient.findMany({
+        where: {
+          recipe_id: input.recipe_id,
+        },
+      });
+    }),
+
+  getIngredientByID: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.ingredients.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
 
   updateIngredient: protectedProcedure.query(() => {
     return "you can now see this secret message!";
