@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { RecipeSchema } from "../../../utils/RecipeSchema";
+import { RecipeSchema } from "../../../utils/createRecipeSchema";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const recipeRouter = createTRPCRouter({
@@ -31,6 +31,8 @@ export const recipeRouter = createTRPCRouter({
   createRecipe: protectedProcedure
     .input(RecipeSchema)
     .mutation(({ ctx, input }) => {
+      console.log(input);
+
       return ctx.prisma.recipe.create({
         data: {
           name: input.name,

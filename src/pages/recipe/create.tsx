@@ -1,20 +1,21 @@
 import React from "react";
 import { type NextPage } from "next";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useFieldArray } from "react-hook-form";
 import {
   RecipeSchema,
   DifficultyLevel,
   TimeUnits,
 } from "../../utils/createRecipeSchema";
 // import Select from "react-select";
-import { zodResolver } from "@hookform/resolvers/zod";
+// import { zodResolver } from "@hookform/resolvers/zod";
 import { useZodForm } from "../../utils/useZodFormHook";
 import { Form } from "../../components/formProvider";
 import { Input } from "../../components/formInput";
-import { Button, SubmitButton } from "../../components/submitButton";
+import { SubmitButton } from "../../components/submitButton";
 import { Select } from "../../components/formSelect";
 import { Textarea } from "../../components/textArea";
 import { MeasurementUnits } from "@prisma/client";
+import { api } from "../../utils/api";
 
 type FormTypes = {
   name: string;
@@ -48,16 +49,16 @@ type Ingr = {
 // };
 
 const CreateRecipe: NextPage = () => {
+  const createRecipeMutation = api.recipe.createRecipe.useMutation();
+
   const form = useZodForm({
     schema: RecipeSchema,
   });
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
-    {
-      control: form.control,
-      name: "ingredients",
-    }
-  );
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "ingredients",
+  });
 
   return (
     <>
@@ -65,7 +66,27 @@ const CreateRecipe: NextPage = () => {
         className="flex min-h-screen flex-col items-center 
       justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]"
       >
-        <Form form={form} onSubmit={(data) => console.log(data)}>
+        <Form
+          form={form}
+          onSubmit={(data) => {
+            // send ingredients to be saved and calulate nutr
+
+            // try {
+            //   const todo = await mutation.mutateAsync(todo)
+            //   console.log(todo)
+            // } catch (error) {
+            //   console.error(error)
+            // } finally {
+            //   console.log('done')
+            // }
+
+            // then create new recipe
+            console.log(data);
+            createRecipeMutation.mutate({
+              ...data,
+            });
+          }}
+        >
           <div className="mb-4 max-w-full">
             <Input
               type="text"
@@ -139,23 +160,38 @@ const CreateRecipe: NextPage = () => {
           {fields.map((item, index) => {
             return (
               <div key={item.id}>
-                <input
-                  type="text"
+                <Controller
                   name={`ingredients[${index}].ingredient_name`}
-                  defaultValue={`${item.ingredient_name}`} // make sure to set up defaultValue
-                  // ref={form.register("")}
+                  control={form.control}
+                  render={({ field }) => {
+                    return <Input type="text" label="Test" {...field}></Input>;
+                  }}
                 />
-                <input
-                  type="number"
+                <Controller
                   name={`ingredients[${index}].quantity`}
-                  defaultValue={`${item.quantity}`} // make sure to set up defaultValue
-                  // ref={form.register("")}
+                  control={form.control}
+                  render={({ field }) => {
+                    return (
+                      <Input type="number" label="quantity" {...field}></Input>
+                    );
+                  }}
                 />
-                <input
-                  type="text"
+                <Controller
                   name={`ingredients[${index}].measurement_unit`}
-                  defaultValue={`${item.measurement_unit}`} // make sure to set up defaultValue
-                  // ref={form.register("")}
+                  control={form.control}
+                  render={({ field }) => {
+                    return (
+                      <Select label="measurement_unit" {...field}>
+                        {Object.entries(MeasurementUnits).map(
+                          ([key, value]) => (
+                            <option key={key} value={value}>
+                              {value}
+                            </option>
+                          )
+                        )}
+                      </Select>
+                    );
+                  }}
                 />
                 <button type="button" onClick={() => remove(index)}>
                   Delete
