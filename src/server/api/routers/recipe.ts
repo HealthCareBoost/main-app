@@ -36,7 +36,7 @@ export const recipeRouter = createTRPCRouter({
       return ctx.prisma.recipe.create({
         data: {
           name: input.name,
-          creator_id: "User id",
+          creator_id: ctx.session.user.id,
           cooking_time_minutes: 60,
           recipe_steps: input.recipe_steps,
           description: input.description,

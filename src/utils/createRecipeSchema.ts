@@ -1,28 +1,16 @@
 import { z } from "zod";
 import { MeasurementUnits } from "@prisma/client";
-
-export enum TimeUnits {
-  seconds = "seconds",
-  minutes = "minutes",
-  hours = "hours",
-}
-
-export enum DifficultyLevel {
-  easy = "easy",
-  medium = "medium",
-  hard = "hard",
-  expert = "expert",
-}
+import { DifficultyLevel, TimeUnits, Categories } from "./enumsMap";
 
 export const RecipeSchema = z.object({
   name: z.string().min(3).max(50),
-  preparationTime: z.coerce.number().min(1).max(60),
+  preparationTime: z.coerce.number().min(1),
   preparationTimeUnit: z.nativeEnum(TimeUnits),
   difficultyLevel: z.nativeEnum(DifficultyLevel),
   // z.union(z.literal("apples"), z.literal("oranges"))
   description: z.string().min(20),
   images: z.object({}).optional(), // not sure if its right
-  category: z.nativeEnum(MeasurementUnits).optional(),
+  category: z.nativeEnum(Categories).optional(),
   recipe_steps: z.string(),
   video_url: z.string().optional(),
   ingredients: z

@@ -76,8 +76,8 @@ model Recipe {
     id                      String  @id @default(cuid())
     name                    String
     creator_id              String
-    // Preparation Time
-    // Difficulty Level - easy, medium, hard, expert
+    preparation_time        String
+    difficulty_level        DifficultyLevel
     cooking_time_minutes    Int
     description             String
     images                  RecipeImage[]
@@ -137,44 +137,6 @@ model Nutrients {
     @@index([ingredient_id])
 }
 
-enum MeasurementUnits {
-    GR
-    KG
-    MG
-    CUPS
-    ML
-    L
-// Teaspoon (tsp)
-// Tablespoon (tbsp)
-// Fluid ounce (fl oz)
-// Cup (c)
-// Pint (pt)
-// Quart (qt)
-// Gallon (gal)
-// Milliliter (ml)
-// Liter (l)
-// Gram (g)
-// Kilogram (kg)
-// Ounce (oz)
-// Pound (lb)
-// Pinch
-// Dash
-// Smidgen
-// Drop
-// Sprinkle
-// Handful
-// Clove (for garlic)
-// Head (for lettuce, cabbage, etc.)
-// Slice
-// Wedge
-// Piece
-// Can (typically for canned goods, such as beans or tomatoes)
-// Package (typically for pre-packaged goods, such as pasta or cheese)
-// Stick (typically for butter or margarine)
-// Dozen (typically for eggs or baked goods, such as cookies or donuts)
-// Bunch (for herbs or vegetables)
-// Stalk (for celery or asparagus)
-}
 
 model  RecipeIngredient {
     recipe_id       String
@@ -183,53 +145,6 @@ model  RecipeIngredient {
     measurement_unit MeasurementUnits
 
     @@unique([recipe_id, ingredient_id])
-}
-
-enum Categories {
-Appetizers
-Desserts
-Vegetarian 
-Vegan
-// Appetizers
-// Main dishes
-// Desserts
-// Vegetarian or Vegan
-// Holiday
-// Breakfast
-// Beverages
-// Side dishes
-// Snacks
-// Soups and stews
-// Salads
-// Pasta and noodles
-// Rice and grains
-// Sandwiches and wraps
-// Burgers and sandwiches
-// Seafood
-// Chicken
-// Beef
-// Pork
-// Lamb
-// Game meats (such as venison or elk)
-// Casseroles and one-pot meals
-// Slow cooker and Instant Pot recipes
-// Baked goods (such as bread, cakes, and cookies)
-// Gluten-free
-// Dairy-free
-// Low-carb
-// High-protein
-// Budget-friendly
-// Quick and easy
-// Classic recipes
-// International cuisine (such as Italian, Mexican, or Chinese)
-// Grilling and barbecue
-// Pressure cooking
-// Fermented foods (such as yogurt, kimchi, or sauerkraut)
-// Preserves and canning
-// Pickling
-// Meal prep and make-ahead recipes
-// Comfort food
-// Healthy and nutritious recipes.
 }
 
 model Category {
@@ -260,13 +175,6 @@ model UserPreferences {
     @@unique([user_id, recipe_id])
 }
 
-enum MealTypes {
-    BREAKFAST
-    DINNER
-    LUNCH
-    SNACK
-}
-
 model UserDailyDiet {
     user_id       String
     date          DateTime
@@ -274,4 +182,96 @@ model UserDailyDiet {
     meal_type     MealTypes
     
     @@unique([user_id, date, recipe_id])
+}
+
+enum TimeUnits {
+  seconds
+  minutes 
+  hours
+}
+
+enum DifficultyLevel {
+  easy 
+  medium
+  hard 
+  expert
+}
+
+enum Categories {
+    Appetizer
+    Main_Dishe      @map("Main Dish")
+    Desserts
+    Vegetarian
+    Vegan
+    Breakfast
+    Beverage
+    Snack
+    Soup
+    Salad
+    Seafood
+    Chicken
+    Beef
+    Pork
+    Lamb
+    Slow
+    Instant
+    Baked
+    Gluten_Free     @map("Gluten Free")
+    Dairy_Free      @map("Dairy Free")
+    Low_carb        @map("Low Carb")
+    High_Protein    @map("High Protein")
+    Budget_Friendly @map("Budget Friendly")
+    Classic
+    Grill
+    Barbecue
+    Healthy
+}
+
+enum MealTypes {
+    BREAKFAST
+    DINNER
+    LUNCH
+    SNACK
+}
+
+enum MeasurementUnits {
+
+    // 1. Volume  
+    // 1.1 Metric
+    Milliliter
+    Liter
+    // 1.2 Imperial
+    Teaspoon
+    Tablespoon
+    Fluid_Ounce @map("Fluid Ounce")
+    Cup
+    Pint
+    Quart
+    Gallon
+
+    // 2. Weight  
+    // 2.1 Metric
+    Milligram 
+    Gram
+    Kilogram
+    // 2.2 Imperial
+    Pound
+    Ounce
+
+    // Others
+    Drop
+    Pinch
+    Dash
+    Sprinkle
+    Handful
+    Clove   // (for garlic)
+    Head    // (for lettuce, cabbage, etc.)
+    Slice
+    Piece
+    Can     // (for canned goods, such as beans, tomatoes, etc.)
+    Package // (typically for pre-packaged goods, such as pasta or cheese)
+    Stick   // (typically for butter or margarine)
+    Dozen   // (typically for eggs or baked goods, such as cookies or donuts)
+    Bunch   // (for herbs or vegetables)
+    Stalk   // (for celery or asparagus)
 }
