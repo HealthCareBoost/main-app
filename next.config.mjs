@@ -20,5 +20,16 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    domains: ["flowbite.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "example.com",
+        port: "",
+        pathname: "/account123/**",
+      },
+    ],
+  },
 };
 export default config;

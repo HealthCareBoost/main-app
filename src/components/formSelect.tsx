@@ -1,6 +1,7 @@
 import type { ComponentProps } from "react";
 import { forwardRef } from "react";
 import { useFormContext } from "react-hook-form";
+import { Label } from "./Label";
 
 interface Props extends ComponentProps<"select"> {
   name: string;
@@ -14,9 +15,13 @@ export const Select = forwardRef<HTMLInputElement, Props>((props, ref) => {
 
   return (
     <div>
-      <label htmlFor={props.name}>{props.label}</label>
+      <Label htmlFor={props.name}>{props.label}</Label>
       <select {...props} id={props.name} ref={ref} />
-      {state.error && <p>{state.error.message}</p>}
+      {state.error && (
+        <p className="text-sm font-medium text-red-600">
+          {state.error.message}
+        </p>
+      )}
     </div>
   );
 });

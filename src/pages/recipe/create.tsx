@@ -1,11 +1,8 @@
 import React from "react";
 import { type NextPage } from "next";
 import { Controller, useFieldArray } from "react-hook-form";
-import {
-  RecipeSchema,
-  DifficultyLevel,
-  TimeUnits,
-} from "../../utils/createRecipeSchema";
+import { RecipeSchema } from "../../utils/createRecipeSchema";
+import { DifficultyLevel, TimeUnits } from "../../utils/enumsMap";
 // import Select from "react-select";
 // import { zodResolver } from "@hookform/resolvers/zod";
 import { useZodForm } from "../../utils/useZodFormHook";
@@ -133,9 +130,6 @@ const CreateRecipe: NextPage = () => {
               required
               {...form.register("description")}
             ></Textarea>
-            <p className="font-medium text-red-500">
-              {form.formState.errors?.description?.message}
-            </p>
           </div>
           <div className="mb-4 max-w-full">
             <Input
