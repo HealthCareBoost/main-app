@@ -6,30 +6,13 @@ import { DifficultyLevel, TimeUnits } from "../../utils/enumsMap";
 // import Select from "react-select";
 // import { zodResolver } from "@hookform/resolvers/zod";
 import { useZodForm } from "../../utils/useZodFormHook";
-import { Form } from "../../components/formProvider";
-import { Input } from "../../components/formInput";
-import { SubmitButton } from "../../components/submitButton";
-import { Select } from "../../components/formSelect";
-import { Textarea } from "../../components/textArea";
+
 import { MeasurementUnits } from "@prisma/client";
 import { api } from "../../utils/api";
-
-type FormTypes = {
-  name: string;
-  preparationTime: string;
-  preparationTimeUnit: "seconds" | "minutes" | "hours";
-  difficultyLevel?: "easy" | "medium" | "hard" | "expert";
-  description?: string;
-  images?: File[];
-  recipe_steps?: string[];
-  video_url: string;
-};
-
-type Ingr = {
-  ingredient_name: string;
-  quantity: number;
-  measurement_unit: MeasurementUnits;
-};
+import { Form } from "../../components/ui/formProvider";
+import { Input } from "../../components/ui/formInput";
+import { Select } from "../../components/ui/formSelect";
+import { Textarea } from "../../components/ui/textArea";
 
 // const resolver: Resolver<FormTypes> = (values) => {
 //   return {
@@ -217,7 +200,7 @@ const CreateRecipe: NextPage = () => {
               onClick={() => {
                 append({
                   ingredient_name: "milk",
-                  measurement_unit: "GR",
+                  measurement_unit: "Gram",
                   quantity: 150,
                 });
               }}
@@ -225,7 +208,7 @@ const CreateRecipe: NextPage = () => {
               append
             </button>
           </section>
-          <SubmitButton>Submit</SubmitButton>
+          <button type="submit">Submit</button>
         </Form>
         {/* 
           

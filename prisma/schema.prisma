@@ -89,8 +89,22 @@ model Recipe {
     createdAt               DateTime  @default(now())
     updatedAt               DateTime  @default(now())
     is_deleted              Boolean   @default(false)   
+    // total likes -> number
+
     @@index([creator_id])
 }
+
+// To be added
+// model UserLikes {
+//     recipe_id             String
+//     user_id             String
+// }
+
+// model UserComments {
+//     recipe_id            String
+//     user_id              String
+//     text                 String
+// }
 
 // model RecipeSteps {
 //     id                    Int  @id @default(autoincrement())

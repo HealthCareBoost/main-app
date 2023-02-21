@@ -5,7 +5,7 @@ import type { ComponentProps } from "react";
 import { forwardRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { Label } from "./Label";
-import { cn } from "../utils/cn";
+import { cn } from "../../utils/cn";
 
 interface Props extends ComponentProps<"textarea"> {
   name: string;

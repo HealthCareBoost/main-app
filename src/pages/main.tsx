@@ -1,6 +1,6 @@
 import React from "react";
 import { type NextPage } from "next";
-import Header from "../components/header";
+import Header from "../components/ui/Header";
 
 const Main: NextPage = () => {
   return (
