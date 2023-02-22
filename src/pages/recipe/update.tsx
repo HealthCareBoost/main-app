@@ -14,6 +14,7 @@ import {
 
 import { api } from "../../utils/api";
 import Image from "next/image";
+import { CldImage, CldUploadWidget, CldUploadButton } from "next-cloudinary";
 
 // !!! ********** !!!
 // just for testing functionality
@@ -72,6 +73,14 @@ const UpdateRecipe: NextPage = () => {
           className="w-48"
         />
       )}
+      <CldImage
+        width="600"
+        height="600"
+        alt="flower"
+        loading="lazy"
+        src="https://res.cloudinary.com/ddm9sjjq5/image/upload/v1677002229/let-me-cook/hcypqsvezocwxymemdzv.png"
+        // src="https://res.cloudinary.com/ddm9sjjq5/image/upload/v1620640652/sample.jpg"
+      ></CldImage>
     </>
   );
 };

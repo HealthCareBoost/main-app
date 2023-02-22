@@ -9,10 +9,11 @@ import { useZodForm } from "../../utils/useZodFormHook";
 
 import { MeasurementUnits } from "@prisma/client";
 import { api } from "../../utils/api";
-import { Form } from "../../components/ui/formProvider";
-import { Input } from "../../components/ui/formInput";
-import { Select } from "../../components/ui/formSelect";
-import { Textarea } from "../../components/ui/textArea";
+import { Form } from "../../components/ui/FormProvider";
+import { Input } from "../../components/ui/FormInput";
+import { Select } from "../../components/ui/FormSelect";
+import { Textarea } from "../../components/ui/TextArea";
+import { CloudinaryUploadButton } from "../../components/ui/CloudinaryUploadButton";
 
 // const resolver: Resolver<FormTypes> = (values) => {
 //   return {
@@ -30,6 +31,7 @@ import { Textarea } from "../../components/ui/textArea";
 
 const CreateRecipe: NextPage = () => {
   const createRecipeMutation = api.recipe.createRecipe.useMutation();
+  const addImagesMutation = api.recipe.addImages.useMutation();
 
   const form = useZodForm({
     schema: RecipeSchema,
@@ -115,13 +117,17 @@ const CreateRecipe: NextPage = () => {
             ></Textarea>
           </div>
           <div className="mb-4 max-w-full">
-            <Input
+            {/* <Input
               type="file"
               label="images"
               required
               multiple
               {...form.register("images")}
-            ></Input>
+            ></Input> */}
+            <CloudinaryUploadButton
+              classNames=""
+              onUploadFc={addImagesMutation}
+            ></CloudinaryUploadButton>
           </div>
           <div className="mb-4 max-w-full">
             <Textarea

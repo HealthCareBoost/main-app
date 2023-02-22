@@ -117,17 +117,24 @@ model Recipe {
 
 model RecipeImage {
     id              Int  @id @default(autoincrement())
+    // asset_id: "edf513d98bef7cd3216d27dad5917959";
+    // id: "uw-file3";
+    // public_id: "folder/hcypqsvezocwxymemdzv";
+    // signature: "5fe5952664d94c1f684bec1c1ee5de1f5eb73429";
     recipe_id       String
     recipe          Recipe    @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
-    image_path      String
+    path            String
     filename        String
-    originalname    String
+    original_filename    String
+    original_extension   String
     encoding        String
     size_in_bytes   Int
-    image_type      String
     createdAt       DateTime  @default(now())
     updatedAt       DateTime  @default(now())
-    is_deleted      Boolean   @default(false)  
+    is_deleted      Boolean   @default(false) 
+    height          Int
+    width           Int
+    url             String
     @@index([recipe_id])
 }
 
