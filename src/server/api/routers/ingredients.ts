@@ -3,7 +3,13 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import axios from "axios";
 import { env } from "../../../env/server.mjs";
-import * as fs from "fs";
+// import { MeasurementUnits } from "@prisma/client";
+
+type NutrientData = {
+  name: string;
+  amount: number;
+  unit: string;
+};
 
 export const ingredientsRouter = createTRPCRouter({
   addIngredient: publicProcedure
@@ -27,58 +33,25 @@ export const ingredientsRouter = createTRPCRouter({
           > | null = await getIngredientNutritions(input.ingredientName);
           //save to db
           if (nutritions !== null) {
+            const nutritionsData: NutrientData[] = [];
+            const keys = Array.from(nutritions.keys());
+
+            keys.forEach((key) => {
+              const mapItem = nutritions.get(key);
+              if (mapItem !== undefined) {
+                nutritionsData.push({
+                  name: key,
+                  amount: mapItem.amount,
+                  unit: mapItem.unit,
+                });
+              }
+            });
+
             const savedIngredient = await ctx.prisma.ingredients.create({
               data: {
                 name: input.ingredientName,
                 nutrition: {
-                  create: [
-                    // !!!! refactor !!!!
-                    {
-                      name: "Protein",
-                      amount: nutritions.get("Protein")
-                        ? nutritions.get("Protein")!.amount
-                        : 0,
-                      unit: nutritions.get("Protein")
-                        ? nutritions.get("Protein")!.unit
-                        : "g",
-                    },
-                    {
-                      name: "Calories",
-                      amount: nutritions.get("Calories")
-                        ? nutritions.get("Calories")!.amount
-                        : 0,
-                      unit: nutritions.get("Calories")
-                        ? nutritions.get("Calories")!.unit
-                        : "g",
-                    },
-                    {
-                      name: "Carbohydrates",
-                      amount: nutritions.get("Carbohydrates")
-                        ? nutritions.get("Carbohydrates")!.amount
-                        : 0,
-                      unit: nutritions.get("Carbohydrates")
-                        ? nutritions.get("Carbohydrates")!.unit
-                        : "g",
-                    },
-                    {
-                      name: "Fat",
-                      amount: nutritions.get("Fat")
-                        ? nutritions.get("Fat")!.amount
-                        : 0,
-                      unit: nutritions.get("Fat")
-                        ? nutritions.get("Fat")!.unit
-                        : "g",
-                    },
-                    {
-                      name: "Sugar",
-                      amount: nutritions.get("Sugar")
-                        ? nutritions.get("Sugar")!.amount
-                        : 0,
-                      unit: nutritions.get("Sugar")
-                        ? nutritions.get("Sugar")!.unit
-                        : "g",
-                    },
-                  ],
+                  create: nutritionsData,
                 },
               },
             });

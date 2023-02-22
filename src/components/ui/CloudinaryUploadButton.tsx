@@ -3,46 +3,22 @@
 import * as React from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import { Button } from "./Button";
+import { type ImageInfo } from "../../utils/imageSchema";
 
-type CloudinaryUploadResponse = {
+export type CloudinaryUploadResponse = {
   event: string;
-  info: {
-    access_mode: string;
-    asset_id: string;
-    batchId: string;
-    bytes: number;
-    created_at: string;
-    etag: string;
-    folder: string;
-    format: string;
-    height: number;
-    id: string;
-    original_extension: string;
-    original_filename: string;
-    path: string;
-    placeholder: boolean | string | string[];
-    public_id: string;
-    resource_type: string;
-    secure_url: string;
-    signature: string;
-    tags: string[];
-    thumbnail_url: string;
-    type: string;
-    url: string;
-    version: number;
-    version_id: string;
-    width: number;
-  };
+  info: ImageInfo;
 };
 
 type UploadButtonProps = {
   classNames: string;
-  onUploadFc: () => void;
+  onUploadSetData: React.Dispatch<React.SetStateAction<ImageInfo[]>>;
 };
 
 export const CloudinaryUploadButton: React.FC<UploadButtonProps> = ({
-  onUploadFc,
+  onUploadSetData,
 }) => {
+  // console.log(onUploadSetData);
   return (
     <CldUploadWidget
       uploadPreset="unsigned-uploads"
@@ -58,9 +34,7 @@ export const CloudinaryUploadButton: React.FC<UploadButtonProps> = ({
         }
         console.log("res");
         console.log(result);
-        onUploadFc.mutate({
-          ...result.info,
-        });
+        onUploadSetData((prev) => [...prev, result.info]);
         // console.log("wid");
         // console.log(widget);
       }}

@@ -1,6 +1,7 @@
 import { RecipeImage } from "@prisma/client";
 import { z } from "zod";
 import { RecipeSchema } from "../../../utils/createRecipeSchema";
+import { ImageInfo, ImageInfoSchema } from "../../../utils/imageSchema";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const recipeRouter = createTRPCRouter({
@@ -32,31 +33,61 @@ export const recipeRouter = createTRPCRouter({
   createRecipe: protectedProcedure
     .input(RecipeSchema)
     .mutation(({ ctx, input }) => {
+      console.log("crm");
       console.log(input);
 
-      // return ctx.prisma.recipe.create({
-      //   data: {
-      //     name: input.name,
-      //     creator_id: ctx.session.user.id,
-      //     cooking_time_minutes: 60,
-      //     recipe_steps: input.recipe_steps,
-      //     description: input.description,
-      //     video_url: input.video_url ? input.video_url : "",
-      //     //       images: {
-      //     //           createMany: {
-      //     //               data: // Array.from({length: 5})
-      //     //           // images data
-      //     //           }
-      //     //   },
-      //     categories: {
-      //       createMany: {
-      //         data: [
-      //           // different categories
-      //         ],
-      //       },
-      //     },
-      //   },
-      // });
+      const imageDataToSave: Omit<
+        RecipeImage,
+        "id" | "is_deleted" | "updatedAt" | "recipe_id"
+      >[] = input.images
+        ? input.images.map((imageInfo) => {
+            return {
+              // recipe_id: "1234567",
+              path: imageInfo.path,
+              filename:
+                imageInfo.public_id && imageInfo.folder
+                  ? (imageInfo.public_id
+                      .split(`${imageInfo.folder}/`)
+                      .pop() as string)
+                  : imageInfo.public_id,
+              original_filename: imageInfo.original_filename,
+              original_extension: imageInfo.original_extension,
+              format: imageInfo.format,
+              size_in_bytes: imageInfo.bytes,
+              createdAt: new Date(imageInfo.created_at),
+              width: imageInfo.width,
+              height: imageInfo.height,
+              url: imageInfo.secure_url,
+            };
+          })
+        : [];
+
+      return ctx.prisma.recipe.create({
+        data: {
+          creator_id: ctx.session.user.id,
+          name: input.name,
+          preparation_time: `${input.preparationTime} ${input.preparationTimeUnit}`,
+          description: input.description,
+          difficulty_level: input.difficultyLevel,
+          recipe_steps: input.recipe_steps,
+          cooking_time_minutes: 60, //make function to calc
+          video_url: input.video_url ? input.video_url : "No video",
+          images: {
+            createMany: {
+              data: imageDataToSave,
+              skipDuplicates: true,
+            },
+          },
+
+          // categories: {
+          //   createMany: {
+          //     data: [
+          //       // different categories
+          //     ],
+          //   },
+          // },
+        },
+      });
     }),
 
   delete: protectedProcedure
@@ -73,64 +104,37 @@ export const recipeRouter = createTRPCRouter({
     }),
 
   addImages: protectedProcedure
-    .input(
-      z.object({
-        access_mode: z.string(),
-        asset_id: z.string(),
-        batchId: z.string(),
-        bytes: z.number().positive(),
-        created_at: z.string(),
-        etag: z.string(),
-        folder: z.string(),
-        format: z.string(),
-        height: z.number().positive(),
-        id: z.string(),
-        original_extension: z.string(),
-        original_filename: z.string(),
-        path: z.string(),
-        placeholder: z.ostring().or(z.boolean()),
-        public_id: z.string(),
-        resource_type: z.string(),
-        secure_url: z.string(),
-        signature: z.string(),
-        tags: z.string().array(),
-        thumbnail_url: z.string(),
-        type: z.string(),
-        url: z.string(),
-        version: z.number(),
-        version_id: z.string(),
-        width: z.number().positive(),
-      })
-    )
-
+    .input(ImageInfoSchema)
     .mutation(async ({ ctx, input }) => {
       console.log("******************2");
       console.log(input);
 
-      const dataToSave = {
-        // recipe_id: 1,
-      };
-
-      await ctx.prisma.recipeImage.create({
-        data: {
+      const imageDataToSave: Omit<
+        RecipeImage,
+        "id" | "is_deleted" | "updatedAt"
+      >[] = input.map((imageInfo) => {
+        return {
+          recipe_id: "1234567",
+          path: imageInfo.path,
           filename:
-            input.public_id && input.folder
-              ? (input.public_id.split(`${input.folder}/`).pop() as string)
-              : input.public_id,
-          createdAt: input.created_at,
-          encoding: input.format,
-          path: input.path,
-          original_filename: input.original_filename,
-          height: input.height,
-          width: input.width,
-          is_deleted: false,
-          original_extension: input.original_extension
-            ? input.original_extension
-            : "png",
-          size_in_bytes: input.bytes,
-          url: input.secure_url,
-          recipe_id: "",
-        },
+            imageInfo.public_id && imageInfo.folder
+              ? (imageInfo.public_id
+                  .split(`${imageInfo.folder}/`)
+                  .pop() as string)
+              : imageInfo.public_id,
+          original_filename: imageInfo.original_filename,
+          original_extension: imageInfo.original_extension,
+          format: imageInfo.format,
+          size_in_bytes: imageInfo.bytes,
+          createdAt: new Date(imageInfo.created_at),
+          width: imageInfo.width,
+          height: imageInfo.height,
+          url: imageInfo.secure_url,
+        };
+      });
+
+      await ctx.prisma.recipeImage.createMany({
+        data: imageDataToSave,
         skipDuplicates: true,
       });
     }),

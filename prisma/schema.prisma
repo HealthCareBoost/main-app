@@ -127,7 +127,7 @@ model RecipeImage {
     filename        String
     original_filename    String
     original_extension   String
-    encoding        String
+    format        String
     size_in_bytes   Int
     createdAt       DateTime  @default(now())
     updatedAt       DateTime  @default(now())

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { type NextPage } from "next";
 import { Controller, useFieldArray } from "react-hook-form";
 import { RecipeSchema } from "../../utils/createRecipeSchema";
@@ -14,6 +14,7 @@ import { Input } from "../../components/ui/FormInput";
 import { Select } from "../../components/ui/FormSelect";
 import { Textarea } from "../../components/ui/TextArea";
 import { CloudinaryUploadButton } from "../../components/ui/CloudinaryUploadButton";
+import { type ImageInfo } from "../../utils/imageSchema";
 
 // const resolver: Resolver<FormTypes> = (values) => {
 //   return {
@@ -31,8 +32,11 @@ import { CloudinaryUploadButton } from "../../components/ui/CloudinaryUploadButt
 
 const CreateRecipe: NextPage = () => {
   const createRecipeMutation = api.recipe.createRecipe.useMutation();
-  const addImagesMutation = api.recipe.addImages.useMutation();
+  // const addImagesMutation = api.recipe.addImages.useMutation();
+  const getIngredientsNutritionsMutation =
+    api.ingredients.addIngredient.useMutation();
 
+  const [imageData, setImageData] = useState<ImageInfo[]>([]);
   const form = useZodForm({
     schema: RecipeSchema,
   });
@@ -50,22 +54,33 @@ const CreateRecipe: NextPage = () => {
       >
         <Form
           form={form}
-          onSubmit={(data) => {
-            // send ingredients to be saved and calulate nutr
-
-            // try {
-            //   const todo = await mutation.mutateAsync(todo)
-            //   console.log(todo)
-            // } catch (error) {
-            //   console.error(error)
-            // } finally {
-            //   console.log('done')
-            // }
-
-            // then create new recipe
+          onSubmit={async (data) => {
+            console.log("***** form data *****");
             console.log(data);
+            console.log("***** form data *****");
+
+            // send ingredients to be saved and calulate nutr
+            try {
+              if (data.ingredients && data.ingredients.length > 0) {
+                for (const ingredient of data.ingredients) {
+                  const { success } =
+                    await getIngredientsNutritionsMutation.mutateAsync({
+                      ingredientName: ingredient.ingredient_name,
+                    });
+                  console.log(success);
+                }
+              }
+            } catch (error) {
+              console.error(error);
+            } finally {
+              console.log("All ingredients nutritions are saved");
+            }
+
+            console.log(imageData);
+            // then create new recipe
             createRecipeMutation.mutate({
               ...data,
+              images: imageData,
             });
           }}
         >
@@ -126,7 +141,7 @@ const CreateRecipe: NextPage = () => {
             ></Input> */}
             <CloudinaryUploadButton
               classNames=""
-              onUploadFc={addImagesMutation}
+              onUploadSetData={setImageData}
             ></CloudinaryUploadButton>
           </div>
           <div className="mb-4 max-w-full">
@@ -214,7 +229,9 @@ const CreateRecipe: NextPage = () => {
               append
             </button>
           </section>
-          <button type="submit">Submit</button>
+          <br></br>
+          <br></br>
+          <input type="submit" />
         </Form>
         {/* 
           
