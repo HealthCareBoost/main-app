@@ -15,6 +15,7 @@ import {
 import { api } from "../../utils/api";
 import Image from "next/image";
 import { CldImage, CldUploadWidget, CldUploadButton } from "next-cloudinary";
+import { Footer } from "../../components/Footer";
 
 // !!! ********** !!!
 // just for testing functionality
@@ -78,9 +79,12 @@ const UpdateRecipe: NextPage = () => {
         height="600"
         alt="flower"
         loading="lazy"
-        src="https://res.cloudinary.com/ddm9sjjq5/image/upload/v1677002229/let-me-cook/hcypqsvezocwxymemdzv.png"
+        src="https://res.cloudinary.com/ddm9sjjq5/image/upload/v1677078944/let-me-cook/cbuptetd0r92mawu0co0.png"
         // src="https://res.cloudinary.com/ddm9sjjq5/image/upload/v1620640652/sample.jpg"
       ></CldImage>
+      <Footer
+        links={["About", "Privacy Policy", "Licensing", "Contact"]}
+      ></Footer>
     </>
   );
 };
