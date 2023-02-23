@@ -138,4 +138,34 @@ export const recipeRouter = createTRPCRouter({
         skipDuplicates: true,
       });
     }),
+
+  getPaginatedRecipies: publicProcedure
+    .input(
+      z.object({
+        cursor: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      // offset pagination
+
+      // const results = await ctx.prisma.recipe.findMany({
+      //   skip: 3,
+      //   take: 4,
+      // });
+
+      // Cursor-based pagination
+      return ctx.prisma.recipe.findMany({
+        take: 10,
+        skip: 1,
+        cursor: {
+          id: input.cursor,
+        },
+        where: {
+          is_deleted: false,
+        },
+        orderBy: {
+          id: "asc",
+        },
+      });
+    }),
 });
