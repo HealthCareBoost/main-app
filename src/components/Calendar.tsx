@@ -1,5 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { startOfWeek, addDays, format, subWeeks, addWeeks } from "date-fns";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/AlertDialog";
+import { CalendarHeader } from "./calendar/Header";
 
 const days = [
   { name: "Monday", short: "Mon" },
@@ -15,18 +27,25 @@ export const Calendar: React.FC = () => {
   const [daysOfWeek, setDaysOfWeek] = useState<string[]>([]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const todayRef = useRef<Date>(currentDate);
+  // const weekRef = useRef<number>(getWeek(currentDate, { weekStartsOn: 1 }));
 
   useEffect(() => {
+    console.log(currentDate);
+    console.log(todayRef.current);
+    console.log(todayRef.current === currentDate);
+
     const startOfCurrentWeek = startOfWeek(currentDate, {
       weekStartsOn: 1,
     });
+
     const currentWeekDays = [];
 
     for (let i = 0; i < 7; i++) {
       const date = addDays(startOfCurrentWeek, i);
-      const formattedDate = format(date, "dd");
+      const formattedDate = format(date, "dd-MMMM-yyyy");
       currentWeekDays.push(formattedDate);
     }
+    console.log(currentWeekDays);
     // console.log(currentWeekDays);
     setDaysOfWeek(currentWeekDays);
   }, [currentDate]);
@@ -34,75 +53,15 @@ export const Calendar: React.FC = () => {
   return (
     <div className="container mx-auto mt-10 h-screen">
       <div className="wrapper h-screen w-full rounded bg-white shadow">
-        <div className="header flex justify-between border-b p-2">
-          <span className="text-lg font-bold">
-            {format(todayRef.current, "yyyy-MMMM")}
-          </span>
-          <div className="buttons">
-            <button
-              className="p-1"
-              onClick={() => {
-                // console.log(subWeeks(currentDate, 1));
-                setCurrentDate(subWeeks(currentDate, 1));
-                // console.log(currentDate);
-              }}
-            >
-              <svg
-                width="1em"
-                fill="gray"
-                height="1em"
-                viewBox="0 0 16 16"
-                className="bi bi-arrow-left-circle"
-                // fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
-                />
-                <path
-                  fillRule="evenodd"
-                  d="M8.354 11.354a.5.5 0 0 0 0-.708L5.707 8l2.647-2.646a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708 0z"
-                />
-                <path
-                  fillRule="evenodd"
-                  d="M11.5 8a.5.5 0 0 0-.5-.5H6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5z"
-                />
-              </svg>
-            </button>
-            <button
-              className="p-1"
-              onClick={() => {
-                // console.log(addWeeks(currentDate, 1));
-                setCurrentDate(addWeeks(currentDate, 1));
-                // console.log(currentDate);
-              }}
-            >
-              <svg
-                width="1em"
-                fill="gray"
-                height="1em"
-                viewBox="0 0 16 16"
-                className="bi bi-arrow-right-circle"
-                // fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
-                />
-                <path
-                  fillRule="evenodd"
-                  d="M7.646 11.354a.5.5 0 0 1 0-.708L10.293 8 7.646 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0z"
-                />
-                <path
-                  fillRule="evenodd"
-                  d="M4.5 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
+        <CalendarHeader
+          date={format(currentDate, "MMMM-yyyy")}
+          getNextWeek={() => {
+            setCurrentDate(addWeeks(currentDate, 1));
+          }}
+          getPreviousWeek={() => {
+            setCurrentDate(subWeeks(currentDate, 1));
+          }}
+        />
         <table className="h-full w-full">
           <thead>
             <tr>
@@ -114,17 +73,20 @@ export const Calendar: React.FC = () => {
                   <span className="hidden sm:block md:block lg:block xl:block">
                     {name}
                   </span>
-                  {format(todayRef.current, "dd") === daysOfWeek[idx] && (
-                    <p>today</p>
-                  )}
+                  {format(todayRef.current, "dd-MMMM-yyyy") ===
+                    daysOfWeek[idx] && <p>today</p>}
                   <span className="hidden sm:block md:block lg:block xl:block">
-                    {daysOfWeek[idx]}
+                    {daysOfWeek[idx] !== undefined
+                      ? format(new Date(daysOfWeek[idx] as string), "dd")
+                      : daysOfWeek[idx]}
                   </span>
                   <span className="block sm:hidden md:hidden lg:hidden xl:hidden">
                     {short}
                   </span>
                   <span className="block sm:hidden md:hidden lg:hidden xl:hidden">
-                    {daysOfWeek[idx]}
+                    {daysOfWeek[idx] !== undefined
+                      ? format(new Date(daysOfWeek[idx] as string), "dd")
+                      : daysOfWeek[idx]}
                   </span>
                 </th>
               ))}
@@ -222,6 +184,22 @@ export const Calendar: React.FC = () => {
           </tbody>
         </table>
       </div>
+      <AlertDialog>
+        <AlertDialogTrigger>Open</AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              account and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
