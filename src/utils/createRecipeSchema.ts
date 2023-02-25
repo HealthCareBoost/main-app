@@ -5,7 +5,12 @@ import { ImageInfoSchema } from "./imageSchema";
 
 export const RecipeSchema = z.object({
   name: z.string().min(3).max(50),
-  preparationTime: z.coerce.number().min(1),
+  preparationTime: z.coerce
+    .number({
+      required_error: "Please select a number",
+      invalid_type_error: "That's not a valid positive number!",
+    })
+    .min(1),
   preparationTimeUnit: z.nativeEnum(TimeUnits),
   difficultyLevel: z.nativeEnum(DifficultyLevel),
   description: z.string().min(20),

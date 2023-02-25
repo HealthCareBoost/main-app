@@ -1,18 +1,21 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import { Button } from "../ui/Button";
+import { DialogTrigger } from "../ui/Dialog";
 import { Separator } from "../ui/Separator";
 
 type CalendarHeaderProps = {
   date: string;
   getPreviousWeek: () => void;
   getNextWeek: () => void;
+  selectToday: (value: React.SetStateAction<Date>) => void;
 };
 
 export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   date,
   getNextWeek,
   getPreviousWeek,
+  selectToday,
 }) => {
   return (
     <div className="header flex justify-between border-b p-2">
@@ -96,21 +99,19 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
             />
           </svg>
         </button> */}
+        <Separator className={"inline"} orientation={"vertical"} />
+        <DialogTrigger asChild>
+          <Button
+            className="mx-2 flex-1 p-1"
+            onClick={() => {
+              selectToday(new Date());
+            }}
+            variant="default"
+          >
+            Set meal for today
+          </Button>
+        </DialogTrigger>
       </div>
-      <Separator
-        className={"inline"}
-        // decorative={true}
-        orientation={"vertical"}
-      />
-      <Button
-        className="mx-2 flex-1 p-1"
-        onClick={() => {
-          console.log("open modal");
-        }}
-        variant="default"
-      >
-        Set meal for today
-      </Button>
     </div>
   );
 };
