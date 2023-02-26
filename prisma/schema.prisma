@@ -59,9 +59,10 @@ model User {
     accounts      Account[]
     sessions      Session[]
     recipes       Recipe[]
+    daily_diet    UserDailyDiet[]
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @default(now())
-    is_deleted    Boolean   @default(false)  
+    is_deleted    Boolean   @default(false)
 }
 
 model VerificationToken {
@@ -89,7 +90,8 @@ model Recipe {
     createdAt               DateTime  @default(now())
     updatedAt               DateTime  @default(now())
     is_deleted              Boolean   @default(false)   
-    // total likes -> number
+    total_likes             Int       @default(0)
+    daily_diet              UserDailyDiet[]
 
     @@index([creator_id])
 }
@@ -201,8 +203,11 @@ model UserDailyDiet {
     date          DateTime
     recipe_id     String
     meal_type     MealTypes
-    
+    recipe        Recipe    @relation(fields: [recipe_id], references: [id])
+    user          User      @relation(fields: [user_id], references: [id])
+
     @@unique([user_id, date, recipe_id])
+    @@index([recipe_id, user_id])
 }
 
 enum TimeUnits {

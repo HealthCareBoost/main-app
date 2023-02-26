@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { startOfWeek, addDays, format, subWeeks, addWeeks } from "date-fns";
 import { CalendarHeader } from "./calendar/Header";
-import { Dialog, DialogTrigger } from "./ui/Dialog";
-import { Button } from "./ui/Button";
+import { Dialog } from "./ui/Dialog";
 import { CalendarDialog } from "./calendar/CalendarDialog";
+import { api } from "../utils/api";
+import { removeTimezoneOffset } from "../utils/formatTimezone";
 
 const days = [
   { name: "Monday", short: "Mon" },
@@ -23,10 +24,23 @@ export const Calendar: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedDay, setSelectedDay] = useState<Date>(currentDate);
 
+  const { data } = api.user.getUserWeeklyDiet.useQuery({
+    from: removeTimezoneOffset(
+      new Date(daysOfWeek[0] !== undefined ? daysOfWeek[0] : currentDate)
+    ),
+    to: removeTimezoneOffset(
+      new Date(
+        daysOfWeek[6] !== undefined ? daysOfWeek[6] : addWeeks(currentDate, 1)
+      )
+    ),
+  });
+  // console.log("data");
+  // console.log(data);
+
   useEffect(() => {
-    console.log(currentDate);
-    console.log(todayRef.current);
-    console.log(todayRef.current === currentDate);
+    // console.log(currentDate);
+    // console.log(todayRef.current);
+    // console.log(todayRef.current === currentDate);
 
     const startOfCurrentWeek = startOfWeek(currentDate, {
       weekStartsOn: 1,
@@ -39,7 +53,7 @@ export const Calendar: React.FC = () => {
       const formattedDate = format(date, "dd-MMMM-yyyy");
       currentWeekDays.push(formattedDate);
     }
-    console.log(currentWeekDays);
+    // console.log(currentWeekDays);
     // console.log(currentWeekDays);
     setDaysOfWeek(currentWeekDays);
   }, [currentDate]);
@@ -181,6 +195,43 @@ export const Calendar: React.FC = () => {
                       className="lg:w-30 md:w-30 ease h-40 w-10 cursor-pointer overflow-auto border p-1 transition duration-500 hover:bg-gray-300 sm:w-20 xl:w-40"
                     >
                       <div className="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+                        {data !== undefined &&
+                          data.length > 0 &&
+                          data.map((el) => {
+                            const a = removeTimezoneOffset(new Date(day));
+                            // console.log(el.date);
+                            // // console.log(day);
+                            // console.log(a);
+                            // console.log(el.date.getTime() == a.getTime());
+
+                            if (el.date.getTime() == a.getTime()) {
+                              return (
+                                <div
+                                  key={`${el.meal_type}${idx}`}
+                                  className="event mb-1 rounded bg-purple-400 p-1 text-sm text-white"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    console.log("open");
+                                    console.log(e);
+                                  }}
+                                >
+                                  <div className="event-name">
+                                    {el.recipe.name}
+                                  </div>
+                                  <div className="meal-type">
+                                    {el.meal_type}
+                                  </div>
+                                </div>
+
+                                // <div >
+                                //   <div></div>
+                                //   <p></p>
+                                // </div>
+                              );
+                            } else {
+                              return null;
+                            }
+                          })}
                         {/* <div className="top h-5 w-full"></div>
                       <div className="bottom h-30 w-full flex-grow cursor-pointer py-1"></div> */}
                       </div>
@@ -189,7 +240,7 @@ export const Calendar: React.FC = () => {
               </tr>
             </tbody>
           </table>
-          <CalendarDialog date={selectedDay} />
+          <CalendarDialog selectedDate={selectedDay} />
         </Dialog>
       </div>
     </div>

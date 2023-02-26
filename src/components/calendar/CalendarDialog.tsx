@@ -15,12 +15,15 @@ import { useZodForm } from "../../utils/useZodFormHook";
 import { z } from "zod";
 import format from "date-fns/format";
 import { api } from "../../utils/api";
+import { removeTimezoneOffset } from "../../utils/formatTimezone";
 
 type CalendarDialogProps = {
-  date: Date;
+  selectedDate: Date;
 };
 
-export const CalendarDialog: React.FC<CalendarDialogProps> = ({ date }) => {
+export const CalendarDialog: React.FC<CalendarDialogProps> = ({
+  selectedDate,
+}) => {
   const saveDiet = api.user.saveUserDailyDiet.useMutation();
 
   const form = useZodForm({
@@ -38,9 +41,8 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({ date }) => {
     console.log(data);
     console.log("***** form data *****");
 
-    const userTimezoneOffset = date.getTimezoneOffset() * 60000;
     await saveDiet.mutateAsync({
-      date: new Date(date.getTime() - userTimezoneOffset),
+      date: removeTimezoneOffset(selectedDate),
       meal_type: data.meal_type,
       recipe_id: "cleftij6j0001uyk0uvp5g4xk",
     });
@@ -49,7 +51,7 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({ date }) => {
   return (
     <DialogContent className="sm:max-w-[425px]">
       <DialogHeader>
-        <DialogTitle>{format(date, "eeee, dd MMMM")}</DialogTitle>
+        <DialogTitle>{format(selectedDate, "eeee, dd MMMM")}</DialogTitle>
         <DialogDescription>
           Add new daily meal and click save when you&apos;re done.
         </DialogDescription>

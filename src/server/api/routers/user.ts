@@ -45,12 +45,47 @@ export const userRouter = createTRPCRouter({
             recipe_id: input.recipe_id,
           },
         });
-        console.log("yes");
         console.log(res);
         return { success: true };
       } catch (error) {
         console.error(error);
         return { success: false };
+      }
+    }),
+
+  getUserWeeklyDiet: protectedProcedure
+    .input(
+      z.object({
+        from: z.date().nullable(),
+        to: z.date().nullable(),
+      })
+    )
+    .query(({ input, ctx }) => {
+      try {
+        if (input.from !== null && input.to !== null) {
+          return ctx.prisma.userDailyDiet.findMany({
+            where: {
+              AND: [
+                { user_id: ctx.session.user.id },
+                {
+                  date: {
+                    lte: input.to,
+                    gte: input.from,
+                  },
+                },
+              ],
+            },
+            include: {
+              recipe: {
+                select: { name: true },
+              },
+            },
+          });
+        } else {
+          throw new Error("need 2 valid dates");
+        }
+      } catch (error) {
+        throw error;
       }
     }),
 });
