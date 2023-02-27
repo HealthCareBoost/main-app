@@ -88,4 +88,78 @@ export const userRouter = createTRPCRouter({
         throw error;
       }
     }),
+
+  getUserDailyDiet: protectedProcedure
+    .input(
+      z.object({
+        date: z.date(),
+        recipe_id: z.string(),
+      })
+    )
+    .query(({ input, ctx }) => {
+      try {
+        return ctx.prisma.userDailyDiet.findUnique({
+          where: {
+            user_id_date_recipe_id: {
+              date: input.date,
+              recipe_id: input.recipe_id,
+              user_id: ctx.session.user.id,
+            },
+            // AND: [
+            //   { user_id: ctx.session.user.id },
+            //   {
+            //     date: input.date,
+            //   },
+            //   { recipe_id: input.recipe_id },
+            // ],
+          },
+          include: {
+            recipe: {
+              select: { name: true },
+            },
+          },
+        });
+      } catch (error) {
+        throw error;
+      }
+    }),
+
+  updateUserDailyDiet: protectedProcedure
+    .input(
+      z.object({
+        date: z.date({
+          required_error: "Please select a date and time",
+          invalid_type_error: "That's not a date!",
+        }),
+        previous_recipe_id: z.string(),
+        new_recipe_id: z.string().optional(),
+        meal_type: z.nativeEnum(MealTypes),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const res = await ctx.prisma.userDailyDiet.updateMany({
+          where: {
+            // user_id_date_recipe_id: {
+            user_id: ctx.session.user.id,
+            date: input.date,
+            recipe_id: input.previous_recipe_id,
+            // },
+          },
+          data: {
+            date: input.date,
+            meal_type: input.meal_type,
+            user_id: ctx.session.user.id,
+            recipe_id: input.new_recipe_id
+              ? input.new_recipe_id
+              : input.previous_recipe_id,
+          },
+        });
+        console.log(res);
+        return { success: true };
+      } catch (error) {
+        console.error(error);
+        return { success: false };
+      }
+    }),
 });

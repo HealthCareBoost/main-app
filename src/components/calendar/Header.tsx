@@ -1,11 +1,14 @@
+import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import { Button } from "../ui/Button";
-import { DialogTrigger } from "../ui/Dialog";
+import { Dialog, DialogTrigger } from "../ui/Dialog";
 import { Separator } from "../ui/Separator";
+import { CalendarDialog } from "./CalendarDialog";
 
 type CalendarHeaderProps = {
-  date: string;
+  date: Date;
+  today: Date;
   getPreviousWeek: () => void;
   getNextWeek: () => void;
   selectToday: (value: React.SetStateAction<Date>) => void;
@@ -16,10 +19,11 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   getNextWeek,
   getPreviousWeek,
   selectToday,
+  today,
 }) => {
   return (
     <div className="header flex justify-between border-b p-2">
-      <span className="text-lg font-bold">{date}</span>
+      <span className="text-lg font-bold">{format(date, "MMMM-yyyy")}</span>
       <div className="buttons mx-2 flex flex-row content-center justify-evenly">
         <Button
           className="mx-2 flex-1 p-1"
@@ -100,17 +104,20 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
           </svg>
         </button> */}
         <Separator className={"inline"} orientation={"vertical"} />
-        <DialogTrigger asChild>
-          <Button
-            className="mx-2 flex-1 p-1"
-            onClick={() => {
-              selectToday(new Date());
-            }}
-            variant="default"
-          >
-            Set meal for today
-          </Button>
-        </DialogTrigger>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              className="mx-2 flex-1 p-1"
+              // onClick={() => {
+              //   selectToday(new Date());
+              // }}
+              variant="default"
+            >
+              Set meal for today
+            </Button>
+          </DialogTrigger>
+          <CalendarDialog selectedDate={today} />
+        </Dialog>
       </div>
     </div>
   );

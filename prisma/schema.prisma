@@ -206,8 +206,10 @@ model UserDailyDiet {
     recipe        Recipe    @relation(fields: [recipe_id], references: [id])
     user          User      @relation(fields: [user_id], references: [id])
 
-    @@unique([user_id, date, recipe_id])
-    @@index([recipe_id, user_id])
+    // @@unique([user_id, date, recipe_id])
+    @@id([user_id, recipe_id, date])
+    @@index([recipe_id])
+    @@index([user_id])
 }
 
 enum TimeUnits {

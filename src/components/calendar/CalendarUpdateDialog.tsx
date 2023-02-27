@@ -18,13 +18,21 @@ import { api } from "../../utils/api";
 import { removeTimezoneOffset } from "../../utils/formatTimezone";
 
 type CalendarDialogProps = {
-  selectedDate: Date;
+  dailyDietInfo: {
+    date: Date;
+    recipe_id: string;
+    recipe: {
+      name: string;
+    };
+    user_id: string;
+    meal_type: MealTypes;
+  };
 };
 
-export const CalendarDialog: React.FC<CalendarDialogProps> = ({
-  selectedDate,
+export const CalendarUpdateDialog: React.FC<CalendarDialogProps> = ({
+  dailyDietInfo,
 }) => {
-  const saveDiet = api.user.saveUserDailyDiet.useMutation();
+  const updateDiet = api.user.updateUserDailyDiet.useMutation();
 
   const form = useZodForm({
     schema: z.object({
@@ -41,19 +49,20 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
     console.log(data);
     console.log("***** form data *****");
 
-    await saveDiet.mutateAsync({
-      date: removeTimezoneOffset(new Date(selectedDate.toDateString())),
+    await updateDiet.mutateAsync({
+      date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
       meal_type: data.meal_type,
-      recipe_id: "cleftij6j0001uyk0uvp5g4xk",
+      previous_recipe_id: "cleftij6j0001uyk0uvp5g4xk",
+      //   new_recipe_id: "cleftij6j0001uyk0uvp5g4xk",
     });
   };
 
   return (
     <DialogContent className="sm:max-w-[425px]">
       <DialogHeader>
-        <DialogTitle>{format(selectedDate, "eeee, dd MMMM")}</DialogTitle>
+        <DialogTitle>{format(dailyDietInfo.date, "eeee, dd MMMM")}</DialogTitle>
         <DialogDescription>
-          Add new daily meal and click save when you&apos;re done.
+          Change or Remove your daily meal and click save when you&apos;re done.
         </DialogDescription>
         <Form form={form} onSubmit={onFormSubmit}>
           <div className="grid gap-4 py-4">
@@ -62,6 +71,7 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
                 type="text"
                 label="Recipe"
                 className="col-span-3"
+                value={dailyDietInfo.recipe.name}
                 required
                 {...form.register("recipe_name")}
               ></Input>
@@ -71,6 +81,7 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
                 className="col-span-3"
                 label="For"
                 required
+                defaultValue={dailyDietInfo.meal_type}
                 {...form.register("meal_type")}
               >
                 {Object.entries(MealTypes).map(([key, value]) => (
