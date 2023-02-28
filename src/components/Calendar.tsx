@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { startOfWeek, addDays, format, subWeeks, addWeeks } from "date-fns";
 import { CalendarHeader } from "./calendar/Header";
-import { Dialog, DialogTrigger } from "./ui/Dialog";
+import { Dialog } from "./ui/Dialog";
 import { CalendarDialog } from "./calendar/CalendarDialog";
 import { api } from "../utils/api";
 import { removeTimezoneOffset } from "../utils/formatTimezone";
-import { CalendarUpdateDialog } from "./calendar/CalendarUpdateDialog";
+import { type MealTypes } from "@prisma/client";
 
 const days = [
   { name: "Monday", short: "Mon" },
@@ -17,6 +17,16 @@ const days = [
   { name: "Sunday", short: "Sun" },
 ];
 
+type DietInfo = {
+  date: Date;
+  recipe_id: string;
+  recipe: {
+    name: string;
+  };
+  user_id: string;
+  meal_type: MealTypes;
+};
+
 export const Calendar: React.FC = () => {
   const [daysOfWeek, setDaysOfWeek] = useState<string[]>([]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -24,6 +34,9 @@ export const Calendar: React.FC = () => {
   // const weekRef = useRef<number>(getWeek(currentDate, { weekStartsOn: 1 }));
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedDay, setSelectedDay] = useState<Date>(currentDate);
+  const [dailyDietInfo, setDailyDiet] = useState<DietInfo | undefined>(
+    undefined
+  );
 
   const { data } = api.user.getUserWeeklyDiet.useQuery({
     from: removeTimezoneOffset(
@@ -62,50 +75,59 @@ export const Calendar: React.FC = () => {
   return (
     <div className="container mx-auto mt-10 h-screen">
       <div className="wrapper mx-auto h-screen w-5/6 rounded bg-white shadow">
-        <CalendarHeader
-          selectToday={setSelectedDay}
-          today={todayRef.current}
-          date={todayRef.current}
-          getNextWeek={() => {
-            setCurrentDate(addWeeks(currentDate, 1));
+        <Dialog
+          open={isOpen}
+          onOpenChange={(open: boolean) => {
+            if (!open) {
+              setDailyDiet(undefined);
+            }
+            setIsOpen(open);
           }}
-          getPreviousWeek={() => {
-            setCurrentDate(subWeeks(currentDate, 1));
-          }}
-        />
-        <table className="h-full w-full">
-          <thead>
-            <tr>
-              {days.map(({ name, short }, idx) => (
-                <th
-                  key={`${name}${idx}`}
-                  className="lg:w-30 md:w-30 h-10 w-10 border-r p-2 text-xs sm:w-20 xl:w-40 xl:text-sm"
-                >
-                  <span className="hidden sm:block md:block lg:block xl:block">
-                    {name}
-                  </span>
-                  {format(todayRef.current, "dd-MMMM-yyyy") ===
-                    daysOfWeek[idx] && <p>today</p>}
-                  <span className="hidden sm:block md:block lg:block xl:block">
-                    {daysOfWeek[idx] !== undefined
-                      ? format(new Date(daysOfWeek[idx] as string), "dd")
-                      : daysOfWeek[idx]}
-                  </span>
-                  <span className="block sm:hidden md:hidden lg:hidden xl:hidden">
-                    {short}
-                  </span>
-                  <span className="block sm:hidden md:hidden lg:hidden xl:hidden">
-                    {daysOfWeek[idx] !== undefined
-                      ? format(new Date(daysOfWeek[idx] as string), "dd")
-                      : daysOfWeek[idx]}
-                  </span>
-                </th>
-              ))}
-            </tr>
-          </thead>
+        >
+          <CalendarHeader
+            selectToday={setSelectedDay}
+            today={todayRef.current}
+            date={todayRef.current}
+            getNextWeek={() => {
+              setCurrentDate(addWeeks(currentDate, 1));
+            }}
+            getPreviousWeek={() => {
+              setCurrentDate(subWeeks(currentDate, 1));
+            }}
+          />
+          <table className="h-full w-full">
+            <thead>
+              <tr>
+                {days.map(({ name, short }, idx) => (
+                  <th
+                    key={`${name}${idx}`}
+                    className="lg:w-30 md:w-30 h-10 w-10 border-r p-2 text-xs sm:w-20 xl:w-40 xl:text-sm"
+                  >
+                    <span className="hidden sm:block md:block lg:block xl:block">
+                      {name}
+                    </span>
+                    {format(todayRef.current, "dd-MMMM-yyyy") ===
+                      daysOfWeek[idx] && <p>today</p>}
+                    <span className="hidden sm:block md:block lg:block xl:block">
+                      {daysOfWeek[idx] !== undefined
+                        ? format(new Date(daysOfWeek[idx] as string), "dd")
+                        : daysOfWeek[idx]}
+                    </span>
+                    <span className="block sm:hidden md:hidden lg:hidden xl:hidden">
+                      {short}
+                    </span>
+                    <span className="block sm:hidden md:hidden lg:hidden xl:hidden">
+                      {daysOfWeek[idx] !== undefined
+                        ? format(new Date(daysOfWeek[idx] as string), "dd")
+                        : daysOfWeek[idx]}
+                    </span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
 
-          <tbody>
-            {/* <tr className="h-20 text-center">
+            <tbody>
+              {/* <tr className="h-20 text-center">
               <td className="lg:w-30 md:w-30 ease h-40 w-10 cursor-pointer overflow-auto border p-1 transition duration-500 hover:bg-gray-300 sm:w-20 xl:w-40 ">
               <div className="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
               <div className="top h-5 w-full">
@@ -178,44 +200,55 @@ export const Calendar: React.FC = () => {
               </td>
             </tr> */}
 
-            <tr className="h-full text-center">
-              {daysOfWeek.length > 0 &&
-                daysOfWeek.map((day, idx) => (
-                  <td
-                    onClick={() => {
-                      // console.log(day);
-                      setSelectedDay(new Date(day));
-                      setIsOpen(true);
-                    }}
-                    key={`${day}${idx}`}
-                    className="lg:w-30 md:w-30 ease h-40 w-10 cursor-pointer overflow-auto border p-1 transition duration-500 hover:bg-gray-300 sm:w-20 xl:w-40"
-                  >
-                    <div className="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
-                      {data !== undefined &&
-                        data.length > 0 &&
-                        data.map((dailyDietInfo) => {
-                          const a = removeTimezoneOffset(new Date(day));
-                          // console.log(dailyDietInfo.date.toDateString());
-                          // // // console.log(day);
-                          // console.log(a);
-                          // console.log(
-                          //   dailyDietInfo.date.toDateString() ==
-                          //     a.toDateString()
-                          // );
-
-                          if (
-                            dailyDietInfo.date.toDateString() ==
-                            a.toDateString()
-                          ) {
-                            return (
-                              <Dialog key={`${dailyDietInfo.meal_type}${idx}`}>
-                                <DialogTrigger asChild>
+              <tr className="h-full text-center">
+                {daysOfWeek.length > 0 &&
+                  daysOfWeek.map((day, idx) => {
+                    if (data !== undefined && data.length > 0) {
+                      return (
+                        <td
+                          key={`${day}${idx}`}
+                          onClick={() => {
+                            // console.log(day);
+                            // setDailyDiet(undefined);
+                            setSelectedDay(new Date(day));
+                            setIsOpen(true);
+                          }}
+                          className="
+                          lg:w-30 md:w-30 ease
+                          h-40 w-10 cursor-pointer overflow-auto border-2 border border-solid border-indigo-600 p-1 transition duration-500 hover:bg-gray-300 sm:w-20 xl:w-40"
+                        >
+                          {data.map((dailyDietInfo) => {
+                            let returnBody;
+                            const columnDate = removeTimezoneOffset(
+                              new Date(day)
+                            );
+                            // console.log(dailyDietInfo.date.toDateString());
+                            // // // console.log(day);
+                            // console.log(columnDate);
+                            // console.log(
+                            //   dailyDietInfo.date.toDateString() ==
+                            //     columnDate.toDateString()
+                            // );
+                            if (
+                              dailyDietInfo.date.toDateString() ==
+                              columnDate.toDateString()
+                            ) {
+                              returnBody = (
+                                <div
+                                  key={`${dailyDietInfo.meal_type}${idx}`}
+                                  className=" lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden border-2 border-solid border-red-600 sm:w-full xl:w-40"
+                                >
                                   <div
-                                    className="event mb-1 rounded bg-purple-400 p-1 text-sm text-white"
+                                    className="
+                                    event mb-1 rounded
+                                     bg-purple-400 p-1 text-sm text-white"
                                     onClick={(e) => {
+                                      e.preventDefault();
                                       e.stopPropagation();
                                       console.log("open");
-                                      console.log(e);
+                                      console.log(dailyDietInfo);
+                                      setDailyDiet(dailyDietInfo);
+                                      setIsOpen(true);
                                     }}
                                   >
                                     <div className="event-name">
@@ -225,24 +258,47 @@ export const Calendar: React.FC = () => {
                                       {dailyDietInfo.meal_type}
                                     </div>
                                   </div>
-                                </DialogTrigger>
-                                <CalendarUpdateDialog
-                                  dailyDietInfo={dailyDietInfo}
-                                />
-                              </Dialog>
-                            );
-                          } else {
-                            return null;
-                          }
-                        })}
-                      {/* <div className="top h-5 w-full"></div>
-                      <div className="bottom h-30 w-full flex-grow cursor-pointer py-1"></div> */}
-                    </div>
-                  </td>
-                ))}
-            </tr>
-          </tbody>
-        </table>
+                                </div>
+                              );
+                            }
+                            //  else {
+                            //   returnBody = (
+                            //     <Dialog
+                            //       key={`${dailyDietInfo.meal_type}${idx}`}
+                            //       // open={isOpen}
+                            //       // onOpenChange={(open: boolean) => {
+                            //       //   setIsOpen(open);
+                            //       // }}
+                            //     >
+                            //       <DialogTrigger asChild>
+                            //         <div>click</div>
+                            //       </DialogTrigger>
+                            //       <CalendarDialog
+                            //         selectedDate={removeTimezoneOffset(
+                            //           new Date(day)
+                            //         )}
+                            //       />
+                            //     </Dialog>
+                            //   );
+                            // }
+                            return returnBody;
+                          })}
+                        </td>
+                      );
+                    }
+                  })}
+              </tr>
+            </tbody>
+          </table>
+          <CalendarDialog
+            selectedDate={selectedDay}
+            dailyDietInfo={dailyDietInfo}
+            closeDialog={() => setIsOpen(false)}
+            setDailyDiet={() => {
+              setDailyDiet(undefined);
+            }}
+          />
+        </Dialog>
       </div>
     </div>
   );

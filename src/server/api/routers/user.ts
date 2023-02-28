@@ -100,7 +100,7 @@ export const userRouter = createTRPCRouter({
       try {
         return ctx.prisma.userDailyDiet.findUnique({
           where: {
-            user_id_date_recipe_id: {
+            user_id_recipe_id_date: {
               date: input.date,
               recipe_id: input.recipe_id,
               user_id: ctx.session.user.id,

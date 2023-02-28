@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "../ui/Button";
 import {
+  Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -27,10 +28,12 @@ type CalendarDialogProps = {
     user_id: string;
     meal_type: MealTypes;
   };
+  closeDialog: () => void;
 };
 
 export const CalendarUpdateDialog: React.FC<CalendarDialogProps> = ({
   dailyDietInfo,
+  closeDialog,
 }) => {
   const updateDiet = api.user.updateUserDailyDiet.useMutation();
 
@@ -95,7 +98,6 @@ export const CalendarUpdateDialog: React.FC<CalendarDialogProps> = ({
           <Button type="submit">Save</Button>
         </Form>
       </DialogHeader>
-      <DialogFooter></DialogFooter>
     </DialogContent>
   );
 };
