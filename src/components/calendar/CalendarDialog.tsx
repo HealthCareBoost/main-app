@@ -42,6 +42,7 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
 }) => {
   const saveDiet = api.user.saveUserDailyDiet.useMutation();
   const updateDiet = api.user.updateUserDailyDiet.useMutation();
+  const deleteMutation = api.user.deleteDiet.useMutation();
 
   const form = useZodForm({
     schema: z.object({
@@ -97,6 +98,24 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
     closeDialog();
   };
 
+  const onDeleteClick = async () => {
+    console.log("delete");
+    if (
+      dailyDietInfo !== undefined &&
+      dailyDietInfo.recipe_id &&
+      dailyDietInfo.date
+    ) {
+      await deleteMutation.mutateAsync({
+        date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
+        meal_type: dailyDietInfo.meal_type,
+        recipe_id: dailyDietInfo.recipe_id,
+      });
+    }
+    setDailyDiet();
+    onUpdate();
+    closeDialog();
+  };
+
   return (
     <DialogContent forceMount={true} className="sm:max-w-[425px]">
       <DialogHeader>
@@ -135,7 +154,11 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
           <Button type="submit">Save</Button>
         </Form>
       </DialogHeader>
-      <DialogFooter></DialogFooter>
+      <DialogFooter>
+        {dailyDietInfo !== undefined && (
+          <Button onClick={onDeleteClick}>Delete</Button>
+        )}
+      </DialogFooter>
     </DialogContent>
   );
 };

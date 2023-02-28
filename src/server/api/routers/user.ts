@@ -162,4 +162,34 @@ export const userRouter = createTRPCRouter({
         return { success: false };
       }
     }),
+
+  deleteDiet: protectedProcedure
+    .input(
+      z.object({
+        date: z.date({
+          required_error: "Please select a date and time",
+          invalid_type_error: "That's not a date!",
+        }),
+        recipe_id: z.string(),
+        meal_type: z.nativeEnum(MealTypes),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const res = await ctx.prisma.userDailyDiet.delete({
+          where: {
+            user_id_recipe_id_date: {
+              user_id: ctx.session.user.id,
+              recipe_id: input.recipe_id,
+              date: input.date,
+            },
+          },
+        });
+        console.log(res);
+        return { success: true };
+      } catch (error) {
+        console.error(error);
+        return { success: false };
+      }
+    }),
 });
