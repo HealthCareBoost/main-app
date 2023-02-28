@@ -30,6 +30,7 @@ type CalendarDialogProps = {
   };
   closeDialog: () => void;
   setDailyDiet: () => void;
+  onUpdate: () => void;
 };
 
 export const CalendarDialog: React.FC<CalendarDialogProps> = ({
@@ -37,23 +38,32 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
   dailyDietInfo,
   closeDialog,
   setDailyDiet,
+  onUpdate,
 }) => {
   const saveDiet = api.user.saveUserDailyDiet.useMutation();
   const updateDiet = api.user.updateUserDailyDiet.useMutation();
 
-  console.log("in tri");
-  console.log(dailyDietInfo);
   const form = useZodForm({
     schema: z.object({
       recipe_name: z.string(),
       meal_type: z.nativeEnum(MealTypes),
     }),
+    defaultValues: {
+      meal_type:
+        dailyDietInfo !== undefined ? dailyDietInfo.meal_type : "BREAKFAST",
+      recipe_name: dailyDietInfo !== undefined ? dailyDietInfo.recipe.name : "",
+    },
   });
 
   useEffect(() => {
-    console.log("***** daily data *****");
-    console.log(dailyDietInfo);
-  }, [dailyDietInfo]);
+    if (dailyDietInfo !== undefined) {
+      form.setValue("meal_type", dailyDietInfo.meal_type);
+      form.setValue("recipe_name", dailyDietInfo.recipe.name);
+    } else {
+      form.setValue("meal_type", MealTypes.BREAKFAST);
+      form.setValue("recipe_name", "");
+    }
+  }, [dailyDietInfo, form]);
 
   const onFormSubmit = async (data: {
     meal_type: "BREAKFAST" | "DINNER" | "LUNCH" | "SNACK";
@@ -63,25 +73,32 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
     console.log(data);
     console.log("***** daily data *****");
     console.log(dailyDietInfo);
-
-    // await saveDiet.mutateAsync({
-    //   date: removeTimezoneOffset(new Date(selectedDate.toDateString())),
-    //   meal_type: data.meal_type,
-    //   recipe_id: "cleftij6j0001uyk0uvp5g4xk",
-    // });
-
-    // await updateDiet.mutateAsync({
-    //   date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
-    //   meal_type: data.meal_type,
-    //   previous_recipe_id: "cleftij6j0001uyk0uvp5g4xk",
-    //   //   new_recipe_id: "cleftij6j0001uyk0uvp5g4xk",
-    // });
+    console.log("***** data *****");
+    if (
+      dailyDietInfo !== undefined &&
+      dailyDietInfo.recipe_id &&
+      dailyDietInfo.date
+    ) {
+      await updateDiet.mutateAsync({
+        date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
+        meal_type: data.meal_type,
+        previous_recipe_id: dailyDietInfo.recipe_id,
+        //   new_recipe_id: "cleftij6j0001uyk0uvp5g4xk",
+      });
+    } else {
+      await saveDiet.mutateAsync({
+        date: removeTimezoneOffset(new Date(selectedDate.toDateString())),
+        meal_type: data.meal_type,
+        recipe_id: "cleftij6j0001uyk0uvp5g4xk",
+      });
+    }
     setDailyDiet();
+    onUpdate();
     closeDialog();
   };
 
   return (
-    <DialogContent className="sm:max-w-[425px]">
+    <DialogContent forceMount={true} className="sm:max-w-[425px]">
       <DialogHeader>
         <DialogTitle>{format(selectedDate, "eeee, dd MMMM")}</DialogTitle>
         <DialogDescription>
@@ -90,8 +107,8 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
         <Form form={form} onSubmit={onFormSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
+              {/* <>{dailyDietInfo ? dailyDietInfo.recipe.name : "no name"}</> */}
               <Input
-                defaultValue={dailyDietInfo ? dailyDietInfo.recipe.name : ""}
                 type="text"
                 label="Recipe"
                 className="col-span-3"
@@ -100,13 +117,11 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
               ></Input>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
+              {/* <>{dailyDietInfo ? dailyDietInfo.meal_type : "no meal_typx"}</> */}
               <Select
                 className="col-span-3"
                 label="For"
                 required
-                defaultValue={
-                  dailyDietInfo ? dailyDietInfo.meal_type : MealTypes.BREAKFAST
-                }
                 {...form.register("meal_type")}
               >
                 {Object.entries(MealTypes).map(([key, value]) => (

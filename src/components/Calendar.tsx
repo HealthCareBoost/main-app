@@ -38,7 +38,7 @@ export const Calendar: React.FC = () => {
     undefined
   );
 
-  const { data } = api.user.getUserWeeklyDiet.useQuery({
+  const { data, refetch } = api.user.getUserWeeklyDiet.useQuery({
     from: removeTimezoneOffset(
       new Date(daysOfWeek[0] !== undefined ? daysOfWeek[0] : currentDate)
     ),
@@ -209,13 +209,13 @@ export const Calendar: React.FC = () => {
                           key={`${day}${idx}`}
                           onClick={() => {
                             // console.log(day);
-                            // setDailyDiet(undefined);
+                            setDailyDiet(undefined);
                             setSelectedDay(new Date(day));
                             setIsOpen(true);
                           }}
                           className="
                           lg:w-30 md:w-30 ease
-                          h-40 w-10 cursor-pointer overflow-auto border-2 border border-solid border-indigo-600 p-1 transition duration-500 hover:bg-gray-300 sm:w-20 xl:w-40"
+                          h-40 w-10 cursor-pointer overflow-auto border-2 border-solid p-1 transition duration-500 hover:bg-gray-300 sm:w-20 xl:w-40"
                         >
                           {data.map((dailyDietInfo) => {
                             let returnBody;
@@ -236,7 +236,7 @@ export const Calendar: React.FC = () => {
                               returnBody = (
                                 <div
                                   key={`${dailyDietInfo.meal_type}${idx}`}
-                                  className=" lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden border-2 border-solid border-red-600 sm:w-full xl:w-40"
+                                  className=" lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden border-solid sm:w-full xl:w-40"
                                 >
                                   <div
                                     className="
@@ -245,8 +245,8 @@ export const Calendar: React.FC = () => {
                                     onClick={(e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
-                                      console.log("open");
-                                      console.log(dailyDietInfo);
+                                      // console.log("open");
+                                      // console.log(dailyDietInfo);
                                       setDailyDiet(dailyDietInfo);
                                       setIsOpen(true);
                                     }}
@@ -290,12 +290,16 @@ export const Calendar: React.FC = () => {
               </tr>
             </tbody>
           </table>
+
           <CalendarDialog
-            selectedDate={selectedDay}
             dailyDietInfo={dailyDietInfo}
+            selectedDate={selectedDay}
             closeDialog={() => setIsOpen(false)}
             setDailyDiet={() => {
               setDailyDiet(undefined);
+            }}
+            onUpdate={async () => {
+              await refetch();
             }}
           />
         </Dialog>
