@@ -50,14 +50,68 @@ export const categoryRouter = createTRPCRouter({
         console.log(dataToSave);
 
         await ctx.prisma.recipeCategory.createMany({
-          data: { ...dataToSave },
+          data: [...dataToSave],
         });
+        return { success: true };
       } catch (error) {
         console.error(error);
+        return { success: false };
       }
     }),
 
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
+  removeFromRecipe: protectedProcedure
+    .input(
+      z.object({
+        recipe_id: z.string(),
+        category_ids: z.coerce.number().array(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const user_id = ctx.session.user.id;
+        const recipe = await ctx.prisma.recipe.findFirstOrThrow({
+          where: {
+            AND: [
+              {
+                id: input.recipe_id,
+              },
+              {
+                creator_id: user_id,
+              },
+            ],
+          },
+          include: {
+            categories: true,
+          },
+        });
+
+        console.log(recipe);
+        console.log(recipe.categories);
+
+        if (recipe.categories.length === 0) {
+          throw new Error("Recipe does not have categories");
+        }
+
+        if (input.category_ids.length > 0) {
+          await ctx.prisma.recipeCategory.deleteMany({
+            where: {
+              AND: [
+                {
+                  recipe_id: input.recipe_id,
+                },
+                {
+                  category_id: {
+                    in: input.category_ids,
+                  },
+                },
+              ],
+            },
+          });
+        }
+        return { success: true };
+      } catch (error) {
+        console.error(error);
+        return { success: false };
+      }
+    }),
 });
