@@ -21,7 +21,7 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["flowbite.com"],
+    domains: ["flowbite.com", "tailwindui.com", "mysaffronappgc.imgix.net"],
     remotePatterns: [
       {
         protocol: "https",

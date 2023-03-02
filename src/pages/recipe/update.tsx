@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { type NextPage } from "next";
 
 import { Button } from "../../components/ui/SubmitButton";
@@ -24,11 +24,20 @@ import { Footer } from "../../components/Footer";
 
 const UpdateRecipe: NextPage = () => {
   const { data, isLoading } = api.category.getAll.useQuery();
+  // const addCateg = api.category.addToRecipe.useMutation();
+  // const removeCat = api.category.removeFromRecipe.useMutation();
   // const setCat = api.category.setAll.useMutation();
 
-  // useEffect(() => {
-  //   setCat.mutate();
-  // }, []);
+  useEffect(() => {
+    // addCateg.mutate({
+    //   category_ids: [4, 5, 6, 7, 8, 9],
+    //   recipe_id: "cleftij6j0001uyk0uvp5g4xk",
+    // });
+    // removeCat.mutate({
+    //   category_ids: [4, 5],
+    //   recipe_id: "cleftij6j0001uyk0uvp5g4xk",
+    // });
+  }, []);
 
   const [selectedCategoryIds, setCategoryIds] = useState<number[]>([]);
 
