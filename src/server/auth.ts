@@ -6,6 +6,7 @@ import {
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
+import EmailProvider from "next-auth/providers/email";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../env.mjs";
 import { prisma } from "./db";
@@ -48,6 +49,9 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  pages: {
+    signIn: "/register",
+  },
   adapter: PrismaAdapter(prisma),
   providers: [
     DiscordProvider({
@@ -60,6 +64,11 @@ export const authOptions: NextAuthOptions = {
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
+    EmailProvider({
+      from: env.EMAIL_USER,
+      server: env.EMAIL_SERVER,
+    }),
+
     /**
      * ...add more providers here
      *
