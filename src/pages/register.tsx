@@ -51,25 +51,12 @@ const Register = ({
         </TabsTrigger>
       </TabsList>
       <TabsContent value="signin">
-        {/* <LoginForm /> */}
         {error ? (
           <SignInError
             error={error && typeof error === "string" ? error : error[0]}
           />
         ) : null}
-        <form method="post" action="/api/auth/signin/email">
-          <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-          <label>
-            Name
-            <input type="text" id="name" name="name" />
-          </label>
-          <label>
-            Email address
-            <input type="text" id="email" name="email" />
-          </label>
-          <button type="submit">Use your Email</button>
-        </form>
-
+        <LoginForm csrfToken={csrfToken} />
         <div className="flex w-full items-center justify-center">
           <Separator className="w-1/4 px-2" />
           <span className="mx-2 my-6 text-center">Or continue with</span>
@@ -103,7 +90,7 @@ const Register = ({
         {/* <p className="text-sm text-slate-500 dark:text-slate-400">
           Change your password here. After saving, you&apos;ll be logged out.
         </p> */}
-        <RegisterForm />
+        <RegisterForm csrfToken={csrfToken} />
       </TabsContent>
     </Tabs>
   );

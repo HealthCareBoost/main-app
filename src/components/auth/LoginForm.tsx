@@ -5,24 +5,43 @@ import { useZodForm } from "../../utils/useZodFormHook";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/FormInput";
 import { Form } from "../ui/FormProvider";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
-export const LoginForm: React.FC = () => {
-  const { data: session } = useSession();
+export const LoginForm: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
   const form = useZodForm({
     schema: z.object({
+      csrfToken: z.string(),
       email: z.string().email({ message: "Not a valid email" }),
     }),
+    defaultValues: {
+      csrfToken,
+    },
   });
 
+  {
+    /* <form method="post" action="/api/auth/signin/email">
+          <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+          <label>
+            Email address
+            <input type="text" id="email" name="email" />
+          </label>
+          <button type="submit">Use your Email</button>
+        </form> */
+  }
   return (
     <Form
       onSubmit={async (data) => {
-        await signIn("email");
         console.log(data);
+        await signIn("email", { email: data.email });
       }}
       form={form}
     >
+      <Input
+        label="csrf"
+        hidden
+        type="hidden"
+        {...form.register("csrfToken")}
+      />
       <Input label="Email" type="email" required {...form.register("email")} />
       <Button
         type="submit"
@@ -35,7 +54,6 @@ export const LoginForm: React.FC = () => {
           />
         </span>
         Sign In
-        {/* {session ? JSON.stringify(session.user) : "Sign in"} */}
       </Button>
     </Form>
   );
