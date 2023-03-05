@@ -1,13 +1,15 @@
 import { LockClosedIcon } from "@heroicons/react/20/solid";
-import { useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import React from "react";
 import { z } from "zod";
+import { api } from "../../utils/api";
 import { useZodForm } from "../../utils/useZodFormHook";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/FormInput";
 import { Form } from "../ui/FormProvider";
 
 export const RegisterForm: React.FC = () => {
+  const saveName = api.user.saveName.useMutation();
   const form = useZodForm({
     schema: z.object({
       name: z.string(),
@@ -18,8 +20,25 @@ export const RegisterForm: React.FC = () => {
   return (
     <Form
       onSubmit={async (data) => {
-        // await signIn("email");
         console.log(data);
+        saveName.mutate({
+          name: data.name,
+          email: data.email,
+        });
+        const res = await signIn(
+          "credentials",
+          {
+            email: data.email,
+            name: data.name,
+            redirect: false,
+            credentials: {
+              name: data.name,
+              email: data.email,
+            },
+          },
+          { name: data.name }
+        );
+        console.log(res);
       }}
       form={form}
     >

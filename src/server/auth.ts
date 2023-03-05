@@ -7,9 +7,11 @@ import {
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../env.mjs";
 import { prisma } from "./db";
+import { signIn } from "next-auth/react";
 
 /**
  * Module augmentation for `next-auth` types.
@@ -42,11 +44,39 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session({ session, user }) {
+      // console.log("session user");
+      // console.log(session.user);
+      // console.log(user);
+
       if (session.user) {
         session.user.id = user.id;
         // session.user.role = user.role; <-- put other properties on the session here
       }
       return session;
+    },
+    signIn({ user, account, profile, email, credentials }) {
+      try {
+        console.log("sign in callback");
+        console.log(user);
+        console.log(account);
+        console.log(profile);
+        console.log(email);
+        console.log(credentials);
+        // if (email === undefined && user && user.email) {
+        //   console.log("test");
+        //   const caller = userRouter.createCaller({
+        //     prisma: prisma,
+        //     session: null,
+        //   });
+        //   const res = await caller.mapUserToName({ email: user.email });
+        //   console.log(res);
+        // }
+        return true;
+      } catch (error) {
+        console.error("sign in error");
+        console.error(error);
+        throw error;
+      }
     },
   },
   pages: {
@@ -68,6 +98,24 @@ export const authOptions: NextAuthOptions = {
       from: env.EMAIL_USER,
       server: env.EMAIL_SERVER,
     }),
+    // CredentialsProvider({
+    //   id: "domain-login",
+    //   name: "Domain Account",
+    //   async authorize(credentials, req) {
+    //     console.log(credentials);
+    //     if (credentials !== undefined) {
+    //       await signIn("email", {
+    //         email: credentials.email,
+    //         name: credentials.name,
+    //       });
+    //     }
+    //     return { id: "" };
+    //   },
+    //   credentials: {
+    //     name: { label: "Name", type: "text ", placeholder: "John Doe" },
+    //     email: { label: "Email", type: "email", placeholder: "john@gmail.com" },
+    //   },
+    // }),
 
     /**
      * ...add more providers here

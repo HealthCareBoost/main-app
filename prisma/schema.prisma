@@ -65,6 +65,12 @@ model User {
     is_deleted    Boolean   @default(false)
 }
 
+model NameEmailMap {
+    id                      Int  @id @default(autoincrement())
+    name                    String
+    email                   String   @unique
+}
+
 model VerificationToken {
     identifier      String
     token           String  @unique

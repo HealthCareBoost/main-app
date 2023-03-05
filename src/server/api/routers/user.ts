@@ -192,4 +192,63 @@ export const userRouter = createTRPCRouter({
         return { success: false };
       }
     }),
+
+  saveName: publicProcedure
+    .input(
+      z.object({
+        name: z.string().min(1),
+        email: z.string().email(),
+      })
+    )
+    .mutation(({ input, ctx }) => {
+      return ctx.prisma.nameEmailMap.create({
+        data: {
+          name: input.name,
+          email: input.email,
+        },
+      });
+    }),
+
+  mapUserToName: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const result = await ctx.prisma.nameEmailMap.findUnique({
+        where: {
+          email: input.email,
+        },
+      });
+
+      const user = await ctx.prisma.user.findUnique({
+        where: {
+          email: input.email,
+        },
+      });
+
+      // user is not saved
+      // if(user === null)
+
+      if (result && result.email && result.name && user) {
+        await ctx.prisma.user.update({
+          where: {
+            email: input.email,
+          },
+          data: {
+            name: result.name,
+          },
+        });
+
+        await ctx.prisma.nameEmailMap.delete({
+          where: {
+            email: input.email,
+          },
+        });
+        return { success: true };
+      } else {
+        return { success: false };
+      }
+    }),
 });

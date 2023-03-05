@@ -37,10 +37,8 @@ const Register = ({
   providers: AppProps;
   csrfToken: string;
 }) => {
-  const { data: sessionData } = useSession();
   const { error } = useRouter().query;
-  console.log("err");
-  console.log(error);
+  // console.log(error);
 
   return (
     <Tabs defaultValue="signin" className="w-[400px]">
@@ -131,9 +129,9 @@ export const getServerSideProps: GetServerSideProps = async (
     const providers = await getProviders();
     const csrfToken = await getCsrfToken(context);
 
-    console.log(providers);
-    console.log(session);
-    console.log(csrfToken);
+    // console.log(providers);
+    // console.log(session);
+    // console.log(csrfToken);
 
     return {
       props: { providers, session, csrfToken },
