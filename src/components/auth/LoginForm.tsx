@@ -43,6 +43,12 @@ export const LoginForm: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
         {...form.register("csrfToken")}
       />
       <Input label="Email" type="email" required {...form.register("email")} />
+
+      {/* <div className="flex items-center">
+        <label htmlFor="remember">Remember me</label>
+        <input type={"checkbox"} id="remember" name="remember" />
+      </div> */}
+
       <Button
         type="submit"
         className="group relative mt-4 flex w-full justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

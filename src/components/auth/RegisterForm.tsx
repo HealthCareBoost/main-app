@@ -27,20 +27,19 @@ export const RegisterForm: React.FC<{ csrfToken: string }> = ({
     <Form
       onSubmit={async (data) => {
         console.log(data);
-        saveName.mutate({
+        await saveName.mutateAsync({
           name: data.name,
           email: data.email,
         });
-        const res = await signIn("credentials", {
+        await signIn("email", {
           email: data.email,
           // name: data.name,
-          redirect: false,
+          // redirect: false,
           // credentials: {
           // name: data.name,
           // email: data.email,
           // },
         });
-        console.log(res);
       }}
       form={form}
     >

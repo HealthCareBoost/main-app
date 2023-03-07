@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { type NextPage } from "next";
 
-import { Button } from "../../components/ui/SubmitButton";
+import { Button } from "../../../components/ui/SubmitButton";
 import {
   Dialog,
   DialogContent,
@@ -10,12 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../components/ui/Dialog";
+} from "../../../components/ui/Dialog";
 
-import { api } from "../../utils/api";
+import { api } from "../../../utils/api";
 import Image from "next/image";
-import { CldImage, CldUploadWidget, CldUploadButton } from "next-cloudinary";
-import { Footer } from "../../components/Footer";
+import { CldImage } from "next-cloudinary";
+import { Footer } from "../../../components/Footer";
 
 // !!! ********** !!!
 // just for testing functionality

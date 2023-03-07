@@ -6,21 +6,17 @@ import {
 } from "../components/ui/Tabs";
 import React from "react";
 import { type AppProps } from "next/app";
-import {
-  signIn,
-  signOut,
-  getProviders,
-  useSession,
-  getCsrfToken,
-} from "next-auth/react";
+import { signIn, getProviders, getCsrfToken } from "next-auth/react";
 
-import type { GetServerSideProps, GetServerSidePropsContext } from "next";
+import type { GetServerSidePropsContext } from "next";
 import { LoginForm } from "../components/auth/LoginForm";
 import { Separator } from "../components/ui/Separator";
 import { getServerAuthSession } from "../server/auth";
 import { useRouter } from "next/router";
 import { SignInError } from "../components/AuthError";
 import { RegisterForm } from "../components/auth/RegisterForm";
+import { GoogleIcon } from "../components/ui/GoogleIcon";
+import { DiscordIcon } from "../components/ui/DiscordIcon";
 
 type ProviderParams = {
   callbackUrl: string;
@@ -53,7 +49,7 @@ const Register = ({
       <TabsContent value="signin">
         {error ? (
           <SignInError
-            error={error && typeof error === "string" ? error : error[0]}
+            error={error && typeof error === "string" ? error : "Error"}
           />
         ) : null}
         <LoginForm csrfToken={csrfToken} />
@@ -78,8 +74,14 @@ const Register = ({
                   });
                 }}
                 type="submit"
-                className="group relative m-2 flex w-full justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="group relative m-2 flex w-full items-center justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
+                {provider.name === "Google" && (
+                  <GoogleIcon className={"h-5 w-5"} />
+                )}
+                {provider.name === "Discord" && (
+                  <DiscordIcon className={"h-5 w-5"} />
+                )}
                 Sign in with {provider.name}
               </button>
             );
@@ -96,33 +98,29 @@ const Register = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (
-  context: GetServerSidePropsContext
-) =>
-  //
-  {
-    const session = await getServerAuthSession(context);
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(context);
 
-    // If the user is already logged in, redirect.
-    // Note: Make sure not to redirect to the same page
-    // To avoid an infinite loop!
+  // If the user is already logged in, redirect.
+  // Note: Make sure not to redirect to the same page
+  // To avoid an infinite loop!
 
-    if (session && session.user) {
-      console.log("session");
-      console.log(session);
-      return { redirect: { destination: "/" } };
-    }
+  if (session && session.user) {
+    console.log("session");
+    console.log(session);
+    return { redirect: { destination: "/" } };
+  }
 
-    const providers = await getProviders();
-    const csrfToken = await getCsrfToken(context);
+  const providers = await getProviders();
+  const csrfToken = await getCsrfToken(context);
 
-    // console.log(providers);
-    // console.log(session);
-    // console.log(csrfToken);
+  // console.log(providers);
+  // console.log(session);
+  // console.log(csrfToken);
 
-    return {
-      props: { providers, session, csrfToken },
-    };
+  return {
+    props: { providers, session, csrfToken },
   };
+}
 
 export default Register;

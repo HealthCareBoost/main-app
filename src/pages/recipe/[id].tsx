@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 const ViewRecipe: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const a = api.recipe.getRecipeByID.useQuery({ id });
   return (
     <>
       <Header />

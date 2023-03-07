@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import type { ComponentProps } from "react";
 import type {
   FieldValues,

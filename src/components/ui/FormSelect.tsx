@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react";
+import type { ComponentProps, LegacyRef } from "react";
 import { forwardRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { Label } from "./Label";
@@ -16,7 +16,11 @@ export const Select = forwardRef<HTMLInputElement, Props>((props, ref) => {
   return (
     <div>
       <Label htmlFor={props.name}>{props.label}</Label>
-      <select {...props} id={props.name} ref={ref} />
+      <select
+        {...props}
+        id={props.name}
+        ref={ref as LegacyRef<HTMLSelectElement>}
+      />
       {state.error && (
         <p className="text-sm font-medium text-red-600">
           {state.error.message}

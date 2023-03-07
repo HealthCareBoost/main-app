@@ -24,8 +24,8 @@ export const CloudinaryUploadButton: React.FC<UploadButtonProps> = ({
       uploadPreset="unsigned-uploads"
       onUpload={function (
         error: Error,
-        result: CloudinaryUploadResponse,
-        widget
+        result: CloudinaryUploadResponse
+        // widget
       ) {
         if (error) {
           alert(error.message);
