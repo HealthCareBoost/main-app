@@ -268,4 +268,63 @@ export const userRouter = createTRPCRouter({
         return { success: false };
       }
     }),
+
+  saveUserPreferences: protectedProcedure
+    .input(
+      z.object({
+        recipe_id: z.string().min(1),
+        saved: z.boolean().optional(),
+        made: z.boolean().optional(),
+        liked: z.boolean().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const recipe = await ctx.prisma.recipe.findUniqueOrThrow({
+          where: {
+            id: input.recipe_id,
+          },
+        });
+
+        const user_id = ctx.session.user.id;
+
+        const filedsToSave: {
+          saved?: boolean;
+          liked?: boolean;
+          made?: boolean;
+        } = {};
+
+        if (input.saved !== undefined) {
+          filedsToSave.saved = input.saved;
+        }
+        if (input.liked !== undefined) {
+          filedsToSave.liked = input.liked;
+        }
+        if (input.made !== undefined) {
+          filedsToSave.made = input.made;
+        }
+
+        await ctx.prisma.userPreferences.upsert({
+          where: {
+            user_id_recipe_id: {
+              user_id,
+              recipe_id: recipe.id,
+            },
+          },
+          update: {
+            ...filedsToSave,
+          },
+          create: {
+            user_id,
+            recipe_id: recipe.id,
+            saved: input.saved !== undefined ? input.saved : false,
+            liked: input.liked !== undefined ? input.liked : false,
+            made: input.made !== undefined ? input.made : false,
+          },
+        });
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
+    }),
 });

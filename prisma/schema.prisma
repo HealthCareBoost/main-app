@@ -11,7 +11,7 @@ datasource db {
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+    url          = env("DATABASE_URL")
     relationMode = "prisma"
 
 }
@@ -51,10 +51,6 @@ model User {
     name          String?
     email         String?   @unique
     emailVerified DateTime?
-    // Password ?
-    // User Recipes
-    // Favorite (Boolean)
-    // Made (Boolean)
     image         String?
     accounts      Account[]
     sessions      Session[]
@@ -167,7 +163,7 @@ model Nutrients {
 }
 
 
-model  RecipeIngredient {
+model RecipeIngredient {
     recipe_id       String
     ingredient_id   Int
     quantity        Float    
@@ -198,7 +194,8 @@ model UserPreferences {
     user_id         String
     recipe_id       String
     made            Boolean
-    favorite        Boolean
+    liked           Boolean
+    saved           Boolean
     createdAt       DateTime  @default(now())
     updatedAt       DateTime  @default(now())
     @@unique([user_id, recipe_id])
@@ -218,8 +215,17 @@ model UserDailyDiet {
     @@index([user_id])
 }
 
+// Not sure about that
+// model Cookbook {
+//     user_id       String
+//     recipe_id     String
+//     recipe        Recipe    @relation(fields: [recipe_id], references: [id])
+//     user          User      @relation(fields: [user_id], references: [id])
+//     @@id([user_id, recipe_id, date])
+// }
+
 enum TimeUnits {
-  seconds
+  seconds // ?? its not realy necessary
   minutes 
   hours
 }
