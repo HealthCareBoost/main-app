@@ -8,40 +8,47 @@ import { Button } from "../ui/Button";
 import { Input } from "../ui/FormInput";
 import { Form } from "../ui/FormProvider";
 
-export const RegisterForm: React.FC = () => {
+export const RegisterForm: React.FC<{ csrfToken: string }> = ({
+  csrfToken,
+}) => {
   const saveName = api.user.saveName.useMutation();
   const form = useZodForm({
     schema: z.object({
       name: z.string(),
+      csrfToken: z.string(),
       email: z.string().email({ message: "Not a valid email" }),
     }),
+    defaultValues: {
+      csrfToken,
+    },
   });
 
   return (
     <Form
       onSubmit={async (data) => {
         console.log(data);
-        saveName.mutate({
+        await saveName.mutateAsync({
           name: data.name,
           email: data.email,
         });
-        const res = await signIn(
-          "credentials",
-          {
-            email: data.email,
-            name: data.name,
-            redirect: false,
-            credentials: {
-              name: data.name,
-              email: data.email,
-            },
-          },
-          { name: data.name }
-        );
-        console.log(res);
+        await signIn("email", {
+          email: data.email,
+          // name: data.name,
+          // redirect: false,
+          // credentials: {
+          // name: data.name,
+          // email: data.email,
+          // },
+        });
       }}
       form={form}
     >
+      <Input
+        label="csrf"
+        hidden
+        type="hidden"
+        {...form.register("csrfToken")}
+      />
       <Input label="Name" type="text" required {...form.register("name")} />
       <Input label="Email" type="email" required {...form.register("email")} />
       <Button

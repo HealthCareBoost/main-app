@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Button } from "../ui/Button";
 import {
   DialogContent,
@@ -16,30 +16,17 @@ import { z } from "zod";
 import format from "date-fns/format";
 import { api } from "../../utils/api";
 import { removeTimezoneOffset } from "../../utils/formatTimezone";
+import { CalendarContext } from "./CalendarContext";
 
-type CalendarDialogProps = {
-  selectedDate: Date;
-  dailyDietInfo?: {
-    date: Date;
-    recipe_id: string;
-    recipe: {
-      name: string;
-    };
-    user_id: string;
-    meal_type: MealTypes;
-  };
-  closeDialog: () => void;
-  setDailyDiet: () => void;
-  onUpdate: () => void;
-};
+export const CalendarDialog: React.FC = () => {
+  const {
+    closeDialog,
+    onDietUpdate,
+    selectedDay,
+    dailyDietInfo,
+    setDailyDiet,
+  } = useContext(CalendarContext);
 
-export const CalendarDialog: React.FC<CalendarDialogProps> = ({
-  selectedDate,
-  dailyDietInfo,
-  closeDialog,
-  setDailyDiet,
-  onUpdate,
-}) => {
   const saveDiet = api.user.saveUserDailyDiet.useMutation();
   const updateDiet = api.user.updateUserDailyDiet.useMutation();
   const deleteMutation = api.user.deleteDiet.useMutation();
@@ -88,13 +75,13 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
       });
     } else {
       await saveDiet.mutateAsync({
-        date: removeTimezoneOffset(new Date(selectedDate.toDateString())),
+        date: removeTimezoneOffset(new Date(selectedDay.toDateString())),
         meal_type: data.meal_type,
         recipe_id: "cleftij6j0001uyk0uvp5g4xk",
       });
     }
-    setDailyDiet();
-    onUpdate();
+    setDailyDiet(undefined);
+    onDietUpdate();
     closeDialog();
   };
 
@@ -111,15 +98,15 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
         recipe_id: dailyDietInfo.recipe_id,
       });
     }
-    setDailyDiet();
-    onUpdate();
+    setDailyDiet(undefined);
+    onDietUpdate();
     closeDialog();
   };
 
   return (
     <DialogContent forceMount={true} className="sm:max-w-[425px]">
       <DialogHeader>
-        <DialogTitle>{format(selectedDate, "eeee, dd MMMM")}</DialogTitle>
+        <DialogTitle>{format(selectedDay, "eeee, dd MMMM")}</DialogTitle>
         <DialogDescription>
           Add daily meal and click save when you&apos;re done.
         </DialogDescription>
@@ -156,7 +143,7 @@ export const CalendarDialog: React.FC<CalendarDialogProps> = ({
       </DialogHeader>
       <DialogFooter>
         {dailyDietInfo !== undefined && (
-          <Button onClick={onDeleteClick}>Delete</Button>
+          <Button onClick={() => void onDeleteClick()}>Delete</Button>
         )}
       </DialogFooter>
     </DialogContent>

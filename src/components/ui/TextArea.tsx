@@ -30,7 +30,7 @@ export const Textarea = forwardRef<HTMLInputElement, Props>((props, ref) => {
         )}
         {...props}
         id={props.name}
-        ref={ref}
+        ref={ref as React.LegacyRef<HTMLTextAreaElement>}
       />
       {state.error && (
         <p className="text-sm font-medium text-red-600">

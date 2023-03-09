@@ -16,6 +16,7 @@ export const ErrorMap = {
 };
 
 export const SignInError: React.FC<{ error: string }> = ({ error }) => {
-  const errorMessage = error && (ErrorMap[error] ?? ErrorMap.default);
+  const errorMessage =
+    error && (ErrorMap[error as keyof typeof ErrorMap] ?? ErrorMap.default);
   return <div>{errorMessage}</div>;
 };

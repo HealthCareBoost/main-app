@@ -200,13 +200,28 @@ export const userRouter = createTRPCRouter({
         email: z.string().email(),
       })
     )
-    .mutation(({ input, ctx }) => {
-      return ctx.prisma.nameEmailMap.create({
-        data: {
-          name: input.name,
-          email: input.email,
-        },
-      });
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userResult = await ctx.prisma.user.findUnique({
+          where: {
+            email: input.email,
+          },
+        });
+
+        if (userResult && userResult.name === null) {
+          const nameEmailMap = await ctx.prisma.nameEmailMap.create({
+            data: {
+              name: input.name,
+              email: input.email,
+            },
+          });
+          return { success: true, nameEmailMap };
+        }
+        return { success: true };
+      } catch (error) {
+        console.error(error);
+        return { success: false };
+      }
     }),
 
   mapUserToName: publicProcedure
@@ -232,7 +247,7 @@ export const userRouter = createTRPCRouter({
       // if(user === null)
 
       if (result && result.email && result.name && user) {
-        await ctx.prisma.user.update({
+        const updateName = ctx.prisma.user.update({
           where: {
             email: input.email,
           },
@@ -241,14 +256,75 @@ export const userRouter = createTRPCRouter({
           },
         });
 
-        await ctx.prisma.nameEmailMap.delete({
+        const deleteUpdatedName = ctx.prisma.nameEmailMap.delete({
           where: {
             email: input.email,
           },
         });
-        return { success: true };
+
+        return ctx.prisma.$transaction([updateName, deleteUpdatedName]);
+        // return { success: true };
       } else {
         return { success: false };
+      }
+    }),
+
+  saveUserPreferences: protectedProcedure
+    .input(
+      z.object({
+        recipe_id: z.string().min(1),
+        saved: z.boolean().optional(),
+        made: z.boolean().optional(),
+        liked: z.boolean().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const recipe = await ctx.prisma.recipe.findUniqueOrThrow({
+          where: {
+            id: input.recipe_id,
+          },
+        });
+
+        const user_id = ctx.session.user.id;
+
+        const filedsToSave: {
+          saved?: boolean;
+          liked?: boolean;
+          made?: boolean;
+        } = {};
+
+        if (input.saved !== undefined) {
+          filedsToSave.saved = input.saved;
+        }
+        if (input.liked !== undefined) {
+          filedsToSave.liked = input.liked;
+        }
+        if (input.made !== undefined) {
+          filedsToSave.made = input.made;
+        }
+
+        await ctx.prisma.userPreferences.upsert({
+          where: {
+            user_id_recipe_id: {
+              user_id,
+              recipe_id: recipe.id,
+            },
+          },
+          update: {
+            ...filedsToSave,
+          },
+          create: {
+            user_id,
+            recipe_id: recipe.id,
+            saved: input.saved !== undefined ? input.saved : false,
+            liked: input.liked !== undefined ? input.liked : false,
+            made: input.made !== undefined ? input.made : false,
+          },
+        });
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
       }
     }),
 });

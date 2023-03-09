@@ -5,25 +5,50 @@ import { useZodForm } from "../../utils/useZodFormHook";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/FormInput";
 import { Form } from "../ui/FormProvider";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
-export const LoginForm: React.FC = () => {
-  const { data: session } = useSession();
+export const LoginForm: React.FC<{ csrfToken: string }> = ({ csrfToken }) => {
   const form = useZodForm({
     schema: z.object({
+      csrfToken: z.string(),
       email: z.string().email({ message: "Not a valid email" }),
     }),
+    defaultValues: {
+      csrfToken,
+    },
   });
 
+  {
+    /* <form method="post" action="/api/auth/signin/email">
+          <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+          <label>
+            Email address
+            <input type="text" id="email" name="email" />
+          </label>
+          <button type="submit">Use your Email</button>
+        </form> */
+  }
   return (
     <Form
       onSubmit={async (data) => {
-        await signIn("email");
         console.log(data);
+        await signIn("email", { email: data.email });
       }}
       form={form}
     >
+      <Input
+        label="csrf"
+        hidden
+        type="hidden"
+        {...form.register("csrfToken")}
+      />
       <Input label="Email" type="email" required {...form.register("email")} />
+
+      {/* <div className="flex items-center">
+        <label htmlFor="remember">Remember me</label>
+        <input type={"checkbox"} id="remember" name="remember" />
+      </div> */}
+
       <Button
         type="submit"
         className="group relative mt-4 flex w-full justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -35,7 +60,6 @@ export const LoginForm: React.FC = () => {
           />
         </span>
         Sign In
-        {/* {session ? JSON.stringify(session.user) : "Sign in"} */}
       </Button>
     </Form>
   );
