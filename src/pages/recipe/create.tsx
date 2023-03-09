@@ -161,7 +161,9 @@ const CreateRecipe: NextPage = () => {
               return (
                 <div key={item.id}>
                   <Controller
-                    name={`ingredients[${index}].ingredient_name`}
+                    name={
+                      `ingredients[${index}].ingredient_name` as `ingredients.${number}.ingredient_name`
+                    }
                     control={form.control}
                     render={({ field }) => {
                       return (
@@ -170,7 +172,9 @@ const CreateRecipe: NextPage = () => {
                     }}
                   />
                   <Controller
-                    name={`ingredients[${index}].quantity`}
+                    name={
+                      `ingredients[${index}].quantity` as `ingredients.${number}.quantity`
+                    }
                     control={form.control}
                     render={({ field }) => {
                       return (
@@ -183,7 +187,9 @@ const CreateRecipe: NextPage = () => {
                     }}
                   />
                   <Controller
-                    name={`ingredients[${index}].measurement_unit`}
+                    name={
+                      `ingredients[${index}].measurement_unit` as `ingredients.${number}.measurement_unit`
+                    }
                     control={form.control}
                     render={({ field }) => {
                       return (

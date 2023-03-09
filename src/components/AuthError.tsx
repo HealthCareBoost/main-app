@@ -13,7 +13,7 @@ export const ErrorMap = {
   CredentialsSignin:
     "Sign in failed. Check the details you provided are correct.",
   default: "Unable to sign in.",
-};
+} as const;
 
 export const SignInError: React.FC<{ error: string }> = ({ error }) => {
   const errorMessage =
