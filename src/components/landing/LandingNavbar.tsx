@@ -1,5 +1,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
+import { styles } from "../../styles/style";
+import ThemeButton from "../ui/ChangeThemeButton";
 
 export const LandingNavbar: React.FC = () => {
   const [toggle, setToggle] = useState<boolean>(false);
@@ -34,19 +36,21 @@ export const LandingNavbar: React.FC = () => {
       />
 
       <ul className="hidden flex-1 list-none items-center justify-end sm:flex">
-        {navLinks.map((nav, idx) => (
+        {navLinks.map((nav) => (
           <li
             key={`${nav.id}`}
-            className={`cursor-pointer font-poppins
-          text-[16px] font-normal text-white hover:text-orange-400
-          ${idx === navLinks.length - 1 ? "mr-0" : "mr-10"}`}
+            className={`mr-10 cursor-pointer
+          font-poppins text-[16px] font-normal text-white
+          hover:text-orange-400`}
           >
             <a href={`#${nav.id}`}>{nav.title}</a>
           </li>
         ))}
+        <ThemeButton styles="" />
       </ul>
 
       <div className="flex flex-1 items-center justify-end sm:hidden">
+        <ThemeButton styles={`${styles.marginX}`} />
         <Image
           src={toggle ? "assets/close.svg" : "assets/menu.svg"}
           alt="menu"

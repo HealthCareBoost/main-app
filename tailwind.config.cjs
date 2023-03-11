@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // darkMode: false, // "class", "media"
+  darkMode: "class", // false, "class", "media"
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     //   screens: {
@@ -32,8 +32,8 @@ module.exports = {
     //   },
     extend: {
       colors: {
-        primary: "#00040f",
-        secondary: "#00f6ff",
+        primaryDark: "#00040f",
+        secondaryBlue: "#00f6ff",
         dimWhite: "rgba(255, 255, 255, 0.7)",
         dimBlue: "rgba(9, 151, 124, 0.1)",
       },

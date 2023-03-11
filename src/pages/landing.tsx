@@ -14,20 +14,24 @@ import { LandingBilling } from "../components/landing/LandingBlling";
 const Landing: React.FC = () => {
   return (
     <>
-      <div className="w-full overflow-hidden bg-primary">
+      <div className="bg-amber-50-50 w-full overflow-hidden dark:bg-primaryDark">
         <div className={`${styles.paddingX} ${styles.flexCenter}`}>
           <div className={`${styles.boxWidth}`}>
             <LandingNavbar />
           </div>
         </div>
 
-        <div className={`bg-primary ${styles.flexStart}`}>
+        <div
+          className={`bg-amber-50-50 dark:bg-primaryDark ${styles.flexStart}`}
+        >
           <div className={`${styles.boxWidth}`}>
             <LandingHeroSection />
           </div>
         </div>
 
-        <div className={`bg-primary ${styles.paddingX} ${styles.flexStart}`}>
+        <div
+          className={`bg-amber-50-50 dark:bg-primaryDark ${styles.paddingX} ${styles.flexStart}`}
+        >
           <div className={`${styles.boxWidth}`}>
             <LandingStatsSection />
             <LandingBusinessSection />

@@ -42,7 +42,7 @@ export const LandingHeroSection: React.FC = () => {
               className={`${styles.flexCenter} bg-orange-gradient h-[140px] w-[140px] cursor-pointer rounded-full p-[2px]`}
             >
               <div
-                className={`${styles.flexCenter} h-full w-full flex-col rounded-full bg-primary`}
+                className={`${styles.flexCenter} h-full w-full flex-col rounded-full bg-primaryDark`}
               >
                 <div className={`${styles.flexStart} flex-row`}>
                   <p className="mr-2 font-poppins text-[18px] font-medium leading-[23px]">
@@ -98,7 +98,7 @@ export const LandingHeroSection: React.FC = () => {
           className={`${styles.flexCenter} bg-blue-gradient h-[140px] w-[140px] cursor-pointer rounded-full p-[2px]`}
         >
           <div
-            className={`${styles.flexCenter} h-full w-full flex-col rounded-full bg-primary`}
+            className={`${styles.flexCenter} h-full w-full flex-col rounded-full bg-primaryDark`}
           >
             <div className={`${styles.flexStart} flex-row`}>
               <p className="mr-2 font-poppins text-[18px] font-medium leading-[23px]">
