@@ -6,6 +6,10 @@ import { LandingNavbar } from "../components/landing/LandingNavbar";
 import { LandingHeroSection } from "../components/landing/LandingHero";
 import { LandingStatsSection } from "../components/landing/LandingStats";
 import { LandingBusinessSection } from "../components/landing/LandingBussinessSection";
+import { LandingCTA } from "../components/landing/LandingCTA";
+import { LandingFooter } from "../components/landing/LandingFooter";
+import { LandingFeedback } from "../components/landing/LandingFeedback";
+import { LandingBilling } from "../components/landing/LandingBlling";
 
 const Landing: React.FC = () => {
   return (
@@ -26,12 +30,11 @@ const Landing: React.FC = () => {
         <div className={`bg-primary ${styles.paddingX} ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
             <LandingStatsSection />
-          </div>
-        </div>
-
-        <div className={`bg-primary ${styles.paddingX} ${styles.flexStart}`}>
-          <div className={`${styles.boxWidth}`}>
             <LandingBusinessSection />
+            <LandingBilling />
+            <LandingFeedback />
+            <LandingCTA />
+            <LandingFooter />
           </div>
         </div>
       </div>
