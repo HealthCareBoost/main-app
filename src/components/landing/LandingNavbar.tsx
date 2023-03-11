@@ -38,7 +38,7 @@ export const LandingNavbar: React.FC = () => {
           <li
             key={`${nav.id}`}
             className={`cursor-pointer font-poppins
-          text-[16px] font-normal text-white 
+          text-[16px] font-normal text-white hover:text-orange-400
           ${idx === navLinks.length - 1 ? "mr-0" : "mr-10"}`}
           >
             <a href={`#${nav.id}`}>{nav.title}</a>
@@ -67,7 +67,7 @@ export const LandingNavbar: React.FC = () => {
               <li
                 key={`${nav.id}`}
                 className={`cursor-pointer font-poppins
-          text-[16px] font-normal text-white 
+          text-[16px] font-normal text-white hover:text-orange-400
           ${idx === navLinks.length - 1 ? "mb-0" : "mb-4"}`}
               >
                 <a href={`#${nav.id}`}>{nav.title}</a>

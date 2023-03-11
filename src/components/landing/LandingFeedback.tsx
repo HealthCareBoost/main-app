@@ -29,7 +29,7 @@ const FeedbackCard: React.FC<{
         className="h-[48px] w-[48px] rounded-full"
       />
       <div className="ml-4 flex flex-col">
-        <h4 className="font-poppins text-[20px] font-semibold leading-[32px] text-white">
+        <h4 className="font-poppins text-[20px] font-semibold leading-[32px] text-orange-400">
           {name}
         </h4>
         <p className="font-poppins text-[16px] font-normal leading-[24px] text-dimWhite">

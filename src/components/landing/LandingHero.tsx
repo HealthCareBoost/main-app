@@ -39,7 +39,7 @@ export const LandingHeroSection: React.FC = () => {
           <div className="mr-0 hidden ss:flex md:mr-4">
             {/* get started */}
             <div
-              className={`${styles.flexCenter} bg-blue-gradient h-[140px] w-[140px] cursor-pointer rounded-full p-[2px]`}
+              className={`${styles.flexCenter} bg-orange-gradient h-[140px] w-[140px] cursor-pointer rounded-full p-[2px]`}
             >
               <div
                 className={`${styles.flexCenter} h-full w-full flex-col rounded-full bg-primary`}

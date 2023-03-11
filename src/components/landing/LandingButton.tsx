@@ -7,7 +7,7 @@ export const LandingButton: React.FC<{
   return (
     <button
       type="button"
-      className={`bg-blue-gradient rounded-md py-4 px-6 text-[18px] font-medium text-primary outline-none ${
+      className={`bg-orange-gradient rounded-md py-4 px-6 text-[18px] font-medium text-primary outline-none ${
         styles ? styles : ""
       }`}
     >

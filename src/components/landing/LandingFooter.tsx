@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { styles } from "../../styles/style";
+import { SocialIcons } from "./SocialIcons";
 
 export const LandingFooter: React.FC = () => {
   const footerLinks = [
@@ -73,21 +74,25 @@ export const LandingFooter: React.FC = () => {
     {
       id: "social-media-1",
       icon: "assets/instagram.svg",
+      name: "instagram",
       link: "https://www.instagram.com/",
     },
     {
       id: "social-media-2",
       icon: "assets/facebook.svg",
+      name: "facebook",
       link: "https://www.facebook.com/",
     },
     {
       id: "social-media-3",
       icon: "assets/twitter.svg",
+      name: "twitter",
       link: "https://www.twitter.com/",
     },
     {
       id: "social-media-4",
       icon: "assets/linkedin.svg",
+      name: "linkedin",
       link: "https://www.linkedin.com/",
     },
   ];
@@ -121,7 +126,7 @@ export const LandingFooter: React.FC = () => {
                 {footerlink.links.map((link, index) => (
                   <li
                     key={link.name}
-                    className={`cursor-pointer font-poppins text-[16px] font-normal leading-[24px] text-dimWhite hover:text-secondary ${
+                    className={`cursor-pointer font-poppins text-[16px] font-normal leading-[24px] text-dimWhite hover:text-orange-400 ${
                       index !== footerlink.links.length - 1 ? "mb-4" : "mb-0"
                     }`}
                   >
@@ -134,14 +139,14 @@ export const LandingFooter: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex w-full flex-col items-center justify-between border-t-[1px] border-t-[#3F3E45] pt-6 md:flex-row">
-        <p className="text-center font-poppins text-[18px] font-normal leading-[27px] text-white">
+      <div className="flex w-full flex-col items-center justify-between border-t-[1px] border-t-orange-400 pt-6 md:flex-row">
+        <p className="text-center font-poppins text-[16px] font-normal leading-[27px] text-dimWhite">
           Copyright Ⓒ 2022 HooBank. All Rights Reserved.
         </p>
 
         <div className="mt-6 flex flex-row md:mt-0">
           {socialMedia.map((social, index) => (
-            <Image
+            /* <Image
               height={21}
               width={21}
               key={social.id}
@@ -149,8 +154,16 @@ export const LandingFooter: React.FC = () => {
               alt={social.id}
               className={`h-[21px] w-[21px] cursor-pointer object-contain ${
                 index !== socialMedia.length - 1 ? "mr-6" : "mr-0"
-              }`}
+              } hover:fill-orange-400`}
               onClick={() => window.open(social.link)}
+            /> */
+            <SocialIcons
+              key={social.id}
+              className={`h-[21px] w-[21px] cursor-pointer object-contain ${
+                index !== socialMedia.length - 1 ? "mr-6" : "mr-0"
+              } hover:fill-orange-400`}
+              onClick={() => window.open(social.link)}
+              name={social.name}
             />
           ))}
         </div>
