@@ -23,9 +23,20 @@ export const recipeRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.recipe.findMany({
       include: {
+        user: {
+          select: { name: true, id: true },
+        },
+        categories: {
+          select: {
+            category: {
+              select: {
+                name: true,
+                id: true,
+              },
+            },
+          },
+        },
         images: true,
-        user: true,
-        categories: true,
       },
     });
   }),
@@ -165,6 +176,22 @@ export const recipeRouter = createTRPCRouter({
         },
         orderBy: {
           id: "asc",
+        },
+        include: {
+          user: {
+            select: { name: true, id: true },
+          },
+          categories: {
+            select: {
+              category: {
+                select: {
+                  name: true,
+                  id: true,
+                },
+              },
+            },
+          },
+          images: true,
         },
       });
     }),

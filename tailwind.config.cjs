@@ -52,5 +52,5 @@ module.exports = {
     },
   },
   safelist: ["bg-white-gradient"],
-  plugins: [],
+  plugins: [require("@tailwindcss/aspect-ratio")],
 };
