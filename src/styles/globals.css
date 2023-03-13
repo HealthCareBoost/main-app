@@ -71,6 +71,15 @@
   );
 }
 
+.bg-white-gradient {
+  background: linear-gradient(
+    -168.39deg,
+    #fff7ed -278.56%,
+    #ffedd5 -78.47%,
+    #fafaf9 91.61%
+  );
+}
+
 .bg-black-gradient {
   background: linear-gradient(
     144.39deg,

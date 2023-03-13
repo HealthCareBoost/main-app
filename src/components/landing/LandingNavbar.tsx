@@ -40,8 +40,8 @@ export const LandingNavbar: React.FC = () => {
           <li
             key={`${nav.id}`}
             className={`mr-10 cursor-pointer
-          font-poppins text-[16px] font-normal text-white
-          hover:text-orange-400`}
+          font-poppins text-[16px] font-medium text-primaryDark hover:text-orange-400
+          dark:font-normal dark:text-white`}
           >
             <a href={`#${nav.id}`}>{nav.title}</a>
           </li>
@@ -61,17 +61,20 @@ export const LandingNavbar: React.FC = () => {
             setToggle((prev) => !prev);
           }}
         />
+
+        {/* dark bg-black is not working */}
+        {/* dark:bg-black-gradient bg-white-gradient */}
         <div
           className={`${
             toggle ? "flex" : "hidden"
-          } bg-black-gradient min-w[140px] sidebar absolute top-20 right-0 mx-4 my-2 rounded-xl p-6`}
+          } min-w[140px] sidebar absolute top-20 right-0 mx-4 my-2 rounded-xl p-6 `}
         >
           <ul className="flex list-none flex-col items-center justify-end">
             {navLinks.map((nav, idx) => (
               <li
                 key={`${nav.id}`}
                 className={`cursor-pointer font-poppins
-          text-[16px] font-normal text-white hover:text-orange-400
+          text-[16px] font-medium text-primaryDark hover:text-orange-400  dark:font-normal dark:text-white dark:hover:text-orange-400
           ${idx === navLinks.length - 1 ? "mb-0" : "mb-4"}`}
               >
                 <a href={`#${nav.id}`}>{nav.title}</a>

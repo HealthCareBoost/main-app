@@ -12,7 +12,7 @@ export const LandingHeroSection: React.FC = () => {
       <div
         className={`flex-1 ${styles.flexStart} flex-col px-6 sm:px-16 xl:px-0`}
       >
-        <div className="bg-discount-gradient mb-2 flex flex-row items-center rounded-[10px] py-[6px] px-4">
+        <div className="dark:bg-discount-gradient mb-2 flex flex-row items-center rounded-[10px] py-[6px] px-4">
           <Image
             src="assets/Discount.svg"
             alt="disc"

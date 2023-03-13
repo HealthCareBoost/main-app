@@ -35,6 +35,7 @@ module.exports = {
         primaryDark: "#00040f",
         secondaryBlue: "#00f6ff",
         dimWhite: "rgba(255, 255, 255, 0.7)",
+        dimDark: "rgba(64, 64, 64, 0.7)",
         dimBlue: "rgba(9, 151, 124, 0.1)",
       },
       fontFamily: {
@@ -50,5 +51,6 @@ module.exports = {
       xl: "1700px",
     },
   },
+  safelist: ["bg-white-gradient"],
   plugins: [],
 };
