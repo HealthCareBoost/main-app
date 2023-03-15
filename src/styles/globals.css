@@ -172,3 +172,12 @@
   background: rgba(255, 255, 255, 0.6);
   filter: blur(750px);
 }
+
+.scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  -webkit-overflow-scrolling: touch;
+}
+.scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
