@@ -6,7 +6,7 @@ type CategorySidebarProps = {
   // categories: [];
 };
 
-const OptionButton: React.FC<{ text: string; children?: JSX.Element }> = ({
+const OptionButton: React.FC<{ text: string; children?: React.ReactNode }> = ({
   text,
   children,
 }) => {
@@ -23,7 +23,7 @@ const OptionButton: React.FC<{ text: string; children?: JSX.Element }> = ({
 export const CategorySidebar: React.FC = () => {
   const categoriesQuery = api.category.getAll.useQuery();
   return (
-    <aside className="pb-12">
+    <aside className="hidden min-w-[180px] pb-12 ss:block">
       <div className="px-8 py-6">
         <p className="flex items-center text-2xl font-semibold tracking-tight">
           <svg
@@ -32,7 +32,7 @@ export const CategorySidebar: React.FC = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="h-6 w-6"
+            className="hidden h-6 w-6 md:block"
           >
             <path
               strokeLinecap="round"
@@ -40,7 +40,7 @@ export const CategorySidebar: React.FC = () => {
               d="M6.115 5.19l.319 1.913A6 6 0 008.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 002.288-4.042 1.087 1.087 0 00-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 01-.98-.314l-.295-.295a1.125 1.125 0 010-1.591l.13-.132a1.125 1.125 0 011.3-.21l.603.302a.809.809 0 001.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 001.528-1.732l.146-.292M6.115 5.19A9 9 0 1017.18 4.64M6.115 5.19A8.965 8.965 0 0112 3c1.929 0 3.716.607 5.18 1.64"
             />
           </svg>
-          Recipies
+          Categories
         </p>
       </div>
 
@@ -86,44 +86,46 @@ export const CategorySidebar: React.FC = () => {
           </div>
         </div>
 
-        <div className="py-2">
-          <h2 className="relative px-8 text-lg font-semibold tracking-tight">
+        <div className="px-6 py-2">
+          <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
             Categories
           </h2>
           <div
             dir="ltr"
-            className="relative h-[230px] overflow-hidden px-4"
+            // overflow-hidden
+            className="space-y-1"
             //     --radix-scroll-area-corner-width: 0px;
             //     --radix-scroll-area-corner-height: 0px;
           >
-            <div className="scrollbar h-full w-full overflow-y-scroll rounded-[inherit]">
-              <div className="table min-w-full">
-                <div className="space-y-1 p-2">
-                  {categoriesQuery.data &&
-                    categoriesQuery.data.length > 1 &&
-                    categoriesQuery.data.map((category) => (
-                      <OptionButton key={category.id} text={category.name}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="mr-2 h-4 w-4"
-                        >
-                          <path d="M21 15V6"></path>
-                          <path d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path>
-                          <path d="M12 12H3"></path>
-                          <path d="M16 6H3"></path>
-                          <path d="M12 18H3"></path>
-                        </svg>
-                      </OptionButton>
-                    ))}
-                </div>
+            <div
+              //overflow-y-scroll
+              className="scrollbar h-full w-full rounded-[inherit]"
+            >
+              <div className="table min-w-full space-y-1 p-2">
+                {categoriesQuery.data &&
+                  categoriesQuery.data.length > 1 &&
+                  categoriesQuery.data.map((category) => (
+                    <OptionButton key={category.id} text={category.name}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="mr-2 h-4 w-4"
+                      >
+                        <path d="M21 15V6"></path>
+                        <path d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path>
+                        <path d="M12 12H3"></path>
+                        <path d="M16 6H3"></path>
+                        <path d="M12 18H3"></path>
+                      </svg>
+                    </OptionButton>
+                  ))}
               </div>
             </div>
           </div>

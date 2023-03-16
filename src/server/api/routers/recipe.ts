@@ -1,5 +1,6 @@
 import { RecipeImage } from "@prisma/client";
 import { z } from "zod";
+import { Constants } from "../../../utils/constants";
 import { RecipeSchema } from "../../../utils/createRecipeSchema";
 import { ImageInfo, ImageInfoSchema } from "../../../utils/imageSchema";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
@@ -153,46 +154,79 @@ export const recipeRouter = createTRPCRouter({
   getPaginatedRecipies: publicProcedure
     .input(
       z.object({
-        cursor: z.string(),
+        cursor: z.string().optional(),
+        take: z.number().positive().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
-      // offset pagination
-
-      // const results = await ctx.prisma.recipe.findMany({
-      //   skip: 3,
-      //   take: 4,
-      // });
-
-      // Cursor-based pagination
-      return ctx.prisma.recipe.findMany({
-        take: 10,
-        skip: 1,
-        cursor: {
-          id: input.cursor,
-        },
-        where: {
-          is_deleted: false,
-        },
-        orderBy: {
-          id: "asc",
-        },
-        include: {
-          user: {
-            select: { name: true, id: true },
+      if (input.cursor !== undefined) {
+        // Cursor-based pagination
+        return ctx.prisma.recipe.findMany({
+          take:
+            input.take !== undefined
+              ? input.take
+              : Constants.DEFAULT_SELECT_NUMBER,
+          skip: 1,
+          cursor: {
+            id: input.cursor,
           },
-          categories: {
-            select: {
-              category: {
-                select: {
-                  name: true,
-                  id: true,
+          where: {
+            is_deleted: false,
+          },
+          orderBy: {
+            id: "asc",
+          },
+          include: {
+            user: {
+              select: { name: true, id: true },
+            },
+            categories: {
+              select: {
+                category: {
+                  select: {
+                    name: true,
+                    id: true,
+                  },
                 },
               },
             },
+            images: true,
           },
-          images: true,
-        },
-      });
+        });
+      } else {
+        // offset pagination
+        // const results = await ctx.prisma.recipe.findMany({
+        //   skip: 3,
+        //   take: 4,
+        // });
+        return ctx.prisma.recipe.findMany({
+          take:
+            input.take !== undefined
+              ? input.take
+              : Constants.DEFAULT_SELECT_NUMBER,
+          where: {
+            is_deleted: false,
+          },
+          orderBy: {
+            id: "asc",
+          },
+          include: {
+            user: {
+              select: { name: true, id: true },
+            },
+            categories: {
+              select: {
+                category: {
+                  select: {
+                    name: true,
+                    id: true,
+                  },
+                },
+              },
+            },
+            images: true,
+          },
+        });
+      }
     }),
 });
