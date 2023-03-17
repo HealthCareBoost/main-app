@@ -1,12 +1,12 @@
-import { type Recipe, type RecipeImage } from "@prisma/client";
-import React from "react";
-import { api } from "../../utils/api";
+import React, { useContext } from "react";
+import { LoadingSpinner } from "../Loading";
 import { Separator } from "../ui/Separator";
+import { RecipeContext } from "./RecipeContext";
 import { RecipePreview } from "./RecipePreview";
+import { type RecipesQueryResult } from "./RecipeReducer";
 
 export const RecipeGrid: React.FC = () => {
-  const recipesQuery = api.recipe.getPaginatedRecipies.useQuery({});
-  console.log(recipesQuery.data);
+  const { recipeDispatch, recipeState } = useContext(RecipeContext);
 
   return (
     <div
@@ -22,27 +22,27 @@ export const RecipeGrid: React.FC = () => {
         </div>
       </div>
       <Separator orientation="horizontal" className="my-4" />
-      {recipesQuery.data && recipesQuery.data.length > 0 && (
-        <RecipePreview
-          recipes={
-            Array.from("123456789").map(
-              () => recipesQuery.data[0]
-            ) as (Recipe & {
-              user: {
-                id: string;
-                name: string | null;
-              };
-              images: RecipeImage[];
-              categories: {
-                category: {
-                  id: number;
-                  name: string;
-                };
-              }[];
-            })[]
-          }
-        />
-      )}
+      {renderContent(recipeState.recipes)}
     </div>
   );
+};
+
+const renderContent = (recipes: RecipesQueryResult) => {
+  if (recipes !== undefined && recipes.length > 0) {
+    return (
+      <RecipePreview
+        recipes={
+          Array.from("123456789").map(
+            () => recipes[0]
+          ) as NonNullable<RecipesQueryResult>
+        }
+      />
+    );
+  } else {
+    return (
+      <div className="mt-[20%] flex h-full min-h-[300px] w-full items-center justify-center">
+        <LoadingSpinner size={128} />
+      </div>
+    );
+  }
 };

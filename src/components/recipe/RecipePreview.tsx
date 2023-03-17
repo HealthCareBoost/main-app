@@ -1,30 +1,18 @@
 import Image from "next/image";
 import React from "react";
 import millify from "millify";
-import type { Recipe, DifficultyLevel, RecipeImage } from "@prisma/client";
-import { Button } from "../ui/Button";
-import { Heart } from "lucide-react";
 import { Separator } from "../ui/Separator";
 import { useTheme } from "next-themes";
+import type { RecipesQueryResult } from "./RecipeReducer";
+import { LoadingPage } from "../Loading";
 
 type RecipePreviewProps = {
-  recipes: (Recipe & {
-    user: {
-      id: string;
-      name: string | null;
-    };
-    images: RecipeImage[];
-    categories: {
-      category: {
-        id: number;
-        name: string;
-      };
-    }[];
-  })[];
+  recipes: NonNullable<RecipesQueryResult>;
 };
 
 export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipes }) => {
   const { theme } = useTheme();
+
   return (
     <div className="p-6">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
