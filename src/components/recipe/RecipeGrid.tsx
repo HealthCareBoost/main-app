@@ -6,7 +6,7 @@ import { RecipePreview } from "./RecipePreview";
 import { type RecipesQueryResult } from "./RecipeReducer";
 
 export const RecipeGrid: React.FC = () => {
-  const { recipeDispatch, recipeState } = useContext(RecipeContext);
+  const { recipeState } = useContext(RecipeContext);
 
   return (
     <div
@@ -29,15 +29,7 @@ export const RecipeGrid: React.FC = () => {
 
 const renderContent = (recipes: RecipesQueryResult) => {
   if (recipes !== undefined && recipes.length > 0) {
-    return (
-      <RecipePreview
-        recipes={
-          Array.from("123456789").map(
-            () => recipes[0]
-          ) as NonNullable<RecipesQueryResult>
-        }
-      />
-    );
+    return <RecipePreview recipes={recipes} />;
   } else {
     return (
       <div className="mt-[20%] flex h-full min-h-[300px] w-full items-center justify-center">

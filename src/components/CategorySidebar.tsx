@@ -1,19 +1,42 @@
-import React from "react";
+import React, { useContext } from "react";
 import { api } from "../utils/api";
-import { DifficultyLevel } from "../utils/enumsMap";
+import { DifficultyLevel, TimeIntervals } from "../utils/enumsMap";
+import { RecipeContext } from "./recipe/RecipeContext";
+import { RecipeReducerActions } from "./recipe/RecipeReducer";
 
-type CategorySidebarProps = {
-  // categories: [];
+// type CategorySidebarProps = {
+//   // categories: [];
+// };
+
+type ButtonProps = {
+  text: string;
+  selected?: boolean;
+  onClick: () => void;
+  children?: React.ReactNode;
 };
 
-const OptionButton: React.FC<{ text: string; children?: React.ReactNode }> = ({
+const OptionButton: React.FC<ButtonProps> = ({
   text,
   children,
+  onClick,
+  selected,
 }) => {
+  const btnStyles = selected
+    ? "inline-flex h-9 w-full items-center justify-start rounded-md bg-slate-200 px-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-slate-100 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-slate-800"
+    : "inline-flex h-9 w-full items-center justify-start rounded-md bg-transparent px-2 text-sm font-medium transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-transparent dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-transparent";
   return (
     <>
-      {/* <button className="inline-flex h-9 w-full items-center justify-start rounded-md bg-slate-100 px-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-slate-100 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-slate-800"> */}
-      <button className="inline-flex h-9 w-full items-center justify-start rounded-md bg-transparent px-2 text-sm font-medium transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-transparent dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-transparent">
+      {/* <button class="inline-flex h-9 w-full items-center justify-start rounded-md bg-slate-100 px-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-slate-100 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-slate-800"></button> */}
+      {/* <button className="bg-slate-100 font-medium text-slate-900 transition-colors hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-slate-100 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-slate-800"> */}
+      <button
+        onClick={onClick}
+        className={btnStyles}
+        // className="inline-flex h-9 w-full items-center justify-start rounded-md
+        // bg-transparent px-2 text-sm font-medium transition-colors
+        // hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400
+        // focus:ring-offset-2 active:scale-95 disabled:pointer-events-none
+        // disabled:opacity-50 data-[state=open]:bg-transparent dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-transparent"
+      >
         {children} {text}
       </button>
     </>
@@ -21,7 +44,9 @@ const OptionButton: React.FC<{ text: string; children?: React.ReactNode }> = ({
 };
 
 export const CategorySidebar: React.FC = () => {
+  const { recipeDispatch, recipeState } = useContext(RecipeContext);
   const categoriesQuery = api.category.getAll.useQuery();
+
   return (
     <aside className="hidden min-w-[180px] pb-12 ss:block">
       <div className="px-8 py-6">
@@ -50,8 +75,28 @@ export const CategorySidebar: React.FC = () => {
             Time To Prepere
           </h2>
           <div className="space-y-1">
-            {Array.from(["< 30 min", "< 60 min", "> 60 min"]).map((e) => (
-              <OptionButton key={e} text={e}>
+            {Array.from(Object.entries(TimeIntervals)).map(([key, val]) => (
+              <OptionButton
+                key={key}
+                text={key}
+                selected={
+                  recipeState.selectedTimeToCook &&
+                  recipeState.selectedTimeToCook.lower === val.lower &&
+                  recipeState.selectedTimeToCook.higher === val.higher
+                }
+                onClick={() => {
+                  recipeDispatch({
+                    type: RecipeReducerActions.CHANGE_TIME_TO_COOK,
+                    payload: {
+                      selectedTimeToCook: {
+                        higher: val.higher,
+                        lower: val.lower,
+                      },
+                      // orderBy: "cooking_time",
+                    },
+                  });
+                }}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -79,6 +124,16 @@ export const CategorySidebar: React.FC = () => {
           <div className="space-y-1">
             {Object.entries(DifficultyLevel).map(([key, val]) => (
               <OptionButton
+                selected={val === recipeState.selectedDifficulty}
+                onClick={() => {
+                  recipeDispatch({
+                    type: RecipeReducerActions.CHANGE_DIFFICULTY,
+                    payload: {
+                      selectedDifficulty: val,
+                      // orderBy: "difficulty_level",
+                    },
+                  });
+                }}
                 key={key}
                 text={val.charAt(0).toUpperCase() + val.slice(1)}
               ></OptionButton>
@@ -105,7 +160,20 @@ export const CategorySidebar: React.FC = () => {
                 {categoriesQuery.data &&
                   categoriesQuery.data.length > 1 &&
                   categoriesQuery.data.map((category) => (
-                    <OptionButton key={category.id} text={category.name}>
+                    <OptionButton
+                      key={category.id}
+                      text={category.name}
+                      selected={category.id === recipeState.selectedCategoryId}
+                      onClick={() => {
+                        recipeDispatch({
+                          type: RecipeReducerActions.CHANGE_CATEGORY,
+                          payload: {
+                            selectedCategoryId: category.id,
+                            // orderBy: "total_likes",
+                          },
+                        });
+                      }}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"

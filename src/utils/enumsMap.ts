@@ -79,3 +79,18 @@ export const MeasurementUnits = {
   Bunch: "Bunch",
   Stalk: "Stalk",
 } as const;
+
+export const TimeIntervals = {
+  "< 30 min": {
+    lower: 0,
+    higher: 30,
+  },
+  "< 60 min": {
+    lower: 30,
+    higher: 60,
+  },
+  "> 60 min": {
+    lower: 60,
+    higher: 3 * 24 * 60,
+  },
+} as const;

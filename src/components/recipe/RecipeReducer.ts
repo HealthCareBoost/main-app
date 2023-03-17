@@ -1,4 +1,5 @@
 import type { DifficultyLevel, Recipe, RecipeImage } from "@prisma/client";
+import { Constants } from "../../utils/constants";
 
 export type RecipesQueryResult =
   | (Recipe & {
@@ -17,15 +18,23 @@ export type RecipesQueryResult =
   | undefined;
 
 export type RecipeFiltersType = {
+  take: number;
+  cursor: string | undefined;
   selectedCategoryId: number | undefined;
-  selectedDificulty: DifficultyLevel | undefined;
+  selectedDifficulty: DifficultyLevel | undefined;
   selectedTimeToCook:
     | {
         higher: number;
         lower: number;
       }
     | undefined;
-  orderBy: "time" | "likes" | "difficulty" | "newest" | "name" | undefined;
+  orderBy:
+    | "cooking_time"
+    | "total_likes"
+    | "difficulty_level"
+    | "createdAt"
+    | "name"
+    | undefined;
   recipes: RecipesQueryResult;
 };
 
@@ -38,8 +47,10 @@ export const RecipeReducerActions = {
 } as const;
 
 export const initialState = {
+  take: Constants.DEFAULT_SELECT_NUMBER,
+  cursor: undefined,
   selectedCategoryId: undefined,
-  selectedDificulty: undefined,
+  selectedDifficulty: undefined,
   selectedTimeToCook: undefined,
   orderBy: undefined,
   recipes: [] as RecipesQueryResult,
@@ -51,24 +62,44 @@ export const RecipeReducer: (
 ) => RecipeFiltersType = (state = initialState, action) => {
   switch (action.type) {
     case RecipeReducerActions.CHANGE_CATEGORY: {
-      return state;
+      console.log(action.payload.selectedCategoryId);
+      return {
+        ...state,
+        orderBy: action.payload.orderBy,
+        selectedCategoryId: action.payload.selectedCategoryId,
+      };
     }
 
     case RecipeReducerActions.CHANGE_DIFFICULTY: {
-      return state;
+      console.log(action.payload.selectedDifficulty);
+      return {
+        ...state,
+        orderBy: action.payload.orderBy,
+        selectedDifficulty: action.payload.selectedDifficulty,
+      };
     }
 
     case RecipeReducerActions.CHANGE_TIME_TO_COOK: {
-      return state;
+      console.log(action.payload.selectedTimeToCook);
+      return {
+        ...state,
+        orderBy: action.payload.orderBy,
+        selectedTimeToCook: action.payload.selectedTimeToCook,
+      };
     }
 
     case RecipeReducerActions.CHANGE_ORDER_BY: {
-      return state;
+      console.log(action.payload.orderBy);
+      return { ...state, orderBy: action.payload.orderBy };
     }
 
     case RecipeReducerActions.RECIPES_FETCHED: {
       console.log(action.payload.recipes);
-      return { ...state, recipes: action.payload.recipes };
+      return {
+        ...state,
+        cursor: action.payload.cursor,
+        recipes: action.payload.recipes,
+      };
     }
     default: {
       return state;

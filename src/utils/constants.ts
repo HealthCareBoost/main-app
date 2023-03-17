@@ -1,3 +1,3 @@
 export const Constants = {
-  DEFAULT_SELECT_NUMBER: 20,
+  DEFAULT_SELECT_NUMBER: 12,
 } as const;

@@ -1,9 +1,11 @@
-import { RecipeImage } from "@prisma/client";
+import { DifficultyLevel, Prisma } from "@prisma/client";
+import type { RecipeImage } from "@prisma/client";
 import { z } from "zod";
 import { Constants } from "../../../utils/constants";
 import { RecipeSchema } from "../../../utils/createRecipeSchema";
-import { ImageInfo, ImageInfoSchema } from "../../../utils/imageSchema";
+import { ImageInfoSchema } from "../../../utils/imageSchema";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { getFiltersForQuery } from "../../../utils/mapFilters";
 
 export const recipeRouter = createTRPCRouter({
   getRecipeByID: publicProcedure
@@ -156,9 +158,97 @@ export const recipeRouter = createTRPCRouter({
       z.object({
         cursor: z.string().optional(),
         take: z.number().positive().optional(),
+        filters: z
+          .object({
+            categoryId: z.number().positive().optional(),
+            difficulty: z.nativeEnum(DifficultyLevel).optional(),
+            timeToCook: z
+              .object({
+                lower: z.number().min(0),
+                higher: z
+                  .number()
+                  .positive()
+                  .max(3 * 24 * 60),
+              })
+              .optional(),
+            orderBy: z
+              .enum([
+                "cooking_time",
+                "total_likes",
+                "difficulty_level",
+                "createdAt",
+                "name",
+              ])
+              .optional(),
+          })
+          .optional(),
       })
     )
     .query(async ({ ctx, input }) => {
+      console.log("************************");
+      if (input.cursor) {
+        console.log(`Cursor: ${input.cursor}`);
+        console.log(
+          `Take: ${input.take ? input.take : Constants.DEFAULT_SELECT_NUMBER}`
+        );
+      }
+      if (input.filters) {
+        if (input.filters.categoryId) {
+          console.log(`categoryId: ${input.filters.categoryId}`);
+          // passingFilters["category"] = input.filters.categoryId;
+        }
+        if (input.filters.difficulty) {
+          console.log(`Difficulty: ${input.filters.difficulty}`);
+        }
+        if (input.filters.orderBy) {
+          console.log(`orderBy: ${input.filters.orderBy}`);
+        }
+        if (input.filters.timeToCook) {
+          console.log(
+            `timeToCook: ${input.filters.timeToCook.lower} - ${input.filters.timeToCook.higher}`
+          );
+        }
+      }
+      console.log("************************");
+      const { orderBy, whereConditions } = getFiltersForQuery(input.filters);
+      console.log(orderBy);
+      console.log(whereConditions);
+
+      // const mock = Array.from("1234567890|Z", (e) => {
+      //   // console.log(e);
+      //   return {
+      //     categories: [
+      //       { category: { name: "Vegetarian", id: 6 } },
+      //       { category: { name: "Breakfast", id: 7 } },
+      //       { category: { name: "BBQ", id: 8 } },
+      //       { category: { name: "Vegan", id: 9 } },
+      //     ],
+      //     cooking_time_minutes: 60,
+      //     createdAt: "Wed Feb 22 2023 17:16:04 GMT+0200",
+      //     creator_id: "cldwtl3t60000uyjw3jdvykr9",
+      //     description: "aaaaaaaaaa",
+      //     difficulty_level: "medium",
+      //     id: `${e}`,
+      //     images: [
+      //       {
+      //         id: 1,
+      //         recipe_id: "",
+      //         url: "https://res.cloudinary.com/ddm9sjjq5/image/upload/v1677078943/let-me-cook/rfcfeghcxnoy6ldxmkam.png",
+      //       },
+      //     ] as RecipeImage[],
+      //     name: `LetMeCook ${e}`,
+      //     preparation_time: "21 hours",
+      //     recipe_steps: "steps stepsstepsstepsstepsstepsstepssteps",
+      //     total_likes: 0,
+      //     user: {
+      //       id: "cldwtl3t60000uyjw3jdvykr9",
+      //       name: "Genadi Tsolov",
+      //     },
+      //     video_url: "No video",
+      //   };
+      // });
+      //return mock;
+
       if (input.cursor !== undefined) {
         // Cursor-based pagination
         return ctx.prisma.recipe.findMany({
@@ -171,10 +261,12 @@ export const recipeRouter = createTRPCRouter({
             id: input.cursor,
           },
           where: {
-            is_deleted: false,
+            AND: [{ is_deleted: false }, ...whereConditions],
           },
           orderBy: {
-            id: "asc",
+            ...(orderBy as
+              | Prisma.Enumerable<Prisma.RecipeOrderByWithRelationInput>
+              | undefined),
           },
           include: {
             user: {
@@ -205,10 +297,12 @@ export const recipeRouter = createTRPCRouter({
               ? input.take
               : Constants.DEFAULT_SELECT_NUMBER,
           where: {
-            is_deleted: false,
+            AND: [{ is_deleted: false }, ...whereConditions],
           },
           orderBy: {
-            id: "asc",
+            ...(orderBy as
+              | Prisma.Enumerable<Prisma.RecipeOrderByWithRelationInput>
+              | undefined),
           },
           include: {
             user: {

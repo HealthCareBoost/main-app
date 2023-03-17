@@ -4,7 +4,6 @@ import millify from "millify";
 import { Separator } from "../ui/Separator";
 import { useTheme } from "next-themes";
 import type { RecipesQueryResult } from "./RecipeReducer";
-import { LoadingPage } from "../Loading";
 
 type RecipePreviewProps = {
   recipes: NonNullable<RecipesQueryResult>;

@@ -15,7 +15,16 @@ import {
 const RecipePreviewPage: NextPage = () => {
   const [recipeState, recipeDispatch] = useReducer(RecipeReducer, initialState);
 
-  const { isLoading, data } = api.recipe.getPaginatedRecipies.useQuery({});
+  const { isLoading, data } = api.recipe.getPaginatedRecipies.useQuery({
+    take: recipeState.take,
+    cursor: recipeState.cursor,
+    filters: {
+      categoryId: recipeState.selectedCategoryId,
+      difficulty: recipeState.selectedDifficulty,
+      timeToCook: recipeState.selectedTimeToCook,
+      orderBy: recipeState.orderBy,
+    },
+  });
   console.log(data);
 
   useEffect(() => {
