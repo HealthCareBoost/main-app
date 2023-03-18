@@ -2,8 +2,10 @@ import Image from "next/image";
 import React from "react";
 import { styles } from "../../styles/style";
 import { robot } from "../../../public/assets";
+import { useTheme } from "next-themes";
 
 export const LandingHeroSection: React.FC = () => {
+  const { theme } = useTheme();
   return (
     <section
       id="home"
@@ -12,7 +14,11 @@ export const LandingHeroSection: React.FC = () => {
       <div
         className={`flex-1 ${styles.flexStart} flex-col px-6 sm:px-16 xl:px-0`}
       >
-        <div className="dark:bg-discount-gradient mb-2 flex flex-row items-center rounded-[10px] py-[6px] px-4">
+        <div
+          className={`${
+            theme === "dark" ? "bg-black-gradient" : "bg-slate-200"
+          } mb-2 flex flex-row items-center rounded-[10px] py-[6px] px-4`}
+        >
           <Image
             src="assets/Discount.svg"
             alt="disc"
@@ -20,17 +26,17 @@ export const LandingHeroSection: React.FC = () => {
             height={32}
             width={32}
           />
-          <p className={`${styles.paragraph} ml-2`}>
-            <span className="text-white"> 20% </span>
+          <p className={`${styles.paragraph} ml-2 text-primaryDark`}>
+            <span className="text-orange-400 dark:text-white"> 20% </span>
             Discount For
-            <span className="text-white"> 1 Month </span>
+            <span className="text-orange-400 dark:text-white"> 1 Month </span>
             Account
           </p>
         </div>
 
         <div className="flex w-full flex-row items-center justify-between">
           <h1
-            className={`flex-1 font-poppins text-[52px] font-semibold leading-[75px] text-white ss:text-[71px] ss:leading-[100px]`}
+            className={`flex-1 font-poppins text-[52px] font-semibold leading-[75px] text-primaryDark dark:text-white ss:text-[71px] ss:leading-[100px]`}
           >
             Heading
             <br className="hidden sm:block" />
@@ -42,11 +48,17 @@ export const LandingHeroSection: React.FC = () => {
               className={`${styles.flexCenter} bg-orange-gradient h-[140px] w-[140px] cursor-pointer rounded-full p-[2px]`}
             >
               <div
-                className={`${styles.flexCenter} h-full w-full flex-col rounded-full bg-primaryDark`}
+                className={`${styles.flexCenter} h-full w-full flex-col rounded-full bg-transparent dark:bg-primaryDark`}
               >
                 <div className={`${styles.flexStart} flex-row`}>
                   <p className="mr-2 font-poppins text-[18px] font-medium leading-[23px]">
-                    <span className="text-gradient">Get</span>
+                    <span
+                      className={`${
+                        theme === "dark" ? "text-gradient" : "text-primaryDark"
+                      }`}
+                    >
+                      Get
+                    </span>
                   </p>
                   <Image
                     className="h-[23px] w-[23px] object-contain"
@@ -57,7 +69,13 @@ export const LandingHeroSection: React.FC = () => {
                   />
                 </div>
                 <p className="font-poppins text-[18px] font-medium leading-[23px]">
-                  <span className="text-gradient">Started</span>
+                  <span
+                    className={`${
+                      theme === "dark" ? "text-gradient" : "text-primaryDark"
+                    }`}
+                  >
+                    Started
+                  </span>
                 </p>
               </div>
             </div>
@@ -66,7 +84,7 @@ export const LandingHeroSection: React.FC = () => {
 
         <h1
           className={`
-        w-full font-poppins text-[52px] font-semibold leading-[75px] text-white ss:text-[68px] ss:leading-[100px]`}
+        w-full font-poppins text-[52px] font-semibold leading-[75px] text-primaryDark dark:text-white ss:text-[68px] ss:leading-[100px]`}
         >
           Payment Method
         </h1>
@@ -95,14 +113,20 @@ export const LandingHeroSection: React.FC = () => {
       <div className={`ss:hidden ${styles.flexCenter}`}>
         {/* for mobile get started btn*/}
         <div
-          className={`${styles.flexCenter} bg-blue-gradient h-[140px] w-[140px] cursor-pointer rounded-full p-[2px]`}
+          className={`${styles.flexCenter} bg-orange-gradient h-[140px] w-[140px] cursor-pointer rounded-full p-[2px]`}
         >
           <div
-            className={`${styles.flexCenter} h-full w-full flex-col rounded-full bg-primaryDark`}
+            className={`${styles.flexCenter} h-full w-full flex-col rounded-full bg-transparent dark:bg-primaryDark`}
           >
             <div className={`${styles.flexStart} flex-row`}>
               <p className="mr-2 font-poppins text-[18px] font-medium leading-[23px]">
-                <span className="text-gradient">Get</span>
+                <span
+                  className={`${
+                    theme === "dark" ? "text-gradient" : "text-primaryDark"
+                  }`}
+                >
+                  Get
+                </span>
               </p>
               <Image
                 className="h-[23px] w-[23px] object-contain"
@@ -113,7 +137,13 @@ export const LandingHeroSection: React.FC = () => {
               />
             </div>
             <p className="font-poppins text-[18px] font-medium leading-[23px]">
-              <span className="text-gradient">Started</span>
+              <span
+                className={`${
+                  theme === "dark" ? "text-gradient" : "text-primaryDark"
+                }`}
+              >
+                Started
+              </span>
             </p>
           </div>
         </div>

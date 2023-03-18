@@ -1,7 +1,9 @@
+import { useTheme } from "next-themes";
 import React from "react";
 import { styles } from "../../styles/style";
 
 export const LandingStatsSection: React.FC = () => {
+  const { theme } = useTheme();
   const stats = [
     {
       id: "stats-1",
@@ -29,12 +31,14 @@ export const LandingStatsSection: React.FC = () => {
           key={stat.id}
         >
           <h4
-            className={`font-poppins text-[30px] font-semibold leading-[43px] text-white xs:text-[40px] xs:leading-[53px]`}
+            className={`font-poppins text-[30px] font-semibold leading-[43px] text-primaryDark dark:text-white xs:text-[40px] xs:leading-[53px]`}
           >
             {stat.value}
           </h4>
           <p
-            className={`text-gradient ml-3 font-poppins text-[15px] font-normal uppercase leading-[21px] xs:text-[20px] xs:leading-[26px]`}
+            className={`${
+              theme === "dark" ? "text-gradient" : "text-orange-400"
+            }  ml-3 font-poppins text-[15px] font-normal uppercase leading-[21px] xs:text-[20px] xs:leading-[26px]`}
           >
             {stat.title}
           </p>

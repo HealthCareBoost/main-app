@@ -1,12 +1,20 @@
+import { useTheme } from "next-themes";
 import React from "react";
 import { styles } from "../../styles/style";
 import { LandingButton } from "./LandingButton";
 
 export const LandingCTA: React.FC = () => {
+  const { theme } = useTheme();
+
   return (
     <section
-      className={`${styles.flexCenter} ${styles.marginY} ${styles.padding} 
-              box-shadow bg-black-gradient-2 flex-col rounded-[20px] sm:flex-row`}
+      className={`${styles.flexCenter} ${styles.marginY} ${styles.padding}
+      ${
+        theme === "dark"
+          ? "bg-black-gradient-2"
+          : "border border-orange-400 bg-dimWhite"
+      }
+              box-shadow flex-col rounded-[20px] sm:flex-row`}
     >
       <div className="flex flex-1 flex-col">
         <h2 className={`${styles.heading2}`}>Try our service now!</h2>

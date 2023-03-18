@@ -1,3 +1,4 @@
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import React from "react";
 import { styles } from "../../styles/style";
@@ -7,38 +8,48 @@ const FeedbackCard: React.FC<{
   name: string;
   title: string;
   img: string;
-}> = ({ content, name, title, img }) => (
-  <div className="feedback-card my-5 mr-0 flex max-w-[370px] flex-col  justify-between rounded-[20px] px-10 py-12 sm:mr-5 md:mr-10">
-    <Image
-      width={42.6}
-      height={27.6}
-      src={"assets/quotes.svg"}
-      alt="double_quotes"
-      className="h-[27.6px] w-[42.6px] object-contain"
-    />
-    <p className="my-10 font-poppins text-[18px] font-normal leading-[32.4px] text-white">
-      {content}
-    </p>
-
-    <div className="flex flex-row">
+}> = ({ content, name, title, img }) => {
+  const { theme } = useTheme();
+  return (
+    <div
+      // hover:bg-black-gradient bg-transparent
+      className={` ${
+        theme === "dark"
+          ? "feedback-card "
+          : "border border-orange-400 bg-dimWhite hover:bg-slate-200"
+      } md:mr-10" my-5 mr-0 flex max-w-[370px] flex-col justify-between rounded-[20px] px-10 py-12 sm:mr-5`}
+    >
       <Image
-        width={48}
-        height={48}
-        src={img}
-        alt={name}
-        className="h-[48px] w-[48px] rounded-full"
+        width={42.6}
+        height={27.6}
+        src={"assets/quotes.svg"}
+        alt="double_quotes"
+        className="h-[27.6px] w-[42.6px] object-contain"
       />
-      <div className="ml-4 flex flex-col">
-        <h4 className="font-poppins text-[20px] font-semibold leading-[32px] text-orange-400">
-          {name}
-        </h4>
-        <p className="font-poppins text-[16px] font-normal leading-[24px] text-dimWhite">
-          {title}
-        </p>
+      <p className="my-10 font-poppins text-[18px] font-normal leading-[32.4px] text-primaryDark dark:text-white">
+        {content}
+      </p>
+
+      <div className="flex flex-row">
+        <Image
+          width={48}
+          height={48}
+          src={img}
+          alt={name}
+          className="h-[48px] w-[48px] rounded-full"
+        />
+        <div className="ml-4 flex flex-col">
+          <h4 className="font-poppins text-[20px] font-semibold leading-[32px] text-orange-400">
+            {name}
+          </h4>
+          <p className="font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite">
+            {title}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const LandingFeedback: React.FC = () => {
   const feedback = [
