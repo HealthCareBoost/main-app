@@ -186,34 +186,37 @@ export const recipeRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       console.log("************************");
-      if (input.cursor) {
-        console.log(`Cursor: ${input.cursor}`);
-        console.log(
-          `Take: ${input.take ? input.take : Constants.DEFAULT_SELECT_NUMBER}`
-        );
-      }
-      if (input.filters) {
-        if (input.filters.categoryId) {
-          console.log(`categoryId: ${input.filters.categoryId}`);
-          // passingFilters["category"] = input.filters.categoryId;
-        }
-        if (input.filters.difficulty) {
-          console.log(`Difficulty: ${input.filters.difficulty}`);
-        }
-        if (input.filters.orderBy) {
-          console.log(`orderBy: ${input.filters.orderBy}`);
-        }
-        if (input.filters.timeToCook) {
-          console.log(
-            `timeToCook: ${input.filters.timeToCook.lower} - ${input.filters.timeToCook.higher}`
-          );
-        }
-      }
+      // if (input.cursor) {
+      //   console.log(`Cursor: ${input.cursor}`);
+      //   console.log(
+      //     `Take: ${input.take ? input.take : Constants.DEFAULT_SELECT_NUMBER}`
+      //   );
+      // }
+      // if (input.filters) {
+      //   if (input.filters.categoryId) {
+      //     console.log(`categoryId: ${input.filters.categoryId}`);
+      //     // passingFilters["category"] = input.filters.categoryId;
+      //   }
+      //   if (input.filters.difficulty) {
+      //     console.log(`Difficulty: ${input.filters.difficulty}`);
+      //   }
+      //   if (input.filters.orderBy) {
+      //     console.log(`orderBy: ${input.filters.orderBy}`);
+      //   }
+      //   if (input.filters.timeToCook) {
+      //     console.log(
+      //       `timeToCook: ${input.filters.timeToCook.lower} - ${input.filters.timeToCook.higher}`
+      //     );
+      //   }
+      // }
       console.log("************************");
-      const { orderBy, whereConditions } = getFiltersForQuery(input.filters);
-      console.log(orderBy);
-      console.log(whereConditions);
-
+      let orderBy = {};
+      let whereConditions: (
+        | { difficulty_level: DifficultyLevel }
+        | { cooking_time_minutes: { lte: number } }
+        | { cooking_time_minutes: { gte: number } }
+        | { categories: { every: { category: { id: number } } } }
+      )[] = [];
       // const mock = Array.from("1234567890|Z", (e) => {
       //   // console.log(e);
       //   return {
@@ -248,6 +251,12 @@ export const recipeRouter = createTRPCRouter({
       //   };
       // });
       //return mock;
+
+      if (input.filters) {
+        const result = getFiltersForQuery(input.filters);
+        orderBy = result.orderBy;
+        whereConditions = result.whereConditions;
+      }
 
       if (input.cursor !== undefined) {
         // Cursor-based pagination

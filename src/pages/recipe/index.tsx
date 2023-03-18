@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from "react";
 import { type NextPage } from "next";
 import { LandingNavbar } from "../../components/landing/LandingNavbar";
-import { CategorySidebar } from "../../components/CategorySidebar";
+import { CategorySidebar } from "../../components/recipe/CategorySidebar";
 import { RecipeGrid } from "../../components/recipe/RecipeGrid";
 import { styles } from "../../styles/style";
 import { RecipeContext } from "../../components/recipe/RecipeContext";

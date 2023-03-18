@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import { api } from "../utils/api";
-import { DifficultyLevel, TimeIntervals } from "../utils/enumsMap";
-import { RecipeContext } from "./recipe/RecipeContext";
-import { RecipeReducerActions } from "./recipe/RecipeReducer";
+import { api } from "../../utils/api";
+import { DifficultyLevel, TimeIntervals } from "../../utils/enumsMap";
+import { RecipeContext } from "./RecipeContext";
+import { RecipeReducerActions } from "./RecipeReducer";
 
 // type CategorySidebarProps = {
 //   // categories: [];
@@ -85,16 +85,30 @@ export const CategorySidebar: React.FC = () => {
                   recipeState.selectedTimeToCook.higher === val.higher
                 }
                 onClick={() => {
-                  recipeDispatch({
-                    type: RecipeReducerActions.CHANGE_TIME_TO_COOK,
-                    payload: {
-                      selectedTimeToCook: {
-                        higher: val.higher,
-                        lower: val.lower,
+                  // Check to see If this value is already selected
+                  if (
+                    recipeState.selectedTimeToCook &&
+                    recipeState.selectedTimeToCook.lower === val.lower &&
+                    recipeState.selectedTimeToCook.higher === val.higher
+                  ) {
+                    recipeDispatch({
+                      type: RecipeReducerActions.CHANGE_TIME_TO_COOK,
+                      payload: {
+                        selectedTimeToCook: undefined,
                       },
-                      // orderBy: "cooking_time",
-                    },
-                  });
+                    });
+                  } else {
+                    recipeDispatch({
+                      type: RecipeReducerActions.CHANGE_TIME_TO_COOK,
+                      payload: {
+                        selectedTimeToCook: {
+                          higher: val.higher,
+                          lower: val.lower,
+                        },
+                        // orderBy: "cooking_time",
+                      },
+                    });
+                  }
                 }}
               >
                 <svg
@@ -126,13 +140,23 @@ export const CategorySidebar: React.FC = () => {
               <OptionButton
                 selected={val === recipeState.selectedDifficulty}
                 onClick={() => {
-                  recipeDispatch({
-                    type: RecipeReducerActions.CHANGE_DIFFICULTY,
-                    payload: {
-                      selectedDifficulty: val,
-                      // orderBy: "difficulty_level",
-                    },
-                  });
+                  // Check to see If this value is already selected
+                  if (val === recipeState.selectedDifficulty) {
+                    recipeDispatch({
+                      type: RecipeReducerActions.CHANGE_DIFFICULTY,
+                      payload: {
+                        selectedDifficulty: undefined,
+                      },
+                    });
+                  } else {
+                    recipeDispatch({
+                      type: RecipeReducerActions.CHANGE_DIFFICULTY,
+                      payload: {
+                        selectedDifficulty: val,
+                        // orderBy: "difficulty_level",
+                      },
+                    });
+                  }
                 }}
                 key={key}
                 text={val.charAt(0).toUpperCase() + val.slice(1)}
@@ -165,13 +189,23 @@ export const CategorySidebar: React.FC = () => {
                       text={category.name}
                       selected={category.id === recipeState.selectedCategoryId}
                       onClick={() => {
-                        recipeDispatch({
-                          type: RecipeReducerActions.CHANGE_CATEGORY,
-                          payload: {
-                            selectedCategoryId: category.id,
-                            // orderBy: "total_likes",
-                          },
-                        });
+                        // Check to see If this value is already selected
+                        if (category.id === recipeState.selectedCategoryId) {
+                          recipeDispatch({
+                            type: RecipeReducerActions.CHANGE_CATEGORY,
+                            payload: {
+                              selectedCategoryId: undefined,
+                            },
+                          });
+                        } else {
+                          recipeDispatch({
+                            type: RecipeReducerActions.CHANGE_CATEGORY,
+                            payload: {
+                              selectedCategoryId: category.id,
+                              // orderBy: "total_likes",
+                            },
+                          });
+                        }
                       }}
                     >
                       <svg
