@@ -119,14 +119,14 @@ export const LandingFooter: React.FC = () => {
               key={footerlink.title}
               className={`my-4 flex min-w-[150px] flex-col ss:my-0`}
             >
-              <h4 className="font-poppins text-[18px] font-medium leading-[27px] text-white">
+              <h4 className="font-poppins text-[18px] font-medium leading-[27px] text-primaryDark dark:text-white">
                 {footerlink.title}
               </h4>
               <ul className="mt-4 list-none">
                 {footerlink.links.map((link, index) => (
                   <li
                     key={link.name}
-                    className={`cursor-pointer font-poppins text-[16px] font-normal leading-[24px] text-dimWhite hover:text-orange-400 ${
+                    className={`cursor-pointer font-poppins text-[16px] font-normal leading-[24px] text-dimDark hover:text-orange-400 dark:text-dimWhite ${
                       index !== footerlink.links.length - 1 ? "mb-4" : "mb-0"
                     }`}
                   >
@@ -140,7 +140,7 @@ export const LandingFooter: React.FC = () => {
       </div>
 
       <div className="flex w-full flex-col items-center justify-between border-t-[1px] border-t-orange-400 pt-6 md:flex-row">
-        <p className="text-center font-poppins text-[16px] font-normal leading-[27px] text-dimWhite">
+        <p className="text-center font-poppins text-[16px] font-normal leading-[27px] text-dimDark dark:text-dimWhite">
           Copyright Ⓒ 2022 HooBank. All Rights Reserved.
         </p>
 

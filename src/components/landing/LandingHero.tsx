@@ -15,8 +15,11 @@ export const LandingHeroSection: React.FC = () => {
         className={`flex-1 ${styles.flexStart} flex-col px-6 sm:px-16 xl:px-0`}
       >
         <div
+          //
           className={`${
-            theme === "dark" ? "bg-black-gradient" : "bg-slate-200"
+            theme === "dark"
+              ? "bg-black-gradient"
+              : "bg-gradient-to-r from-slate-200 via-zinc-300 to-neutral-400"
           } mb-2 flex flex-row items-center rounded-[10px] py-[6px] px-4`}
         >
           <Image
