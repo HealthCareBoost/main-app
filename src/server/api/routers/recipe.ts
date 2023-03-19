@@ -1,4 +1,4 @@
-import { DifficultyLevel, Prisma } from "@prisma/client";
+import { DifficultyLevel, Prisma, Recipe } from "@prisma/client";
 import type { RecipeImage } from "@prisma/client";
 import { z } from "zod";
 import { Constants } from "../../../utils/constants";
@@ -8,6 +8,18 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { getFiltersForQuery } from "../../../utils/mapFilters";
 
 export const recipeRouter = createTRPCRouter({
+  /**
+   * Retrieves a recipe with a specific ID from the database.
+   *
+   * @function
+   * @async
+   * @name getRecipeByID
+   *
+   * @param {string} input.id - The ID of the recipe to retrieve.
+   *
+   * @returns {Promise<Recipe>} - A Promise that resolves with the recipe object
+   *                              that matches the specified ID.
+   */
   getRecipeByID: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
@@ -23,6 +35,17 @@ export const recipeRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * Retrieves all recipes from the database.
+   *
+   * @function
+   * @async
+   * @name getAll
+   *
+   * @returns {Promise<Recipe[]>} - A Promise that resolves with an array of
+   *                                recipe objects.
+   *
+   */
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.recipe.findMany({
       include: {
@@ -44,6 +67,17 @@ export const recipeRouter = createTRPCRouter({
     });
   }),
 
+  /**
+   * Creates a new recipe in the database.
+   *
+   * @function
+   * @async
+   * @name createRecipe
+   *
+   * @param {typeof RecipeSchema} input - An object containing the recipe data to be created.
+   * @returns {Promise<Recipe>} - A Promise that resolves with the newly created recipe object.
+   *
+   */
   createRecipe: protectedProcedure
     .input(RecipeSchema)
     .mutation(({ ctx, input }) => {
@@ -104,6 +138,18 @@ export const recipeRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * Deletes a recipe from the database.
+   *
+   * @function
+   * @async
+   * @name delete
+   *
+   * @param {string} input.id - The ID of the recipe to be deleted.
+   *
+   * @returns {Promise<object>} - A Promise that resolves with the updated recipe object.
+   *
+   */
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
@@ -330,6 +376,55 @@ export const recipeRouter = createTRPCRouter({
             images: true,
           },
         });
+      }
+    }),
+
+  likeRecipe: protectedProcedure
+    .input(
+      z.object({
+        recipe_id: z.string(),
+        // isLiked: z.boolean()
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const user_id = ctx.session.user.id;
+
+        const isLiked = await ctx.prisma.userPreferences.findFirst({
+          select: {
+            liked: true,
+          },
+          where: {
+            AND: [
+              { user_id: user_id },
+              {
+                recipe_id: input.recipe_id,
+              },
+            ],
+          },
+        });
+
+        await ctx.prisma.userPreferences.upsert({
+          where: {
+            user_id_recipe_id: {
+              user_id: user_id,
+              recipe_id: input.recipe_id,
+            },
+          },
+          update: {
+            liked: isLiked === null || isLiked.liked === false ? true : false,
+          },
+          create: {
+            liked: true,
+            recipe_id: input.recipe_id,
+            user_id: user_id,
+            made: false,
+            saved: false,
+          },
+        });
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
       }
     }),
 });
