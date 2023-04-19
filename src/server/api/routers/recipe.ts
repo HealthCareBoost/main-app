@@ -2,8 +2,8 @@ import { DifficultyLevel, Prisma, Recipe } from "@prisma/client";
 import type { RecipeImage } from "@prisma/client";
 import { z } from "zod";
 import { Constants } from "../../../utils/constants";
-import { RecipeSchema } from "../../../utils/createRecipeSchema";
-import { ImageInfoSchema } from "../../../utils/imageSchema";
+import { RecipeSchema } from "../../../utils/validations/createRecipeSchema";
+import { ImageInfoSchema } from "../../../utils/validations/imageSchema";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { getFiltersForQuery } from "../../../utils/mapFilters";
 

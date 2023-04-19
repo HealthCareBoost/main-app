@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { MeasurementUnits } from "@prisma/client";
-import { DifficultyLevel, TimeUnits, Categories } from "./enumsMap";
+import { DifficultyLevel, TimeUnits, Categories } from "../enumsMap";
 import { ImageInfoSchema } from "./imageSchema";
 
 export const RecipeSchema = z.object({

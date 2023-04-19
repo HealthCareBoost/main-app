@@ -8,6 +8,7 @@ interface Props extends ComponentProps<"input"> {
   name: string;
   label: string;
   hidden?: boolean;
+  hiddenLabel?: boolean;
   className?: string;
 }
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -20,7 +21,9 @@ export const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
 
   return (
     <div>
-      {props.hidden ? null : <Label htmlFor={props.name}>{props.label}</Label>}
+      {props.hidden || props.hiddenLabel ? null : (
+        <Label htmlFor={props.name}>{props.label}</Label>
+      )}
       <input
         className={cn(
           "flex h-10 w-full rounded-md border border-slate-100 bg-transparent py-2 px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-50 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900",

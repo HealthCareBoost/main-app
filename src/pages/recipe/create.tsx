@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { type NextPage } from "next";
 import { Controller, useFieldArray } from "react-hook-form";
-import { RecipeSchema } from "../../utils/createRecipeSchema";
+import { RecipeSchema } from "../../utils/validations/createRecipeSchema";
 import { DifficultyLevel, TimeUnits } from "../../utils/enumsMap";
 // import Select from "react-select";
 // import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,7 +14,7 @@ import { Input } from "../../components/ui/FormInput";
 import { Select } from "../../components/ui/FormSelect";
 import { Textarea } from "../../components/ui/TextArea";
 import { CloudinaryUploadButton } from "../../components/ui/CloudinaryUploadButton";
-import { type ImageInfo } from "../../utils/imageSchema";
+import { type ImageInfo } from "../../utils/validations/imageSchema";
 import { Recipe } from "../../components/recipe/Recipe";
 
 // const resolver: Resolver<FormTypes> = (values) => {

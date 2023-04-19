@@ -29,10 +29,11 @@ export const LandingNavbar: React.FC = () => {
     <nav className="navbar flex w-full items-center justify-between py-6">
       <Image
         alt="logo"
-        src={"assets/logo.svg"}
-        className="w-[124px]"
-        height={124}
-        width={124}
+        src={"assets/cook.svg"}
+        className="w-[172px]"
+        height={172}
+        width={172}
+        priority
       />
 
       <ul className="hidden flex-1 list-none items-center justify-end sm:flex">

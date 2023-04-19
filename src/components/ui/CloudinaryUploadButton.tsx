@@ -3,7 +3,7 @@
 import * as React from "react";
 import { CldUploadWidget } from "next-cloudinary";
 import { Button } from "./Button";
-import { type ImageInfo } from "../../utils/imageSchema";
+import { type ImageInfo } from "../../utils/validations/imageSchema";
 
 export type CloudinaryUploadResponse = {
   event: string;

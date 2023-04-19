@@ -16,7 +16,7 @@ const Header: NextPage = () => {
                 height={100}
                 className="h-8 w-auto sm:h-10"
                 src="https://flowbite.com/docs/images/logo.svg"
-                alt=""
+                alt="letmecook-logo"
               />
             </a>
           </div>

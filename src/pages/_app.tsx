@@ -7,6 +7,7 @@ import { api } from "../utils/api";
 
 import "../styles/globals.css";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from "../components/ui/Toaster";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -21,6 +22,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Component {...pageProps} />
+        <Toaster />
       </ThemeProvider>
     </SessionProvider>
   );
