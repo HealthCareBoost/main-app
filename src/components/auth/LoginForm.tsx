@@ -69,7 +69,11 @@ export const LoginForm: React.FC<{
       Email: false,
     }));
 
-    if (!signInResult?.ok) {
+    console.log("signInResult");
+    console.log(signInResult);
+    console.log("signInResult");
+
+    if (!signInResult?.ok || signInResult.error) {
       return toast({
         title: "Something went wrong.",
         description: "Your sign in request failed. Please try again.",
@@ -137,7 +141,6 @@ export const LoginForm: React.FC<{
       <>
         {providers &&
           Object.values(providers).map((provider: ProviderParams) => {
-            console.log(provider.name);
             if (provider.name === "Email") {
               return;
             }

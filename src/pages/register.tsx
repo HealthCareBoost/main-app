@@ -1,102 +1,102 @@
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../components/ui/Tabs";
-import React from "react";
-import { type AppProps } from "next/app";
-import { signIn, getProviders, getCsrfToken } from "next-auth/react";
-
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { cn } from "../utils/cn";
+import { buttonVariants } from "../components/ui/Button";
+import { getCsrfToken, getProviders } from "next-auth/react";
 import type { GetServerSidePropsContext } from "next";
-import { LoginForm } from "../components/auth/LoginForm";
-import { Separator } from "../components/ui/Separator";
 import { getServerAuthSession } from "../server/auth";
-import { useRouter } from "next/router";
-import { SignInError } from "../components/AuthError";
+import type { AppProps } from "next/app";
+import { styles } from "../styles/style";
 import { RegisterForm } from "../components/auth/RegisterForm";
-import { GoogleIcon } from "../components/ui/GoogleIcon";
-import { DiscordIcon } from "../components/ui/DiscordIcon";
+import Image from "next/image";
+import useQuery from "../hooks/useQuery";
+import { SignInError } from "../components/AuthError";
 
-type ProviderParams = {
-  callbackUrl: string;
-  name: string;
-  signinUrl: string;
-  type: string;
-  id: string;
-};
-
-const Register = ({
+export default function RegisterPage({
   providers,
   csrfToken,
 }: {
   providers: AppProps;
   csrfToken: string;
-}) => {
-  const { error } = useRouter().query;
-  // console.log(error);
+}) {
+  const query = useQuery();
+  const [error, setError] = useState<string | string[] | undefined>(undefined);
+
+  useEffect(() => {
+    if (!query) return;
+    console.log(query);
+    setError(query.error);
+  }, [query]);
+
+  useEffect(() => {
+    if (!error) return;
+    // console.log(query);
+    // const { error } = query;
+    // console.log(error);
+    SignInError(error && typeof error === "string" ? error : "Error");
+  }, [error]);
 
   return (
-    <Tabs defaultValue="signin" className="w-[400px]">
-      <TabsList className="flex items-center justify-center">
-        <TabsTrigger className="w-full" value="signin">
-          Sign In
-        </TabsTrigger>
-        <TabsTrigger className="w-full" value="register">
-          Register
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="signin">
-        {error ? (
-          <SignInError
-            error={error && typeof error === "string" ? error : "Error"}
-          />
-        ) : null}
-        <LoginForm csrfToken={csrfToken} />
-        <div className="flex w-full items-center justify-center">
-          <Separator className="w-1/4 px-2" />
-          <span className="mx-2 my-6 text-center">Or continue with</span>
-          <Separator className="w-1/4 px-2" />
-        </div>
-        <div className="flex flex-row items-center justify-center">
-          {Object.values(providers).map((provider: ProviderParams) => {
-            if (provider.name === "Email") {
-              return;
-            }
-            return (
-              <button
-                key={`${provider.id}`}
-                onClick={() => {
-                  signIn(provider.id, {
-                    redirect: false,
-                  }).catch((err) => {
-                    console.log(err);
-                  });
-                }}
-                type="submit"
-                className="group relative m-2 flex w-full items-center justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    <main className="min-h-screen">
+      <div className="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-12 lg:px-0">
+        <Link
+          href="/login"
+          className={cn(
+            buttonVariants({ variant: "ghost" }),
+            "absolute top-4 right-4 text-lg md:top-8 md:right-8"
+          )}
+        >
+          Login
+        </Link>
+        <div className="col-span-5 hidden h-full bg-slate-100 lg:block"></div>
+        <div className="col-span-7 lg:p-8">
+          <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+            <div className="flex flex-col space-y-2 text-center">
+              <Image
+                width={100}
+                height={100}
+                className="mx-auto h-10 w-10 sm:h-12 sm:w-12"
+                src="assets/orange.svg"
+                alt="letmecook-logo"
+              />
+              <h1
+                className={`${styles.heading2} lg:text-4xl`}
+                // className="text-2xl font-semibold tracking-tight"
               >
-                {provider.name === "Google" && (
-                  <GoogleIcon className={"h-5 w-5"} />
-                )}
-                {provider.name === "Discord" && (
-                  <DiscordIcon className={"h-5 w-5"} />
-                )}
-                Sign in with {provider.name}
-              </button>
-            );
-          })}
+                Create an account
+              </h1>
+              <p className="text-lg text-slate-500 dark:text-slate-400">
+                Enter your email below to create your account
+              </p>
+            </div>
+            <RegisterForm
+              className=""
+              csrfToken={csrfToken}
+              providers={providers}
+            />
+            <p className="px-8 text-center text-lg text-slate-500 dark:text-slate-400">
+              By clicking continue, you agree to our{" "}
+              <Link
+                href="/terms"
+                className="hover:text-brand underline underline-offset-4"
+              >
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/privacy"
+                className="hover:text-brand underline underline-offset-4"
+              >
+                Privacy Policy
+              </Link>
+              .
+            </p>
+          </div>
         </div>
-      </TabsContent>
-      <TabsContent value="register">
-        {/* <p className="text-sm text-slate-500 dark:text-slate-400">
-          Change your password here. After saving, you&apos;ll be logged out.
-        </p> */}
-        <RegisterForm csrfToken={csrfToken} />
-      </TabsContent>
-    </Tabs>
+      </div>
+    </main>
   );
-};
+}
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerAuthSession(context);
@@ -104,23 +104,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // If the user is already logged in, redirect.
   // Note: Make sure not to redirect to the same page
   // To avoid an infinite loop!
-
   if (session && session.user) {
     console.log("session");
     console.log(session);
     return { redirect: { destination: "/" } };
   }
-
   const providers = await getProviders();
   const csrfToken = await getCsrfToken(context);
-
-  // console.log(providers);
-  // console.log(session);
-  // console.log(csrfToken);
-
   return {
     props: { providers, session, csrfToken },
   };
 }
-
-export default Register;

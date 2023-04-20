@@ -1,4 +1,4 @@
-import React from "react";
+import { toast } from "../hooks/use-toast";
 
 export const ErrorMap = {
   Signin: "Try signing with a different account.",
@@ -15,8 +15,14 @@ export const ErrorMap = {
   default: "Unable to sign in.",
 } as const;
 
-export const SignInError: React.FC<{ error: string }> = ({ error }) => {
-  const errorMessage =
+export const SignInError = (error: string) => {
+  const errorMessage: string =
     error && (ErrorMap[error as keyof typeof ErrorMap] ?? ErrorMap.default);
-  return <div>{errorMessage}</div>;
+
+  return toast({
+    title: "Something went wrong.",
+    description: "Your sign in request failed.\n".concat(errorMessage),
+    variant: "destructive",
+  });
+  // return <div>{errorMessage}</div>;
 };

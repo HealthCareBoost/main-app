@@ -7,11 +7,11 @@ import {
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
-import CredentialsProvider from "next-auth/providers/credentials";
+// import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../env.mjs";
 import { prisma } from "./db";
-import { signIn } from "next-auth/react";
+// import { signIn } from "next-auth/react";
 
 /**
  * Module augmentation for `next-auth` types.

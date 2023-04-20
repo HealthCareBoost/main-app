@@ -1,10 +1,8 @@
 import React from "react";
+import type { z } from "zod";
 import { Loader2 } from "lucide-react";
 import type { AppProps } from "next/app";
-import {
-  LoginSchema,
-  RegisterSchema,
-} from "../../utils/validations/authSchema";
+import { RegisterSchema } from "../../utils/validations/authSchema";
 import { useZodForm } from "../../utils/useZodFormHook";
 import { api } from "../../utils/api";
 import { signIn } from "next-auth/react";
@@ -14,8 +12,7 @@ import { buttonVariants } from "../ui/Button";
 import { GoogleIcon } from "../ui/GoogleIcon";
 import { DiscordIcon } from "../ui/DiscordIcon";
 import { Form } from "../ui/FormProvider";
-import { Button } from "../ui/Button";
-import type { z } from "zod";
+import { toast } from "../../hooks/use-toast";
 
 type ProviderName = "Discord" | "Google" | "Email";
 
@@ -91,17 +88,17 @@ export const RegisterForm: React.FC<{
     }));
 
     if (!signInResult?.ok) {
-      // return toast({
-      //   title: "Something went wrong.",
-      //   description: "Your sign in request failed. Please try again.",
-      //   variant: "destructive",
-      // });
+      return toast({
+        title: "Something went wrong.",
+        description: "Your sign in request failed. Please try again.",
+        variant: "destructive",
+      });
     }
 
-    // return toast({
-    //   title: "Check your email",
-    //   description: "We sent you a login link. Be sure to check your spam too.",
-    // });
+    return toast({
+      title: "Check your email",
+      description: "We sent you a login link. Be sure to check your spam too.",
+    });
   }
   return (
     <div className={cn("grid gap-6", className)} {...props}>
@@ -157,7 +154,6 @@ export const RegisterForm: React.FC<{
       </div>
       <>
         {Object.values(providers).map((provider: ProviderParams) => {
-          console.log(provider.name);
           if (provider.name === "Email") {
             return;
           }
@@ -177,7 +173,7 @@ export const RegisterForm: React.FC<{
                       Discord: true,
                     }));
                 signIn(provider.id, {
-                  redirect: false,
+                  redirect: true,
                 }).catch((err) => {
                   console.log(err);
                 });

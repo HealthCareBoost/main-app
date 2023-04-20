@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { BackButton } from "../components/ui/BackButton";
 import Image from "next/image";
@@ -8,6 +8,8 @@ import { getServerAuthSession } from "../server/auth";
 import type { AppProps } from "next/app";
 import { styles } from "../styles/style";
 import { LoginForm } from "../components/auth/LoginForm";
+import { SignInError } from "../components/AuthError";
+import useQuery from "../hooks/useQuery";
 
 export default function LoginPage({
   providers,
@@ -16,6 +18,23 @@ export default function LoginPage({
   providers: AppProps;
   csrfToken: string;
 }) {
+  const query = useQuery();
+  const [error, setError] = useState<string | string[] | undefined>(undefined);
+
+  useEffect(() => {
+    if (!query) return;
+    console.log(query);
+    setError(query.error);
+  }, [query]);
+
+  useEffect(() => {
+    if (!error) return;
+    // console.log(query);
+    // const { error } = query;
+    // console.log(error);
+    SignInError(error && typeof error === "string" ? error : "Error");
+  }, [error]);
+
   return (
     <main className="min-h-screen">
       <div className="container flex h-screen w-screen flex-col items-center justify-center">
