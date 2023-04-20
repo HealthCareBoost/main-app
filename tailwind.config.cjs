@@ -64,14 +64,14 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
-    // screens: {
-    //   xs: "480px",
-    //   ss: "620px",
-    //   sm: "768px",
-    //   md: "1060px",
-    //   lg: "1200px",
-    //   xl: "1700px",
-    // },
+    screens: {
+      xs: "480px",
+      ss: "620px",
+      sm: "768px",
+      md: "1060px",
+      lg: "1200px",
+      xl: "1700px",
+    },
   },
   safelist: ["bg-white-gradient"],
   plugins: [
