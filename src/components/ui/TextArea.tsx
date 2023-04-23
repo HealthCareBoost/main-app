@@ -24,7 +24,7 @@ export const Textarea = forwardRef<HTMLInputElement, Props>((props, ref) => {
   const { hiddenLabel, ...textareaProps } = props;
 
   return (
-    <div>
+    <>
       {hiddenLabel ? null : <Label htmlFor={props.name}>{props.label}</Label>}
       <textarea
         className={cn(
@@ -40,7 +40,7 @@ export const Textarea = forwardRef<HTMLInputElement, Props>((props, ref) => {
           {state.error.message}
         </p>
       )}
-    </div>
+    </>
   );
 });
 Textarea.displayName = "FormTextarea";

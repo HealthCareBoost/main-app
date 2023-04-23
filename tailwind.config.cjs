@@ -40,6 +40,7 @@ module.exports = {
     extend: {
       colors: {
         primaryDark: "#00040f",
+        bgDark: "#121212",
         secondaryBlue: "#00f6ff",
         dimWhite: "rgba(255, 255, 255, 0.7)",
         dimDark: "rgba(64, 64, 64, 0.7)",
