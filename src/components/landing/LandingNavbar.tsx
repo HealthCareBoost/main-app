@@ -2,9 +2,12 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { styles } from "../../styles/style";
 import ThemeButton from "../ui/ChangeThemeButton";
+import { useTheme } from "next-themes";
+import { CloseMenuIcon, MenuIcon } from "../svgs/Menu";
 
 export const LandingNavbar: React.FC = () => {
   const [toggle, setToggle] = useState<boolean>(false);
+  const { theme } = useTheme();
 
   const navLinks = [
     {
@@ -29,11 +32,16 @@ export const LandingNavbar: React.FC = () => {
     <nav className="navbar flex w-full items-center justify-between py-6">
       <Image
         alt="logo"
-        src={"assets/cook.svg"}
-        className="w-[172px]"
+        src={theme === "dark" ? "/assets/cook-dark.png" : "/assets/cook.png"}
+        className="h-auto w-[172px]"
         height={172}
         width={172}
-        priority
+        style={{
+          height: "auto",
+          width: "172px",
+        }}
+        placeholder="blur"
+        blurDataURL={"assets/cook.png"}
       />
 
       <ul className="hidden flex-1 list-none items-center justify-end sm:flex">
@@ -52,23 +60,30 @@ export const LandingNavbar: React.FC = () => {
 
       <div className="flex flex-1 items-center justify-end sm:hidden">
         <ThemeButton styles={`${styles.marginX}`} />
-        <Image
-          src={toggle ? "assets/close.svg" : "assets/menu.svg"}
-          alt="menu"
-          height={28}
-          width={28}
-          className="h-[28px] w-[28px] object-contain"
-          onClick={() => {
-            setToggle((prev) => !prev);
-          }}
-        />
-
+        {toggle ? (
+          <CloseMenuIcon
+            className="h-[28px] w-[28px] object-contain"
+            onClick={() => {
+              setToggle((prev) => !prev);
+            }}
+            fill={theme === "dark" ? "#fff" : "#000"}
+          />
+        ) : (
+          <MenuIcon
+            className="h-[28px] w-[28px] object-contain"
+            onClick={() => {
+              setToggle((prev) => !prev);
+            }}
+            fill={theme === "dark" ? "#fff" : "#000"}
+          />
+        )}
         {/* dark bg-black is not working */}
         {/* dark:bg-black-gradient bg-white-gradient */}
         <div
           className={`${
             toggle ? "flex" : "hidden"
-          } min-w[140px] sidebar absolute top-20 right-0 mx-4 my-2 rounded-xl p-6 `}
+          } min-w[140px] sidebar absolute top-20 right-0 mx-4 my-2 rounded-xl p-6
+          ${theme === "dark" ? "bg-black-gradient" : "bg-slate-200"}`}
         >
           <ul className="flex list-none flex-col items-center justify-end">
             {navLinks.map((nav, idx) => (
