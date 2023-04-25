@@ -1,5 +1,5 @@
-import { DifficultyLevel, Prisma, Recipe } from "@prisma/client";
-import type { RecipeImage } from "@prisma/client";
+import { DifficultyLevel } from "@prisma/client";
+import type { RecipeImage, Prisma } from "@prisma/client";
 import { z } from "zod";
 import { Constants } from "../../../utils/constants";
 import { RecipeSchema } from "../../../utils/validations/createRecipeSchema";

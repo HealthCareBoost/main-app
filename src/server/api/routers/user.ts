@@ -2,6 +2,7 @@ import { MealTypes } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import { text } from "stream/consumers";
 
 export const userRouter = createTRPCRouter({
   hello: publicProcedure.query(({ ctx }) => {
@@ -322,6 +323,38 @@ export const userRouter = createTRPCRouter({
             made: input.made !== undefined ? input.made : false,
           },
         });
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
+    }),
+
+  comment: protectedProcedure
+    .input(
+      z.object({
+        recipe_id: z.string().min(1),
+        text: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const user_id = ctx.session.user.id;
+        await ctx.prisma.user.findUniqueOrThrow({
+          where: { id: user_id },
+        });
+
+        const recipe = await ctx.prisma.recipe.findUniqueOrThrow({
+          where: { id: input.recipe_id },
+        });
+
+        await ctx.prisma.comment.create({
+          data: {
+            recipe_id: recipe.id,
+            user_id,
+            text: input.text,
+          },
+        });
+        return { success: true };
       } catch (error) {
         console.error(error);
         return { success: false, error };

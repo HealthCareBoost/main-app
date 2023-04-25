@@ -91,6 +91,16 @@ export const ingredientsRouter = createTRPCRouter({
       });
     }),
 
+  getNutrintion: publicProcedure
+    .input(z.object({ ingredient_id: z.number().positive() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.nutrients.findMany({
+        where: {
+          ingredient_id: input.ingredient_id,
+        },
+      });
+    }),
+
   updateIngredient: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),

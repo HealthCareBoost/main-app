@@ -56,6 +56,7 @@ model User {
     sessions      Session[]
     recipes       Recipe[]
     daily_diet    UserDailyDiet[]
+    comments      Comment[]
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @default(now())
     is_deleted    Boolean   @default(false)
@@ -94,6 +95,7 @@ model Recipe {
     is_deleted              Boolean   @default(false)   
     total_likes             Int       @default(0)
     daily_diet              UserDailyDiet[]
+    comments                Comment[]
 
     @@index([creator_id])
 }
@@ -104,11 +106,17 @@ model Recipe {
 //     user_id             String
 // }
 
-// model UserComments {
-//     recipe_id            String
-//     user_id              String
-//     text                 String
-// }
+model Comment {
+    id                   String  @id @default(cuid())
+    recipe_id            String
+    user_id              String
+    user                 User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    text                 String
+    recipe               Recipe  @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
+
+    @@index([recipe_id])
+    @@index([user_id])
+}
 
 // model RecipeSteps {
 //     id                    Int  @id @default(autoincrement())
