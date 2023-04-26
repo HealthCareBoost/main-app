@@ -1,15 +1,24 @@
 import React from "react";
 import { PostOperations } from "./CommentOperations";
 import { UserAvatar } from "../UserAvatar";
+import type { Comment as CommentType } from "@prisma/client";
 
-interface PostItemProps {
-  post: Pick<
-    { id: string; title: string; published: boolean; createdAt: Date },
-    "id" | "title" | "published" | "createdAt"
-  >;
-}
+type CommentProps = CommentType & {
+  user: {
+    id: string;
+    name: string | null;
+    image: string | null;
+  };
+};
 
-export function PostItem({}: PostItemProps) {
+export const PostItem: React.FC<CommentProps> = ({
+  id,
+  recipe_id,
+  createdAt,
+  text,
+  user,
+}) => {
+  console.log(text);
   return (
     <div className="space-y-4">
       <div className="flex">
@@ -22,33 +31,47 @@ export function PostItem({}: PostItemProps) {
           <UserAvatar
             className="mt-2 h-8 w-8 rounded-full sm:h-10 sm:w-10"
             user={{
-              name: "test",
+              name: user && user.name ? user.name : "Anonymous",
               image:
-                "https://images.unsplash.com/photo-1604426633861-11b2faead63c?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80",
+                user && user.image
+                  ? user.image
+                  : "https://images.unsplash.com/photo-1604426633861-11b2faead63c?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80",
             }}
           />
         </div>
 
         <div className="flex-1 rounded-lg border px-4 py-2 leading-relaxed sm:px-6 sm:py-4">
           <div className="flex items-center">
-            <strong>Sarah</strong>{" "}
-            <span className="mx-2 text-xs text-gray-400">3:34 PM</span>
+            <strong>{user && user.name ? user.name : "Anonymous"}</strong>{" "}
+            <span className="mx-2 text-xs text-gray-400">
+              {createdAt instanceof Date
+                ? createdAt.toLocaleDateString()
+                : new Date().toLocaleDateString()}
+              {/* 3:34 PM */}
+            </span>
             <div className="my-2 ml-auto">
-              <PostOperations post={{ id: "aaaa", title: "aaaaa" }} />
+              <PostOperations post={{ id, title: text }} />
             </div>
           </div>
           <p className="text-sm">
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-            nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
-            erat, sed diam voluptua.
+            {text} Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+            Quod aspernatur voluptatum quo rem itaque iusto nihil voluptas
+            impedit ullam cum facilis commodi dolore perspiciatis debitis natus
+            autem adipisci, error nemo.
           </p>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export const Comment: React.FC = () => {
+export const Comment: React.FC<CommentProps> = ({
+  id,
+  recipe_id,
+  createdAt,
+  text,
+  user,
+}) => {
   return (
     <>
       <article className="mb-6 rounded-lg bg-white p-6 text-base dark:border dark:border-slate-200 dark:bg-bgDark">
@@ -57,23 +80,29 @@ export const Comment: React.FC = () => {
             <p className="mr-3 inline-flex items-center text-sm text-gray-900 dark:text-white">
               <UserAvatar
                 user={{
+                  name: user && user.name ? user.name : "Anonymous",
                   image:
-                    "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
-                  name: " Michael Gough",
+                    user && user.image
+                      ? user.image
+                      : "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
                 }}
                 className="mr-2 h-8 w-8 rounded-full"
               />
-              Michael Gough
+              {user && user.name ? user.name : "Anonymous"}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               <time dateTime="2022-02-08" title="February 8th, 2022">
-                Feb. 8, 2022
+                {createdAt instanceof Date
+                  ? createdAt.toLocaleDateString()
+                  : new Date().toLocaleDateString()}
+                {/* Feb. 8, 2022 */}
               </time>
             </p>
           </div>
           <PostOperations post={{ id: "aaaa", title: "aaaaa" }} />
         </footer>
         <p className="text-gray-500 dark:text-gray-400">
+          {text}
           Very straight-to-point article. Really worth time reading. Thank you!
           But tools are just the instruments htmlFor the UX designers. The
           knowledge of the design tools are as important as the creation of the

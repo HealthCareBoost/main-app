@@ -427,4 +427,33 @@ export const recipeRouter = createTRPCRouter({
         return { success: false, error };
       }
     }),
+
+  getCommentsForRecipe: publicProcedure
+    .input(
+      z.object({
+        recipe_id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        const comments = await ctx.prisma.comment.findMany({
+          where: {
+            recipe_id: input.recipe_id,
+          },
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+          },
+        });
+        return { success: true, comments };
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
+    }),
 });
