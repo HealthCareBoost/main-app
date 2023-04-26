@@ -5,8 +5,30 @@ import { useZodForm } from "../../utils/useZodFormHook";
 import { z } from "zod";
 import { buttonVariants } from "../ui/Button";
 import { cn } from "../../utils/cn";
+import { api } from "../../utils/api";
+import { toast } from "../../hooks/use-toast";
+import { useRouter } from "next/navigation";
 
-export const CommentTextarea: React.FC = () => {
+export const CommentTextarea: React.FC<{ recipe_id: string }> = ({
+  recipe_id,
+}) => {
+  const router = useRouter();
+  const commentMutation = api.user.comment.useMutation({
+    onError: (error) => {
+      console.error(error);
+      return toast({
+        title: "Something went wrong.",
+        description: "Your post was not created. Please try again.",
+        variant: "destructive",
+      });
+    },
+    onSuccess: () => {
+      // onSuccess(_data, _variables, _context) {
+      // This forces a cache invalidation.
+      router.refresh();
+      router.push(`/recipe/${recipe_id}`);
+    },
+  });
   const form = useZodForm({
     schema: z.object({
       comment: z.string().min(1),
@@ -20,7 +42,17 @@ export const CommentTextarea: React.FC = () => {
           Comments (21)
         </h2>
       </div>
-      <Form className="mb-6" onSubmit={(data) => console.log(data)} form={form}>
+      <Form
+        className="mb-6"
+        onSubmit={(data) => {
+          console.log(data);
+          commentMutation.mutate({
+            recipe_id,
+            text: data.comment,
+          });
+        }}
+        form={form}
+      >
         <Textarea
           label="comment"
           hiddenLabel

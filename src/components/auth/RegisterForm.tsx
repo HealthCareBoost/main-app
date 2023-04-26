@@ -174,8 +174,8 @@ export const RegisterForm: React.FC<{
                     }));
                 signIn(provider.id, {
                   redirect: true,
-                }).catch((err) => {
-                  console.log(err);
+                }).catch((error) => {
+                  console.error(error);
                 });
               }}
               disabled={

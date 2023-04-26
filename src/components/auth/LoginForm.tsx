@@ -161,8 +161,8 @@ export const LoginForm: React.FC<{
                       }));
                   signIn(provider.id, {
                     redirect: false,
-                  }).catch((err) => {
-                    console.log(err);
+                  }).catch((error) => {
+                    console.error(error);
                   });
                 }}
                 disabled={

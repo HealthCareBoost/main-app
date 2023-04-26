@@ -2,7 +2,6 @@ import { MealTypes } from "@prisma/client";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
-import { text } from "stream/consumers";
 
 export const userRouter = createTRPCRouter({
   hello: publicProcedure.query(({ ctx }) => {
