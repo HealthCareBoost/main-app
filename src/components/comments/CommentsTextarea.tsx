@@ -14,7 +14,7 @@ export const CommentTextarea: React.FC<{ recipe_id: string }> = ({
 }) => {
   const router = useRouter();
   const commentMutation = api.user.comment.useMutation({
-    onError: (error) => {
+    onError: (error: unknown) => {
       console.error(error);
       return toast({
         title: "Something went wrong.",
@@ -36,7 +36,7 @@ export const CommentTextarea: React.FC<{ recipe_id: string }> = ({
   });
 
   return (
-    <div className="mx-auto max-w-2xl px-4">
+    <div className="mx-auto max-w-2xl px-4" id="comments">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-lg font-bold text-primaryDark dark:text-white lg:text-2xl">
           Comments (21)

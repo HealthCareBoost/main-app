@@ -18,7 +18,6 @@ export const PostItem: React.FC<CommentProps> = ({
   text,
   user,
 }) => {
-  console.log(text);
   return (
     <div className="space-y-4">
       <div className="flex">

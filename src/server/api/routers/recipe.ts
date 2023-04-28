@@ -389,7 +389,6 @@ export const recipeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const user_id = ctx.session.user.id;
-
         const isLiked = await ctx.prisma.userPreferences.findFirst({
           select: {
             liked: true,
@@ -404,7 +403,7 @@ export const recipeRouter = createTRPCRouter({
           },
         });
 
-        await ctx.prisma.userPreferences.upsert({
+        const { liked } = await ctx.prisma.userPreferences.upsert({
           where: {
             user_id_recipe_id: {
               user_id: user_id,
@@ -412,6 +411,7 @@ export const recipeRouter = createTRPCRouter({
             },
           },
           update: {
+            updatedAt: new Date(),
             liked: isLiked === null || isLiked.liked === false ? true : false,
           },
           create: {
@@ -421,7 +421,85 @@ export const recipeRouter = createTRPCRouter({
             made: false,
             saved: false,
           },
+          select: {
+            liked: true,
+          },
         });
+        return { success: true, liked };
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
+    }),
+
+  saveRecipe: protectedProcedure
+    .input(
+      z.object({
+        recipe_id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const user_id = ctx.session.user.id;
+        const isSaved = await ctx.prisma.userPreferences.findFirst({
+          select: {
+            saved: true,
+          },
+          where: {
+            AND: [
+              { user_id: user_id },
+              {
+                recipe_id: input.recipe_id,
+              },
+            ],
+          },
+        });
+
+        const { saved } = await ctx.prisma.userPreferences.upsert({
+          where: {
+            user_id_recipe_id: {
+              user_id: user_id,
+              recipe_id: input.recipe_id,
+            },
+          },
+          update: {
+            updatedAt: new Date(),
+            saved: isSaved === null || isSaved.saved === false ? true : false,
+          },
+          create: {
+            saved: true,
+            liked: false,
+            recipe_id: input.recipe_id,
+            user_id: user_id,
+            made: false,
+          },
+          select: { saved: true },
+        });
+        return { success: true, saved };
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
+    }),
+
+  getUserPreferences: protectedProcedure
+    .input(
+      z.object({
+        recipe_id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        const user_id = ctx.session.user.id;
+        const userPreferences = await ctx.prisma.userPreferences.findUnique({
+          where: {
+            user_id_recipe_id: {
+              recipe_id: input.recipe_id,
+              user_id,
+            },
+          },
+        });
+        return { success: true, preferences: userPreferences };
       } catch (error) {
         console.error(error);
         return { success: false, error };

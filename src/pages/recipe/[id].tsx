@@ -69,81 +69,7 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
 
       <div className="container h-screen">
         <div className="flex w-full flex-grow flex-col flex-wrap py-4 sm:flex-row sm:flex-nowrap">
-          <div className="h-full w-full flex-shrink flex-grow-0 px-4 sm:w-1/6 lg:w-[10%]">
-            <div className="sticky top-0 h-full w-full rounded-xl bg-gray-100 p-4">
-              <ul className="flex content-center justify-center overflow-hidden sm:flex-col">
-                <li className="rounded py-2 hover:bg-indigo-300">
-                  <a
-                    className="truncate sm:flex sm:flex-col sm:justify-center"
-                    href="#"
-                  >
-                    <img
-                      src="//cdn.jsdelivr.net/npm/heroicons@1.0.1/outline/home.svg"
-                      className="mx-4 inline w-7 sm:self-center"
-                    />
-                    <span className="hidden text-center sm:inline">Home</span>
-                  </a>
-                </li>
-                <li className="rounded py-2 hover:bg-indigo-300">
-                  <a
-                    className="truncate sm:flex sm:flex-col sm:justify-center"
-                    href="#"
-                  >
-                    <img
-                      src="//cdn.jsdelivr.net/npm/heroicons@1.0.1/outline/cog.svg"
-                      className="mx-4 inline w-7 sm:self-center"
-                    />{" "}
-                    <span className="hidden text-center sm:inline">
-                      Settings
-                    </span>
-                  </a>
-                </li>
-                <li className="rounded py-2 hover:bg-indigo-300">
-                  <a
-                    className="truncate sm:flex sm:flex-col sm:justify-center"
-                    href="#"
-                  >
-                    <img
-                      src="//cdn.jsdelivr.net/npm/heroicons@1.0.1/outline/gift.svg"
-                      className="mx-4 inline w-7 sm:self-center"
-                    />{" "}
-                    <span className="hidden text-center sm:inline">
-                      Products
-                    </span>
-                  </a>
-                </li>
-                <li className="rounded py-2 hover:bg-indigo-300">
-                  <a
-                    className="truncate sm:flex sm:flex-col sm:justify-center"
-                    href="#"
-                  >
-                    <img
-                      src="//cdn.jsdelivr.net/npm/heroicons@1.0.1/outline/chart-bar.svg"
-                      className="mx-4 inline w-7 sm:self-center"
-                    />{" "}
-                    <span className="hidden text-center sm:inline">
-                      Reports
-                    </span>
-                  </a>
-                </li>
-                <li className="rounded py-2 hover:bg-indigo-300">
-                  <a
-                    className="truncate sm:flex sm:flex-col sm:justify-center"
-                    href="#"
-                  >
-                    <img
-                      src="//cdn.jsdelivr.net/npm/heroicons@1.0.1/outline/collection.svg"
-                      className="mx-4 inline w-7 sm:self-center"
-                    />{" "}
-                    <span className="hidden text-center sm:inline">
-                      Integrations
-                    </span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
+          <RecipeOptions recipe_id={recipe_id} />
           <main role="main" className="w-full flex-grow px-3 pt-1 md:w-1/2">
             <Recipe />
             <h1 className="mb-4 text-3xl font-extrabold md:text-5xl" id="home">
@@ -233,8 +159,8 @@ import { prisma } from "../../server/db";
 import { Recipe } from "../../components/recipe/Recipe";
 import { Comment, PostItem } from "../../components/comments/Comment";
 import { CommentTextarea } from "../../components/comments/CommentsTextarea";
-import { cn } from "../../utils/cn";
 import { useTheme } from "next-themes";
+import { RecipeOptions } from "../../components/recipe/RecipeOptions";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({
