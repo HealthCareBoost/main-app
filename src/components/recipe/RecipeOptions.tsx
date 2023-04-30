@@ -67,9 +67,9 @@ export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
 
   return (
     <div className="h-full w-full flex-shrink flex-grow-0 px-4 sm:w-1/6 lg:w-[10%]">
-      <div className="sticky top-0 h-full w-full rounded-xl bg-orange-50 p-4 dark:bg-orange-500">
+      <div className="sticky top-0 h-full w-full rounded-xl bg-orange-400 p-4 dark:bg-orange-500">
         <ul className="flex content-center justify-center overflow-hidden sm:flex-col">
-          <li className="rounded-md py-2 hover:bg-orange-300 dark:hover:bg-orange-100">
+          <li className="flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
             <button
               className="truncate sm:flex sm:flex-col sm:justify-center"
               onClick={() => {
@@ -83,12 +83,12 @@ export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
                 stroke="black"
                 className="mx-4 inline w-7 sm:self-center"
               />
-              <span className="hidden text-center dark:text-primaryDark sm:inline">
-                Settings
+              <span className="hidden self-center text-center dark:text-primaryDark sm:inline">
+                Home
               </span>
             </button>
           </li>
-          <li className="rounded-md py-2 hover:bg-orange-300 dark:hover:bg-orange-100">
+          <li className="flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
             <a
               className="truncate sm:flex sm:flex-col sm:justify-center"
               href="#comment"
@@ -99,12 +99,12 @@ export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
                 stroke="black"
                 className="mx-4 inline w-7 sm:self-center"
               />
-              <span className="hidden text-center dark:text-primaryDark sm:inline">
-                Products
+              <span className="hidden self-center text-center dark:text-primaryDark sm:inline">
+                Comment
               </span>
             </a>
           </li>
-          <li className="rounded-md py-2 hover:bg-orange-300 dark:hover:bg-orange-100">
+          <li className="flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
             <button
               className="truncate sm:flex sm:flex-col sm:justify-center"
               onClick={() => void onLikeClick()}
@@ -124,12 +124,12 @@ export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
                   stroke="black"
                 />
               )}
-              <span className="hidden text-center dark:text-primaryDark sm:inline">
-                Reports
+              <span className="hidden self-center text-center dark:text-primaryDark sm:inline">
+                Like
               </span>
             </button>
           </li>
-          <li className="rounded-md py-2 hover:bg-orange-300 dark:hover:bg-orange-100">
+          <li className="flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
             <button
               className="truncate sm:flex sm:flex-col sm:justify-center"
               onClick={() => void onSaveClick()}
@@ -149,8 +149,8 @@ export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
                   stroke="black"
                 />
               )}
-              <span className="hidden text-center dark:text-primaryDark sm:inline">
-                Integrations
+              <span className="hidden self-center text-center dark:text-primaryDark sm:inline">
+                Save
               </span>
             </button>
           </li>

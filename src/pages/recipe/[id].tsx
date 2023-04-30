@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import type { GetStaticProps, InferGetServerSidePropsType } from "next";
+import React from "react";
+import type { GetStaticProps } from "next";
 import { type NextPage } from "next";
 // import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
@@ -24,7 +24,7 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
   // props: InferGetServerSidePropsType<typeof getStaticProps>
   { recipe_id }
 ) => {
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
   // const router = useRouter();
   // const { id } = router.query;
   // const [resipe, setRecipe] = useState<Recipe | null>(null);
@@ -72,79 +72,19 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
           <RecipeOptions recipe_id={recipe_id} />
           <main role="main" className="w-full flex-grow px-3 pt-1 md:w-1/2">
             <Recipe />
-            <h1 className="mb-4 text-3xl font-extrabold md:text-5xl" id="home">
-              The Holy Grail Layout
-            </h1>
-            <p className="py-2">
-              Are you in search of this? In terms of Web design,{" "}
-              <a
-                className="text-indigo-600"
-                href="https://en.wikipedia.org/wiki/Holy_grail_(web_design)"
-              >
-                the &quot;holy grail&quot; is page layout
-              </a>{" "}
-              that has 3 columns. It is commonly desired and implemented, but
-              for many years, the various ways in which it could be implemented
-              with available technologies all had drawbacks. Because of this,
-              finding an optimal implementation was likened to searching for the
-              elusive Holy Grail.
-            </p>
-            <p className="py-2">
-              As of 2021, the Holy Grail layout is implemented using CSS Flexbox
-              or CSS Grid display. For this example, we&apos;re using the{" "}
-              <a className="text-indigo-600" href="https://tailwindcss.com/">
-                Tailwind CSS
-              </a>{" "}
-              utility framework. As part of it&apos;s default classes, Tailwind
-              includes
-              <a
-                className="text-indigo-600"
-                href="https://tailwindcss.com/docs/flex-direction"
-              >
-                Flexbox classes
-              </a>{" "}
-              which make this implementation possible. The holy grail example is
-              also responsive so that the layout stacks vertically on smaller
-              mobile screens.
-            </p>
-            <p className="py-2">
-              Many web pages require a layout with multiple (often three)
-              columns, with the main page content in one column (often the
-              center), and supplementary content such as menus and
-              advertisements in the other columns (sidebars). These columns
-              commonly require separate backgrounds, with borders between them,
-              and should appear to be the same height no matter which column has
-              the tallest content. A common requirement is that the sidebars
-              have a fixed width, with the center column adjusting in size to
-              fill the window (fluid or liquid layout). Another requirement is
-              that, when a page does not contain enough content to fill the
-              screen, the footer should drop to the bottom of the browser window
-              instead of leaving blank space underneath.
-            </p>
-            <div className="flex hidden rounded bg-indigo-600 p-3 text-white md:flex">
-              <span className="flex-shrink overflow-hidden whitespace-nowrap">
-                &lt;--------
-              </span>
-              <div className="flex-shrink-0 flex-grow overflow-ellipsis text-center">
-                This center column is "fluid" so it grows in width as needed!
-              </div>
-              <span className="flex-shrink overflow-hidden whitespace-nowrap">
-                --------&gt;
-              </span>
-            </div>
-            <CommentTextarea recipe_id={recipe_id} />
-
-            {recipeComments &&
-              recipeComments.comments &&
-              recipeComments.comments.map((comment, idx) =>
-                idx % 2 === 0 ? (
-                  <Comment key={comment.id} {...comment} />
-                ) : (
-                  <PostItem key={comment.id} {...comment} />
-                )
-              )}
+            <Separator orientation="horizontal" className="my-4" />
           </main>
         </div>
+        <CommentTextarea recipe_id={recipe_id} />
+        {recipeComments &&
+          recipeComments.comments &&
+          recipeComments.comments.map((comment, idx) =>
+            idx % 2 === 0 ? (
+              <Comment key={comment.id} {...comment} />
+            ) : (
+              <PostItem key={comment.id} {...comment} />
+            )
+          )}
       </div>
     </>
   );
@@ -159,8 +99,8 @@ import { prisma } from "../../server/db";
 import { Recipe } from "../../components/recipe/Recipe";
 import { Comment, PostItem } from "../../components/comments/Comment";
 import { CommentTextarea } from "../../components/comments/CommentsTextarea";
-import { useTheme } from "next-themes";
 import { RecipeOptions } from "../../components/recipe/RecipeOptions";
+import { Separator } from "../../components/ui/Separator";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({

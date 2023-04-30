@@ -58,7 +58,7 @@ export const LandingNavbar: React.FC = () => {
         <ThemeButton styles="" />
       </ul>
 
-      <div className="flex flex-1 items-center justify-end sm:hidden">
+      <div className="z-50 flex flex-1 items-center justify-end sm:hidden">
         <ThemeButton styles={`${styles.marginX}`} />
         {toggle ? (
           <CloseMenuIcon
