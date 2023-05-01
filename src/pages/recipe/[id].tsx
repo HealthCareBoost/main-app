@@ -37,8 +37,9 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
   const { data: recipeComments, isLoading: isCommentsLoading } =
     api.recipe.getCommentsForRecipe.useQuery({ recipe_id });
 
-  if (isLoading) {
+  if (isLoading || isCommentsLoading) {
     console.log("loading");
+    console.log(isCommentsLoading);
   }
 
   // useEffect(() => {}, [id]);
@@ -71,6 +72,38 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
         <div className="flex w-full flex-grow flex-col flex-wrap py-4 sm:flex-row sm:flex-nowrap">
           <RecipeOptions recipe_id={recipe_id} />
           <main role="main" className="w-full flex-grow px-3 pt-1 md:w-1/2">
+            <nav aria-label="Breadcrumb">
+              <ol
+                role="list"
+                className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
+              >
+                {Array.from("123456").map((a, idx) => (
+                  <li key={`${a}${idx}${Math.random()}`}>
+                    <div className="flex items-center">
+                      <a
+                        href="#"
+                        className="mr-2 text-sm font-medium text-primaryDark dark:text-white"
+                      >
+                        Category
+                      </a>
+                      {/* last element in category array */}
+                      {a === "6" ? null : (
+                        <svg
+                          width="16"
+                          height="20"
+                          viewBox="0 0 16 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                          className="h-5 w-4 text-gray-300"
+                        >
+                          <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
+                        </svg>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </nav>
             <Recipe />
             <Separator orientation="horizontal" className="my-4" />
           </main>
@@ -111,6 +144,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const id = context.params?.id as string;
 
   await ssg.recipe.getRecipeByID.prefetch({ id });
+  await ssg.recipe.getCommentsForRecipe.prefetch({ recipe_id: id });
   // Make sure to return { props: { trpcState: ssg.dehydrate() } }
   return {
     props: {

@@ -69,7 +69,7 @@ export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
     <div className="h-full w-full flex-shrink flex-grow-0 px-4 sm:w-1/6 lg:w-[10%]">
       <div className="sticky top-0 h-full w-full rounded-xl bg-orange-400 p-4 dark:bg-orange-500">
         <ul className="flex content-center justify-center overflow-hidden sm:flex-col">
-          <li className="flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
+          <li className="my-2 flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
             <button
               className="truncate sm:flex sm:flex-col sm:justify-center"
               onClick={() => {
@@ -88,7 +88,7 @@ export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
               </span>
             </button>
           </li>
-          <li className="flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
+          <li className="my-2 flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
             <a
               className="truncate sm:flex sm:flex-col sm:justify-center"
               href="#comment"
@@ -104,7 +104,7 @@ export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
               </span>
             </a>
           </li>
-          <li className="flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
+          <li className="my-2 flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
             <button
               className="truncate sm:flex sm:flex-col sm:justify-center"
               onClick={() => void onLikeClick()}
@@ -129,7 +129,7 @@ export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
               </span>
             </button>
           </li>
-          <li className="flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
+          <li className="my-2 flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
             <button
               className="truncate sm:flex sm:flex-col sm:justify-center"
               onClick={() => void onSaveClick()}

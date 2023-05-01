@@ -1,6 +1,17 @@
 import Image from "next/image";
 import React from "react";
 import { styles } from "../../styles/style";
+import { UserAvatar } from "../UserAvatar";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/Card";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/HoverCard";
+import { AlertTriangle } from "lucide-react";
 
 export const Recipe: React.FC = () => {
   return (
@@ -43,14 +54,19 @@ export const Recipe: React.FC = () => {
           </div>
           <div className="flex flex-col">
             <div className="my-4 flex flex-col items-center sm:flex-row sm:items-center sm:justify-between">
-              <div
-                className={`my-4 sm:my-2 md:pl-8`}
-                // className="col-span-4 md:pl-4"
-              >
+              <div className={`my-4 sm:my-2 sm:pl-4 md:pl-5`}>
                 <div
-                  className="break-words"
+                  className="my-2 flex flex-row items-center justify-between break-words"
                   // style="word-break: break-word;"
                 >
+                  <UserAvatar
+                    user={{
+                      name: "Anonymous",
+                      image:
+                        "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
+                    }}
+                    className="mr-2 h-8 w-8 rounded-full"
+                  />
                   <a
                     target="blank"
                     href="https://www.simplyrecipes.com/recipes/beef_chili_mac_and_cheese/"
@@ -64,10 +80,7 @@ export const Recipe: React.FC = () => {
                 </div>
               </div>
 
-              <div
-                className="my-4 flex items-start sm:my-2 md:mr-8 md:pl-10"
-                // className="col-span-8 flex w-full items-start md:pl-10"
-              >
+              <div className="my-4 flex items-start sm:my-2 md:mr-8 md:pl-10">
                 <div className="pl-0 pr-4">
                   <div className="break-words text-center font-poppins text-lg text-[20px] font-bold uppercase leading-[32px] tracking-wide">
                     Prep
@@ -98,16 +111,13 @@ export const Recipe: React.FC = () => {
               </div>
             </div>
 
-            <div
-              className="my-4 flex w-full flex-col items-center sm:flex-row sm:justify-between sm:pl-4"
-              // className="my-4 w-full grid-cols-12 gap-y-12 sm:pl-4"
-            >
-              <div
-                // className="relative col-span-12 mt-1 grid h-auto auto-cols-auto gap-y-4 first:pt-0 sm:col-span-6 sm:flex sm:flex-col sm:items-center sm:justify-center">
-                className="relative mx-4 mt-1 h-auto first:pt-0 sm:flex sm:flex-col sm:items-center sm:justify-center"
-              >
+            <div className="my-4 flex w-full flex-col items-center sm:flex-row sm:justify-between">
+              <div className="relative mx-4 mt-1 h-auto first:pt-0 sm:flex sm:flex-col sm:items-center sm:justify-center">
                 {Array.from("aaa").map((e, idx) => (
-                  <div key={`${e}${idx}`} className="text-justify sm:text-left">
+                  <div
+                    key={`${e}${idx}`}
+                    className="text-justify font-poppins text-lg font-normal leading-[30.8px] sm:text-left"
+                  >
                     <div className="cursor-default break-words">
                       <span className="font-bold text-slate-700"></span>
                       For the chili:
@@ -125,29 +135,60 @@ export const Recipe: React.FC = () => {
                   </div>
                 ))}
               </div>
-              <div
-                // className="relative col-span-12 mt-1 grid h-auto auto-cols-auto gap-y-4 first:pt-0 sm:col-span-6 sm:flex sm:flex-col sm:items-center sm:justify-center">
-                className="relative mx-4 mt-1 h-auto first:pt-0 sm:flex sm:flex-col sm:items-center sm:justify-center"
-              >
-                {Array.from("aaa").map((e, idx) => (
-                  <div key={`${e}${idx}`} className="text-justify sm:text-left">
-                    <div className="cursor-default break-words">
-                      <span className="font-bold text-slate-700"></span>
-                      For the chili:
+              <div className="relative mx-4 mt-1 h-auto first:pt-0 sm:flex sm:flex-col sm:items-center sm:justify-center">
+                <Card className="w-[350px]">
+                  <CardHeader>
+                    <CardTitle className="uppercase">
+                      Nutrition Information
+                    </CardTitle>
+                    {/* <CardDescription>
+                      Deploy your new project in one-click.
+                    </CardDescription> */}
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-row items-center justify-between text-center">
+                      {[
+                        { name: "CALORIES", amount: 522, unit: "g" },
+                        { name: "FAT", amount: 33, unit: "g" },
+                        { name: "CARBS", amount: 25, unit: "g" },
+                        { name: "PROTEIN", amount: 31, unit: "g" },
+                      ].map((n) => (
+                        <div key={`${n.name}${Math.random()}`}>
+                          <div>{n.name}</div>
+                          <div>
+                            {n.amount} {n.unit}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <div className="cursor-default break-words">
-                      <span className="font-bold text-slate-700">2 cups </span>
-                      uncooked elbow pasta
+                  </CardContent>
+                  <CardFooter className="flex flex-col items-start justify-between">
+                    <div className="my-2">
+                      Nutrition information is calculated using an ingredient
+                      database and should be considered an estimate. In cases
+                      where multiple ingredient alternatives are given, the
+                      first listed is calculated for nutrition. Garnishes and
+                      optional ingredients are not included.
                     </div>
-                    <div className="cursor-default break-words">
-                      <span className="font-bold text-slate-700">
-                        1 tablespoon{" "}
-                      </span>
-                      vegetable oil
-                    </div>
-                  </div>
-                ))}
-              </div>{" "}
+                    <HoverCard>
+                      <HoverCardTrigger>
+                        <div className="flex flex-row items-center justify-between">
+                          <AlertTriangle />
+                          <p className="mx-2 font-semibold">Additional info</p>
+                        </div>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="z-50">
+                        The % Daily Value (DV) tells you how much a nutrient in
+                        a food serving contributes to a daily diet. 2,000
+                        calories a day is used for general nutrition advice.
+                      </HoverCardContent>
+                    </HoverCard>
+
+                    {/* <Button variant="ghost">Cancel</Button>
+                    <Button>Deploy</Button> */}
+                  </CardFooter>
+                </Card>
+              </div>
             </div>
 
             <div className="my-4 w-full sm:pl-4">
