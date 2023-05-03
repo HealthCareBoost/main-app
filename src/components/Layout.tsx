@@ -2,6 +2,7 @@ import React from "react";
 
 import dynamic from "next/dynamic";
 import { styles } from "../styles/style";
+// import { FooterSmall } from "./landing/LandingFooter";
 
 export const LN = dynamic(
   () => import("../components/MainNav").then((mod) => mod.MainNav),
