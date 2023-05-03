@@ -3,6 +3,67 @@ import React from "react";
 import { styles } from "../../styles/style";
 import { SocialIcons } from "./SocialIcons";
 
+export const FooterSmall = () => {
+  const socialMedia = [
+    {
+      id: "social-media-1",
+      icon: "assets/instagram.svg",
+      name: "instagram",
+      link: "https://www.instagram.com/",
+    },
+    {
+      id: "social-media-2",
+      icon: "assets/facebook.svg",
+      name: "facebook",
+      link: "https://www.facebook.com/",
+    },
+    {
+      id: "social-media-3",
+      icon: "assets/twitter.svg",
+      name: "twitter",
+      link: "https://www.twitter.com/",
+    },
+    {
+      id: "social-media-4",
+      icon: "assets/linkedin.svg",
+      name: "linkedin",
+      link: "https://www.linkedin.com/",
+    },
+  ];
+
+  return (
+    <div className="flex w-full flex-col items-center justify-between border-t-[1px] border-t-orange-400 pt-6 md:flex-row">
+      <p className="text-center font-poppins text-[16px] font-normal leading-[27px] text-dimDark dark:text-dimWhite">
+        Copyright Ⓒ 2022 HooBank. All Rights Reserved.
+      </p>
+
+      <div className="mt-6 flex flex-row md:mt-0">
+        {socialMedia.map((social, index) => (
+          /* <Image
+        height={21}
+        width={21}
+        key={social.id}
+        src={social.icon}
+        alt={social.id}
+        className={`h-[21px] w-[21px] cursor-pointer object-contain ${
+          index !== socialMedia.length - 1 ? "mr-6" : "mr-0"
+        } hover:fill-orange-400`}
+        onClick={() => window.open(social.link)}
+      /> */
+          <SocialIcons
+            key={social.id}
+            className={`h-[21px] w-[21px] cursor-pointer object-contain ${
+              index !== socialMedia.length - 1 ? "mr-6" : "mr-0"
+            } hover:fill-orange-400`}
+            onClick={() => window.open(social.link)}
+            name={social.name}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export const LandingFooter: React.FC = () => {
   const footerLinks = [
     {
@@ -70,33 +131,6 @@ export const LandingFooter: React.FC = () => {
     },
   ];
 
-  const socialMedia = [
-    {
-      id: "social-media-1",
-      icon: "assets/instagram.svg",
-      name: "instagram",
-      link: "https://www.instagram.com/",
-    },
-    {
-      id: "social-media-2",
-      icon: "assets/facebook.svg",
-      name: "facebook",
-      link: "https://www.facebook.com/",
-    },
-    {
-      id: "social-media-3",
-      icon: "assets/twitter.svg",
-      name: "twitter",
-      link: "https://www.twitter.com/",
-    },
-    {
-      id: "social-media-4",
-      icon: "assets/linkedin.svg",
-      name: "linkedin",
-      link: "https://www.linkedin.com/",
-    },
-  ];
-
   return (
     <section className={`${styles.flexCenter} ${styles.paddingY} flex-col`}>
       <div className={`${styles.flexStart} mb-8 w-full flex-col md:flex-row`}>
@@ -138,36 +172,7 @@ export const LandingFooter: React.FC = () => {
           ))}
         </div>
       </div>
-
-      <div className="flex w-full flex-col items-center justify-between border-t-[1px] border-t-orange-400 pt-6 md:flex-row">
-        <p className="text-center font-poppins text-[16px] font-normal leading-[27px] text-dimDark dark:text-dimWhite">
-          Copyright Ⓒ 2022 HooBank. All Rights Reserved.
-        </p>
-
-        <div className="mt-6 flex flex-row md:mt-0">
-          {socialMedia.map((social, index) => (
-            /* <Image
-              height={21}
-              width={21}
-              key={social.id}
-              src={social.icon}
-              alt={social.id}
-              className={`h-[21px] w-[21px] cursor-pointer object-contain ${
-                index !== socialMedia.length - 1 ? "mr-6" : "mr-0"
-              } hover:fill-orange-400`}
-              onClick={() => window.open(social.link)}
-            /> */
-            <SocialIcons
-              key={social.id}
-              className={`h-[21px] w-[21px] cursor-pointer object-contain ${
-                index !== socialMedia.length - 1 ? "mr-6" : "mr-0"
-              } hover:fill-orange-400`}
-              onClick={() => window.open(social.link)}
-              name={social.name}
-            />
-          ))}
-        </div>
-      </div>
+      <FooterSmall />
     </section>
   );
 };
