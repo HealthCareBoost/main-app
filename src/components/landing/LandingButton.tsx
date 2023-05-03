@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 export const LandingButton: React.FC<{
@@ -12,6 +13,23 @@ export const LandingButton: React.FC<{
       }`}
     >
       {text}
+    </button>
+  );
+};
+
+export const LandingLoginButton: React.FC<{
+  styles?: string;
+}> = ({ styles }) => {
+  return (
+    <button
+      type="button"
+      className={`bg-orange-gradient primaryDark mx-2 flex items-center rounded-md py-3 px-5 text-center align-middle font-poppins text-[16px] font-medium outline-none transition-colors dark:text-primaryDark sm:text-sm ${
+        styles ? styles : ""
+      }`}
+    >
+      <Link type="button" href={"/login"}>
+        Login
+      </Link>
     </button>
   );
 };
