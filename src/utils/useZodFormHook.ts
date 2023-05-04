@@ -11,8 +11,9 @@ interface UseZodFormProps<Z extends ZodSchema>
 export const useZodForm = <Z extends ZodSchema>({
   schema,
   ...formProps
-}: UseZodFormProps<Z>) =>
-  useForm({
+}: UseZodFormProps<Z>) => {
+  return useForm({
     ...formProps,
     resolver: zodResolver(schema),
   });
+};

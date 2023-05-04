@@ -15,11 +15,29 @@ export const userRouter = createTRPCRouter({
     };
   }),
 
-  me: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.user.findUnique({
-      where: { id: ctx.session.user.id },
-    });
-  }),
+  getUserProfile: publicProcedure
+    .input(
+      z.object({
+        user_id: z.string().min(3),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        const user_id = input.user_id;
+        const user = await ctx.prisma.user.findUniqueOrThrow({
+          where: { id: user_id },
+        });
+
+        // if (ctx.session && ctx.session.user.id === user_id) {
+        //   return { success: true, user: { email, ...rest } };
+        // }
+
+        return { success: true, user };
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
+    }),
 
   saveUserDailyDiet: protectedProcedure
     .input(
@@ -354,6 +372,30 @@ export const userRouter = createTRPCRouter({
           },
         });
         return { success: true };
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
+    }),
+
+  changeName: protectedProcedure
+    .input(
+      z.object({
+        name: z.string().min(3),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const user = await ctx.prisma.user.update({
+          where: {
+            id: ctx.session.user.id,
+          },
+          data: {
+            name: input.name,
+          },
+        });
+        console.log(user);
+        return { success: true, user };
       } catch (error) {
         console.error(error);
         return { success: false, error };

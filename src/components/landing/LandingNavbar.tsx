@@ -1,16 +1,12 @@
-import Image from "next/image";
-import React, { useState } from "react";
-import { styles } from "../../styles/style";
-import ThemeButton from "../ui/ChangeThemeButton";
 import { useTheme } from "next-themes";
-import { CloseMenuIcon, MenuIcon } from "../svgs/Menu";
+import Image from "next/image";
+import React from "react";
 import { LandingNavLinks } from "../../utils/NavlinksTypes";
-import Link from "next/link";
-import { LandingLoginButton } from "./LandingButton";
 import { MobileNav } from "../MobileNav";
+import ThemeButton from "../ui/ChangeThemeButton";
+import { LandingLoginButton } from "./LandingButton";
 
 export const LandingNavbar: React.FC = () => {
-  const [toggle, setToggle] = useState<boolean>(false);
   const { theme } = useTheme();
 
   return (

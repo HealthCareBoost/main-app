@@ -10,3 +10,7 @@ export const RegisterSchema = z.object({
   csrfToken: z.string(),
   email: z.string().email({ message: "Not a valid email" }),
 });
+
+export const ChangeNameSchema = z.object({
+  name: z.string().min(3),
+});

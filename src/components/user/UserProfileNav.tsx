@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/DropDown";
 import { UserAvatar } from "./UserAvatar";
+import { signOut } from "next-auth/react";
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
   user: Pick<User, "name" | "image" | "email">;
@@ -49,9 +50,10 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
           className="cursor-pointer"
           onSelect={(event) => {
             event.preventDefault();
-            // signOut({
-            //   callbackUrl: `${window.location.origin}/login`,
-            // });
+            void signOut({
+              redirect: true,
+              callbackUrl: `${window.location.origin}/landing`,
+            });
           }}
         >
           Sign out
