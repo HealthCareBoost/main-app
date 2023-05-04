@@ -32,6 +32,7 @@ export const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
           className
         )}
         {...inputProps}
+        name={name}
         ref={ref}
       />
       {state.error && (

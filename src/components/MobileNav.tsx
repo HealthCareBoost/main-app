@@ -1,13 +1,11 @@
 import * as React from "react";
 import Link from "next/link";
-import { cn } from "../utils/cn";
 import { useLockBody } from "../hooks/useLockBody";
 import ThemeButton from "./ui/ChangeThemeButton";
 import { CloseMenuIcon, MenuIcon } from "./svgs/Menu";
 import { useTheme } from "next-themes";
 import { styles } from "../styles/style";
 import type { NavItem } from "../utils/NavlinksTypes";
-import { MainNavLinks } from "../utils/NavlinksTypes";
 import { useSession } from "next-auth/react";
 
 interface MobileNavProps {
@@ -16,7 +14,7 @@ interface MobileNavProps {
 }
 
 export function MobileNav({ children, items }: MobileNavProps) {
-  useLockBody();
+  // useLockBody();
   const { data: sessionData } = useSession();
   const { theme } = useTheme();
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false);
