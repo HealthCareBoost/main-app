@@ -12,7 +12,7 @@ export const LN = dynamic(
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <>
-      <div className="w-full overflow-hidden dark:bg-primaryDark">
+      <div className="h-full w-full dark:bg-primaryDark">
         <div className={`${styles.paddingX} ${styles.flexCenter}`}>
           <div className={`${styles.boxWidth}`}>
             <LN />

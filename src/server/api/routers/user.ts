@@ -26,13 +26,36 @@ export const userRouter = createTRPCRouter({
         const user_id = input.user_id;
         const user = await ctx.prisma.user.findUniqueOrThrow({
           where: { id: user_id },
+          select: {
+            _count: {
+              select: { comments: true, recipes: true },
+            },
+            name: true,
+            email: true,
+            createdAt: true,
+            image: true,
+          },
         });
 
         // if (ctx.session && ctx.session.user.id === user_id) {
         //   return { success: true, user: { email, ...rest } };
         // }
 
-        return { success: true, user };
+        const userPrefStats = await ctx.prisma.userPreferences.count({
+          where: {
+            user_id: input.user_id,
+          },
+          select: { liked: true, saved: true, made: true },
+        });
+
+        return {
+          success: true,
+          user,
+          userStats: {
+            ...userPrefStats,
+            ...user._count,
+          },
+        };
       } catch (error) {
         console.error(error);
         return { success: false, error };
@@ -396,6 +419,50 @@ export const userRouter = createTRPCRouter({
         });
         console.log(user);
         return { success: true, user };
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
+    }),
+
+  getUserStats: publicProcedure
+    .input(
+      z.object({
+        user_id: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const userStats = await ctx.prisma.user.findFirstOrThrow({
+          where: {
+            id: input.user_id,
+          },
+          select: {
+            _count: {
+              select: {
+                comments: true,
+                recipes: true,
+              },
+            },
+            createdAt: true,
+          },
+        });
+
+        const userPrefStats = await ctx.prisma.userPreferences.count({
+          where: {
+            user_id: input.user_id,
+          },
+          select: { liked: true, saved: true, made: true },
+        });
+
+        return {
+          success: true,
+          userStats: {
+            ...userPrefStats,
+            ...userStats._count,
+            createdAt: userStats.createdAt,
+          },
+        };
       } catch (error) {
         console.error(error);
         return { success: false, error };
