@@ -9,7 +9,7 @@ import {
 } from "../ui/Dialog";
 import { MealTypes } from "@prisma/client";
 import { Form } from "../ui/FormProvider";
-import { Select } from "../ui/FormSelect";
+import { FormSelect } from "../ui/FormSelect";
 import { Input } from "../ui/FormInput";
 import { useZodForm } from "../../utils/useZodFormHook";
 import { z } from "zod";
@@ -124,7 +124,7 @@ export const CalendarDialog: React.FC = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               {/* <>{dailyDietInfo ? dailyDietInfo.meal_type : "no meal_typx"}</> */}
-              <Select
+              <FormSelect
                 className="col-span-3"
                 label="For"
                 required
@@ -135,7 +135,7 @@ export const CalendarDialog: React.FC = () => {
                     {value}
                   </option>
                 ))}
-              </Select>
+              </FormSelect>
             </div>
           </div>
           <Button type="submit">Save</Button>
