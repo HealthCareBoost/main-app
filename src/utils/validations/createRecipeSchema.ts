@@ -5,13 +5,31 @@ import { ImageInfoSchema } from "./imageSchema";
 
 export const RecipeSchema = z.object({
   name: z.string().min(3).max(50),
-  preparationTime: z.coerce
+  preparationMinutes: z.coerce
     .number({
       required_error: "Please select a number",
-      invalid_type_error: "That's not a valid positive number!",
+      invalid_type_error: "That's not a valid number!",
     })
-    .min(1),
-  preparationTimeUnit: z.nativeEnum(TimeUnits),
+    .min(0),
+  preparationHours: z.coerce
+    .number({
+      required_error: "Please select a number",
+      invalid_type_error: "That's not a valid number!",
+    })
+    .min(0),
+  cookingMinutes: z.coerce
+    .number({
+      required_error: "Please select a number",
+      invalid_type_error: "That's not a valid number!",
+    })
+    .min(0),
+  cookingHours: z.coerce
+    .number({
+      required_error: "Please select a number",
+      invalid_type_error: "That's not a valid number!",
+    })
+    .min(0),
+  // preparationTimeUnit: z.nativeEnum(TimeUnits),
   difficultyLevel: z.nativeEnum(DifficultyLevel),
   description: z.string().min(20),
   images: ImageInfoSchema.optional(), // doesn't work if its not optional
