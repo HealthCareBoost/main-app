@@ -96,6 +96,7 @@ model Recipe {
     total_likes                 Int         @default(0)
     daily_diet                  UserDailyDiet[]
     comments                    Comment[]
+    ingredients                 RecipeIngredient[]
 
     @@index([creator_id])
 }
@@ -160,6 +161,7 @@ model Ingredients {
     updatedAt           DateTime  @default(now())
     is_deleted          Boolean   @default(false)  
     nutrition           Nutrients[]
+    recipes             RecipeIngredient[]
 }
 
 model Nutrients {
@@ -176,11 +178,15 @@ model Nutrients {
 
 model RecipeIngredient {
     recipe_id       String
+    recipe          Recipe          @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
     ingredient_id   Int
+    ingredient      Ingredients     @relation(fields: [ingredient_id], references: [id])
     quantity        Float    
     measurement_unit MeasurementUnits
 
+
     @@unique([recipe_id, ingredient_id])
+    @@index([ingredient_id, recipe_id])
 }
 
 model Category {

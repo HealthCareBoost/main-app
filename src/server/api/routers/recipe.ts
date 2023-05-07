@@ -23,17 +23,38 @@ export const recipeRouter = createTRPCRouter({
    */
   getRecipeByID: publicProcedure
     .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.recipe.findUnique({
-        where: {
-          id: input.id,
-        },
-        include: {
-          images: true,
-          user: true,
-          categories: true,
-        },
-      });
+    .query(async ({ ctx, input }) => {
+      try {
+        const recipe = await ctx.prisma.recipe.findUniqueOrThrow({
+          where: {
+            id: input.id,
+          },
+          include: {
+            images: true,
+            user: true,
+            categories: true,
+            ingredients: {
+              select: {
+                ingredient: {
+                  select: { name: true },
+                },
+                measurement_unit: true,
+                quantity: true,
+                ingredient_id: true,
+              },
+            },
+          },
+        });
+
+        // const ingredients = await ctx.prisma.ingredients.findMany({
+
+        // });
+
+        return { success: true, recipe };
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
     }),
 
   /**

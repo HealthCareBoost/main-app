@@ -42,6 +42,18 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
     console.log(isCommentsLoading);
   }
 
+  console.log(isLoading);
+  console.log(!data);
+  // console.log(data.recipe);
+
+  if (isLoading || !data || !data.recipe) {
+    return (
+      <div className="mt-[20%] flex h-full min-h-[300px] w-full items-center justify-center">
+        <LoadingSpinner size={128} />
+      </div>
+    );
+  }
+
   // useEffect(() => {}, [id]);
 
   // return (
@@ -103,8 +115,8 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
                   </li>
                 ))}
               </ol>
+              <Recipe recipe={data.recipe} />
             </nav>
-            <Recipe />
             <Separator orientation="horizontal" className="my-4" />
           </main>
         </div>
@@ -134,6 +146,7 @@ import { Comment, PostItem } from "../../components/comments/Comment";
 import { CommentTextarea } from "../../components/comments/CommentsTextarea";
 import { RecipeOptions } from "../../components/recipe/RecipeOptions";
 import { Separator } from "../../components/ui/Separator";
+import { LoadingSpinner } from "../../components/Loading";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({

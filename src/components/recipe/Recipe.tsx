@@ -12,8 +12,34 @@ import {
 } from "../ui/Card";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/HoverCard";
 import { AlertTriangle } from "lucide-react";
+import { minuteToReadableTime } from "../../utils/timeConverter";
+import type { RouterOutputs } from "../../utils/api";
+import type {
+  MeasurementUnits,
+  Recipe as RecipeType,
+  RecipeCategory,
+  RecipeImage,
+  User,
+} from "@prisma/client";
 
-export const Recipe: React.FC = () => {
+type RecipeOutput = Pick<RouterOutputs["recipe"]["getRecipeByID"], "recipe">;
+type RecipeComponentProps = {
+  recipe: RecipeType & {
+    user: User;
+    ingredients: {
+      ingredient: {
+        name: string;
+      };
+      ingredient_id: number;
+      quantity: number;
+      measurement_unit: MeasurementUnits;
+    }[];
+    images: RecipeImage[];
+    categories: RecipeCategory[];
+  };
+};
+
+export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
   return (
     <>
       {/* <div className="mt-4 flex items-center justify-center">
@@ -26,18 +52,13 @@ export const Recipe: React.FC = () => {
           <h1
             className={`my-0 border-b border-b-slate-500 pb-2 uppercase ${styles.heading2}`}
           >
-            Chili Mac and Cheese
+            {recipe.name}
           </h1>
           <p
             id="description"
             className={`${styles.paragraph} my-0 mx-auto pb-8 pt-1 pr-3 text-left italic`}
           >
-            Chili mac and cheese! Take two comfort food favorites and combine
-            them into one cheesy skillet. Not too s picy, so perfect for a
-            family meal (add hot sauce if you like heat!). Lorem ipsum dolor sit
-            amet consectetur adipisicing elit. Ipsum laborum pariatur aliquam, a
-            cum dolorem quod doloribus nam consectetur molestiae dicta sunt.
-            Earum, sint cupiditate iste cumque nobis assumenda maxime!
+            {recipe.description}
           </p>
 
           <div className="relative mb-2 w-full bg-slate-100 pt-[50%]">
@@ -61,9 +82,10 @@ export const Recipe: React.FC = () => {
                 >
                   <UserAvatar
                     user={{
-                      name: "Anonymous",
-                      image:
-                        "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
+                      name: recipe.user.name ? recipe.user.name : "Anonymous",
+                      image: recipe.user.image
+                        ? recipe.user.image
+                        : "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
                     }}
                     className="mr-2 h-8 w-8 rounded-full"
                   />
@@ -72,11 +94,12 @@ export const Recipe: React.FC = () => {
                     href="https://www.simplyrecipes.com/recipes/beef_chili_mac_and_cheese/"
                     className="break-words font-poppins text-[20px] font-bold leading-[32px]"
                   >
-                    Aaron Hutcherson
+                    {recipe.user.name ? recipe.user.name : "Anonymous"}
                   </a>
                 </div>
                 <div className="font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite">
-                  Serves: 8
+                  Serves: {recipe.categories.length}
+                  {/* To add later */}
                 </div>
               </div>
 
@@ -86,7 +109,9 @@ export const Recipe: React.FC = () => {
                     Prep
                   </div>
                   <div className="break-words text-center font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite">
-                    10 mins
+                    {minuteToReadableTime(
+                      recipe.preparation_time_minutes as number
+                    )}
                   </div>
                 </div>
                 <div className="border-l-2 border-l-slate-300 px-4">
@@ -94,7 +119,7 @@ export const Recipe: React.FC = () => {
                     Cook
                   </div>
                   <div className="break-words text-center font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite">
-                    45 mins
+                    {minuteToReadableTime(recipe.cooking_time_minutes)}
                   </div>
                 </div>
                 <div className="border-l-2 border-l-slate-300 pl-4 pr-0">
@@ -105,7 +130,10 @@ export const Recipe: React.FC = () => {
                     data-testid="recipe-time-value-2"
                     className="break-words text-center font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite"
                   >
-                    55 mins
+                    {minuteToReadableTime(
+                      recipe.cooking_time_minutes +
+                        (recipe.preparation_time_minutes as number)
+                    )}
                   </div>
                 </div>
               </div>
@@ -113,24 +141,16 @@ export const Recipe: React.FC = () => {
 
             <div className="my-4 flex w-full flex-col items-center sm:flex-row sm:justify-between">
               <div className="relative mx-4 mt-1 h-auto first:pt-0 sm:flex sm:flex-col sm:items-center sm:justify-center">
-                {Array.from("aaa").map((e, idx) => (
+                {recipe.ingredients.map((ingredient, idx) => (
                   <div
-                    key={`${e}${idx}`}
+                    key={`${ingredient.ingredient_id}${idx}`}
                     className="text-justify font-poppins text-lg font-normal leading-[30.8px] sm:text-left"
                   >
                     <div className="cursor-default break-words">
-                      <span className="font-bold text-slate-700"></span>
-                      For the chili:
-                    </div>
-                    <div className="cursor-default break-words">
-                      <span className="font-bold text-slate-700">2 cups </span>
-                      uncooked elbow pasta
-                    </div>
-                    <div className="cursor-default break-words">
-                      <span className="font-bold text-slate-700">
-                        1 tablespoon{" "}
+                      <span className="font-bold text-primaryDark dark:text-white">
+                        {`${ingredient.quantity} ${ingredient.measurement_unit}`}
                       </span>
-                      vegetable oil
+                      {ingredient.ingredient.name}
                     </div>
                   </div>
                 ))}
@@ -195,37 +215,11 @@ export const Recipe: React.FC = () => {
               <ul
                 className={`${styles.paragraph} mb-3 mt-0 list-none p-2 pl-0 font-normal text-primaryDark dark:text-white`}
               >
-                <li>Preheat the oven: Preheat the oven to 400°F.</li>
-                <li className="pb-2 pt-2">
-                  Cook the pasta: Bring a large pot of salted water to a boil,
-                  and cook the pasta until al dente. Drain, rinse with cold
-                  water, and set aside.
-                </li>
-                <li className="pb-2 pt-2">
-                  Make the chili: Heat the oil in a large (12-inch) oven-safe
-                  skillet over medium heat. Add the onions and cook until
-                  softened, 2 to 3 minutes. Add the tomatoes and cook until they
-                  have broken down slightly and some of the liquid has
-                  evaporated, 3 to 5 minutes more. Add the ground beef, black
-                  pepper, 1 tablespoon chili powder, and 1 tablespoon salt to
-                  the onion-tomato mixture. Cook, breaking up the ground beef
-                  with a wooden spoon, until brown and fully cooked, 5 to 8
-                  minutes. Remove from heat.
-                </li>
-                <li className="pb-2 pt-2">
-                  Make the cheese sauce: Melt 2 tablespoons of butter in a
-                  saucepan over medium heat. Add the flour and cook, stirring
-                  occasionally, until bubbly and slightly golden, 1 to 2
-                  minutes. Slowly whisk the milk into the butter-flour mixture.
-                  At first, the mixture will seize up and look crumbly, but will
-                  smooth out as you keep adding milk and whisking. Once all the
-                  milk is added, bring to a simmer. Whisk frequently and scrape
-                  along the bottom of the pan, so it doesn&apos;t burn. Cook
-                  until the sauce has thickened slightly and seems creamy, 10 to
-                  15 minutes. Remove from the heat, and add the shredded cheese
-                  and mustard. Stir until the cheese has melted. Taste and add
-                  salt and pepper as needed.
-                </li>
+                {recipe.recipe_steps.split("\n").map((step, idx) => (
+                  <li className="py-2" key={`${idx}${step.charAt(0)}`}>
+                    {step}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
