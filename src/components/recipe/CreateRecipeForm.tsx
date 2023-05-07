@@ -1,15 +1,8 @@
 import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/Card";
+import { Card, CardContent } from "../ui/Card";
 import React, { useState } from "react";
 import { api } from "../../utils/api";
-import { ImageInfo } from "../../utils/validations/imageSchema";
+import type { ImageInfo } from "../../utils/validations/imageSchema";
 import { useZodForm } from "../../utils/useZodFormHook";
 import { RecipeSchema } from "../../utils/validations/createRecipeSchema";
 import { Controller, useFieldArray } from "react-hook-form";
@@ -17,19 +10,10 @@ import { Form } from "../ui/FormProvider";
 import { Input } from "../ui/FormInput";
 import { FormSelect } from "../ui/FormSelect";
 import { DifficultyLevel, MeasurementUnits } from "@prisma/client";
-import { TimeUnits } from "../../utils/enumsMap";
 import { Textarea } from "../ui/TextArea";
 import { CloudinaryUploadButton } from "../ui/CloudinaryUploadButton";
 import { Button } from "../ui/Button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/Select";
-import { X } from "lucide-react";
-import { Trash } from "lucide-react";
+import { Check, Trash } from "lucide-react";
 import { styles } from "../../styles/style";
 import { Separator } from "../ui/Separator";
 
@@ -574,6 +558,7 @@ export const CreateRecipeForm: React.FC = () => {
   // const addImagesMutation = api.recipe.addImages.useMutation();
   const getIngredientsNutritionsMutation =
     api.ingredients.addIngredient.useMutation();
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const [imageData, setImageData] = useState<ImageInfo[]>([]);
   const form = useZodForm({
@@ -601,34 +586,36 @@ export const CreateRecipeForm: React.FC = () => {
     <>
       <Form
         form={form}
-        onSubmit={(data) => {
+        onSubmit={async (data) => {
+          setIsSubmitting(true);
           console.log("***** form data *****");
           console.log(data);
           console.log("***** form data *****");
 
           // send ingredients to be saved and calulate nutr
-          //   try {
-          //     if (data.ingredients && data.ingredients.length > 0) {
-          //       for (const ingredient of data.ingredients) {
-          //         const { success } =
-          //           await getIngredientsNutritionsMutation.mutateAsync({
-          //             ingredientName: ingredient.ingredient_name,
-          //           });
-          //         console.log(success);
-          //       }
-          //     }
-          //   } catch (error) {
-          //     console.error(error);
-          //   } finally {
-          //     console.log("All ingredients nutritions are saved");
-          //   }
+          try {
+            if (data.ingredients && data.ingredients.length > 0) {
+              for (const ingredient of data.ingredients) {
+                const { success } =
+                  await getIngredientsNutritionsMutation.mutateAsync({
+                    ingredientName: ingredient.ingredient_name,
+                  });
+                console.log(success);
+              }
+            }
+          } catch (error) {
+            console.error(error);
+          } finally {
+            console.log("All ingredients nutritions are saved");
+          }
 
           console.log(imageData);
           // then create new recipe
-          //   createRecipeMutation.mutate({
-          //     ...data,
-          //     images: imageData,
-          //   });
+          createRecipeMutation.mutate({
+            ...data,
+            images: imageData,
+          });
+          setIsSubmitting(false);
         }}
       >
         <div className="space-y-12">
@@ -637,38 +624,18 @@ export const CreateRecipeForm: React.FC = () => {
               <h2
                 className={`${styles.heading2} text-base font-semibold leading-7`}
               >
-                Profile
+                Recipe Info
               </h2>
               <p className={`${styles.paragraph} mt-1 text-sm leading-6`}>
-                This information will be displayed publicly so be careful what
-                you share. Lorem ipsum dolor sit amet consectetur adipisicing
-                elit. Sunt aspernatur tempora ipsa provident, voluptatibus fugit
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                Officiis laborum aliquid nostrum aperiam, id sint inventore
+                suscipit, sequi quos libero ratione veniam iure doloremque enim
+                porro deserunt sit non consequatur?
               </p>
             </div>
             <Card>
               <CardContent className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div className="sm:col-span-5">
-                  {/* <label
-                    htmlFor="username"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Username
-                  </label>
-                  <div className="mt-2">
-                    <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                      <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
-                        workcation.com/
-                      </span>
-                      <input
-                        type="text"
-                        name="username"
-                        id="username"
-                        autoComplete="username"
-                        className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                        placeholder="janesmith"
-                      />
-                    </div>
-                  </div> */}
                   <Input
                     type="text"
                     label="Recipe Name"
@@ -755,32 +722,23 @@ export const CreateRecipeForm: React.FC = () => {
                 <div className="col-span-full">
                   <label
                     htmlFor="cover-photo"
-                    className="block text-sm font-medium leading-6 text-gray-900"
+                    className="block text-sm font-medium leading-6 text-primaryDark dark:text-white"
                   >
                     Cover photo
                   </label>
-                  <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                  <div className="mt-2 flex justify-center rounded-lg border border-dashed border-slate-700/25 px-6 py-10 dark:border-slate-500">
                     <div className="text-center">
                       <PhotoIcon
                         className="mx-auto h-12 w-12 text-gray-300"
                         aria-hidden="true"
                       />
                       <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                        <label
-                          htmlFor="file-upload"
-                          className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                        >
-                          <span>Upload a file</span>
-                          <input
-                            id="file-upload"
-                            name="file-upload"
-                            type="file"
-                            className="sr-only"
-                          />
-                        </label>
-                        <p className="pl-1">or drag and drop</p>
+                        <CloudinaryUploadButton
+                          className="cursor-pointer rounded-md font-semibold"
+                          onUploadSetData={setImageData}
+                        ></CloudinaryUploadButton>
                       </div>
-                      <p className="text-xs leading-5 text-gray-600">
+                      <p className="text-xs leading-5 text-primaryDark dark:text-white">
                         PNG, JPG, GIF up to 10MB
                       </p>
                     </div>
@@ -797,12 +755,13 @@ export const CreateRecipeForm: React.FC = () => {
               <h2
                 className={`${styles.heading2} text-base font-semibold leading-7`}
               >
-                Profile
+                Recipe Ingrediants & Steps
               </h2>
               <p className={`${styles.paragraph} mt-1 text-sm leading-6`}>
-                This information will be displayed publicly so be careful what
-                you share. Lorem ipsum dolor sit amet consectetur adipisicing
-                elit. Sunt aspernatur tempora ipsa provident, voluptatibus fugit
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Enim
+                beatae minus, eos doloremque, rem sit assumenda laboriosam,
+                earum reprehenderit iste architecto quisquam magnam facere harum
+                quibusdam veniam ipsa? Iusto, minus.
               </p>
             </div>
             <Card>
@@ -901,7 +860,8 @@ export const CreateRecipeForm: React.FC = () => {
 
                 <div className="col-span-full">
                   <Textarea
-                    label="recipe_steps"
+                    label="Recipe Steps"
+                    placeholder="Describe the steps for the recipe in details.Write the recipe steps in sequence of preparation and cooking."
                     rows={8}
                     id="text"
                     {...form.register("recipe_steps")}
@@ -914,17 +874,22 @@ export const CreateRecipeForm: React.FC = () => {
             </Card>
           </div>
         </div>
-        <Button
-          className="col-start-3 row-start-1 row-end-3"
-          variant={"destructive"}
-          type="submit"
-          onClick={() => {
-            console.log("data");
-            console.log(form);
-          }}
-        >
-          save
-        </Button>
+
+        <div className="mt-6 flex items-center justify-end gap-x-6">
+          <Button
+            // className="col-start-3 row-start-1 row-end-3"
+            variant={"default"}
+            type="submit"
+            disabled={isSubmitting}
+            // onClick={() => {
+            //   console.log("data");
+            //   console.log(form);
+            // }}
+          >
+            {/* <Check className="h-4 w-4" />  */}
+            Save
+          </Button>
+        </div>
       </Form>
     </>
   );

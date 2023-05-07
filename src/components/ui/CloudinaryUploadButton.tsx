@@ -11,12 +11,13 @@ export type CloudinaryUploadResponse = {
 };
 
 type UploadButtonProps = {
-  classNames: string;
+  className: string;
   onUploadSetData: React.Dispatch<React.SetStateAction<ImageInfo[]>>;
 };
 
 export const CloudinaryUploadButton: React.FC<UploadButtonProps> = ({
   onUploadSetData,
+  className,
 }) => {
   // console.log(onUploadSetData);
   return (
@@ -29,13 +30,13 @@ export const CloudinaryUploadButton: React.FC<UploadButtonProps> = ({
       ) {
         if (error) {
           alert(error.message);
-          // console.log("error");
-          // console.error(error);
+          console.log("error");
+          console.error(error);
         }
         console.log("res");
         console.log(result);
         onUploadSetData((prev) => [...prev, result.info]);
-        // console.log("wid");
+        console.log("wid");
         // console.log(widget);
       }}
     >
@@ -46,7 +47,11 @@ export const CloudinaryUploadButton: React.FC<UploadButtonProps> = ({
           // console.log(widget);
           open();
         }
-        return <Button onClick={handleOnClick}>Upload an Image</Button>;
+        return (
+          <Button className={className} onClick={handleOnClick}>
+            Upload an Image
+          </Button>
+        );
       }}
     </CldUploadWidget>
   );

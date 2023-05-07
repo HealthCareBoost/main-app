@@ -6,6 +6,7 @@ import { RecipeSchema } from "../../../utils/validations/createRecipeSchema";
 import { ImageInfoSchema } from "../../../utils/validations/imageSchema";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { getFiltersForQuery } from "../../../utils/mapFilters";
+import { timeToMinutes } from "../../../utils/timeConverter";
 
 export const recipeRouter = createTRPCRouter({
   /**
@@ -114,11 +115,17 @@ export const recipeRouter = createTRPCRouter({
         data: {
           creator_id: ctx.session.user.id,
           name: input.name,
-          preparation_time: `${input.preparationTime} ${input.preparationTimeUnit}`,
+          cooking_time_minutes: timeToMinutes(
+            input.cookingHours,
+            input.cookingMinutes
+          ),
+          preparation_time_minutes: timeToMinutes(
+            input.preparationHours,
+            input.preparationMinutes
+          ),
           description: input.description,
           difficulty_level: input.difficultyLevel,
           recipe_steps: input.recipe_steps,
-          cooking_time_minutes: 60, //make function to calc
           video_url: input.video_url ? input.video_url : "No video",
           images: {
             createMany: {

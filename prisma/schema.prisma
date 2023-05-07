@@ -77,25 +77,25 @@ model VerificationToken {
 }
 
 model Recipe {
-    id                      String  @id @default(cuid())
-    name                    String
-    creator_id              String
-    preparation_time        String
-    difficulty_level        DifficultyLevel
-    cooking_time_minutes    Int
-    description             String
-    images                  RecipeImage[]
+    id                          String      @id @default(cuid())
+    name                        String
+    creator_id                  String
+    difficulty_level            DifficultyLevel
+    preparation_time_minutes    Int         @default(0)
+    cooking_time_minutes        Int         @default(0)
+    description                 String      @db.Text
+    images                      RecipeImage[]
     // recipe_steps            RecipeSteps[]
-    recipe_steps            String
-    user                    User    @relation(fields: [creator_id], references: [id], onDelete: Cascade)
-    categories              RecipeCategory[]
-    video_url               String
-    createdAt               DateTime  @default(now())
-    updatedAt               DateTime  @default(now())
-    is_deleted              Boolean   @default(false)   
-    total_likes             Int       @default(0)
-    daily_diet              UserDailyDiet[]
-    comments                Comment[]
+    recipe_steps                String      @db.LongText
+    user                        User        @relation(fields: [creator_id], references: [id], onDelete: Cascade)
+    categories                  RecipeCategory[]
+    video_url                   String
+    createdAt                   DateTime    @default(now())
+    updatedAt                   DateTime    @default(now())
+    is_deleted                  Boolean     @default(false)   
+    total_likes                 Int         @default(0)
+    daily_diet                  UserDailyDiet[]
+    comments                    Comment[]
 
     @@index([creator_id])
 }

@@ -1,7 +1,6 @@
 import * as React from "react";
 
 export function MenuIcon(props: React.SVGProps<SVGSVGElement>) {
-  console.log(props.fill);
   return (
     <svg
       width="20"
@@ -19,7 +18,6 @@ export function MenuIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function CloseMenuIcon(props: React.SVGProps<SVGSVGElement>) {
-  console.log(props.fill);
   return (
     <svg
       width="18"
