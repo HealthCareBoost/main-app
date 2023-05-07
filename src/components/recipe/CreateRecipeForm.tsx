@@ -722,14 +722,18 @@ export const CreateRecipeForm: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="col-span-full mx-auto">
+                <div className="col-span-full">
                   <FormSelect
                     label="Difficulty"
                     required
                     {...form.register("difficultyLevel")}
                   >
                     {Object.entries(DifficultyLevel).map(([key, value]) => (
-                      <option key={key} value={value}>
+                      <option
+                        className="cursor-default select-none rounded-sm py-1.5 pr-2 pl-8 text-sm font-medium capitalize outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                        key={key}
+                        value={value}
+                      >
                         {value}
                       </option>
                     ))}
@@ -800,25 +804,27 @@ export const CreateRecipeForm: React.FC = () => {
                 you share. Lorem ipsum dolor sit amet consectetur adipisicing
                 elit. Sunt aspernatur tempora ipsa provident, voluptatibus fugit
               </p>
-              <Button
-                type="button"
-                onClick={() => {
-                  append({
-                    ingredient_name: "milk",
-                    measurement_unit: "Gram",
-                    quantity: 150,
-                  });
-                }}
-              >
-                append
-              </Button>
             </div>
             <Card>
               <CardContent className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                <Button
+                  type="button"
+                  className="sticky top-2 col-span-full sm:col-span-4 sm:col-start-2"
+                  onClick={() => {
+                    append({
+                      ingredient_name: "milk",
+                      measurement_unit: "Gram",
+                      quantity: 150,
+                    });
+                  }}
+                >
+                  Add Ingredient
+                </Button>
+
                 {fields.map((item, index) => {
                   return (
                     <div
-                      className="text-card-foreground col-span-full grid grid-cols-3 items-center rounded-lg border p-4 shadow-sm"
+                      className="text-card-foreground col-span-full grid grid-cols-3 items-center gap-4 rounded-lg border p-4 shadow-sm"
                       key={item.id}
                     >
                       <div className="col-span-full sm:col-span-2">
@@ -838,7 +844,7 @@ export const CreateRecipeForm: React.FC = () => {
                           }}
                         />
                       </div>
-                      <div className="col-span-full sm:col-span-1">
+                      <div className="col-span-full sm:col-span-1 lg:col-span-2">
                         <Controller
                           name={
                             `ingredients[${index}].quantity` as `ingredients.${number}.quantity`
@@ -864,43 +870,30 @@ export const CreateRecipeForm: React.FC = () => {
                           control={form.control}
                           render={({ field }) => {
                             return (
-                              // <FormSelect label="Measurement Unit" {...field}>
-                              //   {Object.entries(MeasurementUnits).map(
-                              //     ([key, value]) => (
-                              //       <option key={key} value={value}>
-                              //         {value}
-                              //       </option>
-                              //     )
-                              //   )}
-                              // </FormSelect>
-                              <Select {...field} ref={null}>
-                                <SelectTrigger className="w-[180px]">
-                                  <SelectValue
-                                    defaultValue={field.value}
-                                    placeholder={field.value}
-                                  />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {Object.entries(MeasurementUnits).map(
-                                    ([key, value]) => (
-                                      <SelectItem key={key} value={value}>
-                                        {value}
-                                      </SelectItem>
-                                    )
-                                  )}
-                                </SelectContent>
-                              </Select>
+                              <FormSelect
+                                className="content-center self-center"
+                                label="Measurement Unit"
+                                {...field}
+                              >
+                                {Object.entries(MeasurementUnits).map(
+                                  ([key, value]) => (
+                                    <option key={key} value={value}>
+                                      {value}
+                                    </option>
+                                  )
+                                )}
+                              </FormSelect>
                             );
                           }}
                         />
                       </div>
                       <Button
-                        className="col-span-3 my-4 sm:col-start-3 sm:row-start-1"
+                        className="col-span-3 my-4 sm:col-start-3 sm:row-start-1 sm:m-0 sm:-mt-8 sm:w-fit sm:justify-self-end"
                         variant={"destructive"}
                         type="button"
                         onClick={() => remove(index)}
                       >
-                        <Trash className="mr-2 h-4 w-4" />
+                        <Trash className="h-4 w-4" />
                       </Button>
                     </div>
                   );
@@ -909,6 +902,7 @@ export const CreateRecipeForm: React.FC = () => {
                 <div className="col-span-full">
                   <Textarea
                     label="recipe_steps"
+                    rows={8}
                     id="text"
                     {...form.register("recipe_steps")}
                   ></Textarea>

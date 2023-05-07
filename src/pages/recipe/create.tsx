@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { type NextPage } from "next";
 import { Controller, useFieldArray } from "react-hook-form";
 import { RecipeSchema } from "../../utils/validations/createRecipeSchema";
@@ -11,12 +11,14 @@ import { MeasurementUnits } from "@prisma/client";
 import { api } from "../../utils/api";
 import { Form } from "../../components/ui/FormProvider";
 import { Input } from "../../components/ui/FormInput";
-import { Select } from "../../components/ui/FormSelect";
+import { FormSelect } from "../../components/ui/FormSelect";
 import { Textarea } from "../../components/ui/TextArea";
 import { CloudinaryUploadButton } from "../../components/ui/CloudinaryUploadButton";
 import { type ImageInfo } from "../../utils/validations/imageSchema";
 import { Recipe } from "../../components/recipe/Recipe";
-
+import Example, {
+  CreateRecipeForm,
+} from "../../components/recipe/CreateRecipeForm";
 // const resolver: Resolver<FormTypes> = (values) => {
 //   return {
 //     values: values.firstName ? values : {},
@@ -95,7 +97,7 @@ const CreateRecipe: NextPage = () => {
               ></Input>
             </div>
             <div className="mb-4 max-w-full">
-              <Select
+              <FormSelect
                 label="difficultyLevel"
                 required
                 {...form.register("difficultyLevel")}
@@ -105,16 +107,16 @@ const CreateRecipe: NextPage = () => {
                     {value}
                   </option>
                 ))}
-              </Select>
+              </FormSelect>
             </div>
             <div className="mb-4 max-w-full">
               <Input
                 type="text"
                 label="Preparation Time"
                 required
-                {...form.register("preparationTime")}
+                {...form.register("preparationHours")}
               ></Input>
-              <Select
+              {/* <Select
                 label="preparationTimeUnit"
                 required
                 {...form.register("preparationTimeUnit")}
@@ -124,7 +126,7 @@ const CreateRecipe: NextPage = () => {
                     {value}
                   </option>
                 ))}
-              </Select>
+              </Select> */}
             </div>
             <div className="mb-4 max-w-full">
               <Textarea
@@ -193,7 +195,7 @@ const CreateRecipe: NextPage = () => {
                     control={form.control}
                     render={({ field }) => {
                       return (
-                        <Select label="measurement_unit" {...field}>
+                        <FormSelect label="measurement_unit" {...field}>
                           {Object.entries(MeasurementUnits).map(
                             ([key, value]) => (
                               <option key={key} value={value}>
@@ -201,7 +203,7 @@ const CreateRecipe: NextPage = () => {
                               </option>
                             )
                           )}
-                        </Select>
+                        </FormSelect>
                       );
                     }}
                   />
@@ -261,6 +263,11 @@ const CreateRecipe: NextPage = () => {
       
            */}
       </main>
+      {/* <MultistepForm /> */}
+      <div className="container">
+        {/* <Example /> */}
+        <CreateRecipeForm />
+      </div>
     </>
   );
 };
