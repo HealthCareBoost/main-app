@@ -39,7 +39,7 @@ export const RecipeSchema = z.object({
   ingredients: z
     .object({
       ingredient_name: z.string().min(3).max(50),
-      quantity: z.coerce.number().min(1),
+      quantity: z.coerce.number().min(0.1),
       measurement_unit: z.nativeEnum(MeasurementUnits),
     })
     .array(),

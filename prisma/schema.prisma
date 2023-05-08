@@ -336,4 +336,5 @@ enum MeasurementUnits {
     Dozen   // (typically for eggs or baked goods, such as cookies or donuts)
     Bunch   // (for herbs or vegetables)
     Stalk   // (for celery or asparagus)
+    Whole
 }
