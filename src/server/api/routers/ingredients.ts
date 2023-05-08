@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import axios from "axios";
 import { env } from "../../../env/server.mjs";
+import { MeasurementUnits } from "@prisma/client";
 // import { MeasurementUnits } from "@prisma/client";
 
 type NutrientData = {
@@ -11,9 +12,23 @@ type NutrientData = {
   unit: string;
 };
 
+type Nutrient = {
+  name: string;
+  amount: number;
+  unit: string;
+  ingredient_id: number;
+};
+
 export const ingredientsRouter = createTRPCRouter({
   addIngredient: publicProcedure
-    .input(z.object({ ingredientName: z.string() }))
+    .input(
+      z.object({
+        recipe_id: z.string(),
+        ingredientName: z.string(),
+        measurement_unit: z.nativeEnum(MeasurementUnits),
+        quantity: z.number(),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
       try {
         const ingredient = await ctx.prisma.ingredients.findFirst({
@@ -49,13 +64,14 @@ export const ingredientsRouter = createTRPCRouter({
 
             const savedIngredient = await ctx.prisma.ingredients.create({
               data: {
+                recipe_id: input.recipe_id,
                 name: input.ingredientName,
-                nutrition: {
-                  create: nutritionsData,
-                },
+                measurement_unit: input.measurement_unit,
+                quantity: input.quantity,
+                nutrition: { create: nutritionsData },
               },
             });
-            return { success: true, savedIngredient };
+            return { success: true, ingredient: savedIngredient };
           }
         }
         return { success: true, ingredient };
@@ -74,7 +90,7 @@ export const ingredientsRouter = createTRPCRouter({
   getAllForRecipeByID: publicProcedure
     .input(z.object({ recipe_id: z.string() }))
     .query(({ ctx, input }) => {
-      return ctx.prisma.recipeIngredient.findMany({
+      return ctx.prisma.ingredients.findMany({
         where: {
           recipe_id: input.recipe_id,
         },
@@ -106,7 +122,7 @@ export const ingredientsRouter = createTRPCRouter({
   }),
 });
 
-const getIngredientNutritions: (
+export const getIngredientNutritions: (
   ingredientName: string
 ) => Promise<Map<string, { amount: number; unit: string }> | null> = async (
   ingredientName
@@ -158,6 +174,73 @@ const getIngredientNutritions: (
           item.name === "Sugar"
         ) {
           nutrientsMap.set(item.name, { amount: item.amount, unit: item.unit });
+        }
+      });
+      console.log(nutrientsMap);
+      return nutrientsMap;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  return null;
+};
+
+export const getIngredientNutritionsCollection: (
+  ingredientName: string,
+  ingredient_id: number
+) => Promise<Nutrient[] | null> = async (ingredientName, ingredient_id) => {
+  const options = {
+    method: "GET",
+    url: `${env.FOOD_API_URL}search`,
+    params: {
+      query: ingredientName,
+    },
+    headers: {
+      "X-RapidAPI-Key": env.FOOD_API_KEY,
+      "X-RapidAPI-Host": env.FOOD_API_HOST,
+    },
+  };
+
+  try {
+    const responce = await axios.request(options);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const fetchedIngredients = responce.data.results as IngredientResponce[];
+    // console.log(fetchedIngredients);
+    const ingredient = fetchedIngredients.find(
+      (item) => item.name === ingredientName
+    );
+
+    if (ingredient && ingredient !== undefined) {
+      const res = await axios.request({
+        method: "GET",
+        url: `${env.FOOD_API_URL}${ingredient.id}/information`,
+        params: { amount: "100", unit: "grams" },
+        headers: {
+          "X-RapidAPI-Key": env.FOOD_API_KEY,
+          "X-RapidAPI-Host": env.FOOD_API_HOST,
+        },
+      });
+      // console.log("2222222222222222222222");
+      // console.log(res.data);
+
+      const ingridientDetails = res.data as IngridientDetailsResponce;
+      // console.log(ingridientDetails);
+
+      const nutrientsMap: Nutrient[] = [];
+      ingridientDetails.nutrition.nutrients.filter((item) => {
+        if (
+          item.name === "Protein" ||
+          item.name === "Calories" ||
+          item.name === "Carbohydrates" ||
+          item.name === "Fat" ||
+          item.name === "Sugar"
+        ) {
+          nutrientsMap.push({
+            ingredient_id: ingredient_id,
+            name: item.name,
+            amount: item.amount,
+            unit: item.unit,
+          });
         }
       });
       console.log(nutrientsMap);

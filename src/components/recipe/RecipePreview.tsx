@@ -94,7 +94,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipes }) => {
 
                   <span className="ml-2 text-center text-gray-600 dark:text-dimWhite">
                     {/* 10 - 15 Mins */}
-                    {recipe.preparation_time}
+                    {recipe.preparation_time_minutes}
                   </span>
 
                   {/* <Separator

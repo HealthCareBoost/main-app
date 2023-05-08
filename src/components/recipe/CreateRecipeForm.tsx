@@ -13,7 +13,7 @@ import { DifficultyLevel, MeasurementUnits } from "@prisma/client";
 import { Textarea } from "../ui/TextArea";
 import { CloudinaryUploadButton } from "../ui/CloudinaryUploadButton";
 import { Button } from "../ui/Button";
-import { Check, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { styles } from "../../styles/style";
 import { Separator } from "../ui/Separator";
 
@@ -556,8 +556,7 @@ export default function Example() {
 export const CreateRecipeForm: React.FC = () => {
   const createRecipeMutation = api.recipe.createRecipe.useMutation();
   // const addImagesMutation = api.recipe.addImages.useMutation();
-  const getIngredientsNutritionsMutation =
-    api.ingredients.addIngredient.useMutation();
+  // const saveIngredientsMutation = api.ingredients.addIngredient.useMutation();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const [imageData, setImageData] = useState<ImageInfo[]>([]);
@@ -593,25 +592,29 @@ export const CreateRecipeForm: React.FC = () => {
           console.log("***** form data *****");
 
           // send ingredients to be saved and calulate nutr
-          try {
-            if (data.ingredients && data.ingredients.length > 0) {
-              for (const ingredient of data.ingredients) {
-                const { success } =
-                  await getIngredientsNutritionsMutation.mutateAsync({
-                    ingredientName: ingredient.ingredient_name,
-                  });
-                console.log(success);
-              }
-            }
-          } catch (error) {
-            console.error(error);
-          } finally {
-            console.log("All ingredients nutritions are saved");
-          }
+          // try {
+          //   if (data.ingredients && data.ingredients.length > 0) {
+          //     for (const ingredient of data.ingredients) {
+          //       const result = await saveIngredientsMutation.mutateAsync({
+          //         ingredientName: ingredient.ingredient_name,
+          //       });
+
+          //       console.log(result.success);
+          //       if (result.success && result.ingredient) {
+          //         recipeIngredients.push(result.ingredient);
+          //       }
+          //     }
+          //   }
+          // } catch (error) {
+          //   console.error(error);
+          // } finally {
+          //   console.log("All ingredients nutritions are saved");
+          //   console.log(recipeIngredients);
+          // }
 
           console.log(imageData);
           // then create new recipe
-          createRecipeMutation.mutate({
+          await createRecipeMutation.mutateAsync({
             ...data,
             images: imageData,
           });

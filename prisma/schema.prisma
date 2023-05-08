@@ -160,9 +160,11 @@ model Ingredients {
     createdAt           DateTime  @default(now())
     updatedAt           DateTime  @default(now())
     is_deleted          Boolean   @default(false)  
+    quantity            Float    
+    measurement_unit    MeasurementUnits
     nutrition           Nutrients[]
     recipe_id           String
-    recipes             Recipe    @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
+    recipe              Recipe    @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
 
     @@index([recipe_id])
 }

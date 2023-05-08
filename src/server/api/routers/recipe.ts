@@ -7,6 +7,7 @@ import { ImageInfoSchema } from "../../../utils/validations/imageSchema";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { getFiltersForQuery } from "../../../utils/mapFilters";
 import { timeToMinutes } from "../../../utils/timeConverter";
+import { getIngredientNutritionsCollection } from "./ingredients";
 
 export const recipeRouter = createTRPCRouter({
   /**
@@ -33,16 +34,7 @@ export const recipeRouter = createTRPCRouter({
             images: true,
             user: true,
             categories: true,
-            ingredients: {
-              select: {
-                ingredient: {
-                  select: { name: true },
-                },
-                measurement_unit: true,
-                quantity: true,
-                ingredient_id: true,
-              },
-            },
+            ingredients: true,
           },
         });
 
@@ -102,7 +94,7 @@ export const recipeRouter = createTRPCRouter({
    */
   createRecipe: protectedProcedure
     .input(RecipeSchema)
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       console.log("crm");
       console.log(input);
 
@@ -132,7 +124,32 @@ export const recipeRouter = createTRPCRouter({
           })
         : [];
 
-      return ctx.prisma.recipe.create({
+      const ingredientsData = [];
+
+      for (const ingredient of input.ingredients) {
+        // const exists = !!(await ctx.prisma.ingredients.findFirst({
+        //   where: {
+        //     name: ingredient.ingredient_name,
+        //   },
+        // }));
+
+        // if (!exists) {
+        // getnutr info
+        ingredientsData.push({
+          quantity: ingredient.quantity,
+          measurement_unit: ingredient.measurement_unit,
+          name: ingredient.ingredient_name,
+        });
+        // }
+      }
+      console.log("ingredientsData");
+      console.log(ingredientsData);
+
+      // ctx.prisma.nutrients.createMany({
+      // data: [{}],
+      // });
+
+      const { ingredients } = await ctx.prisma.recipe.create({
         data: {
           creator_id: ctx.session.user.id,
           name: input.name,
@@ -155,6 +172,10 @@ export const recipeRouter = createTRPCRouter({
             },
           },
 
+          ingredients: {
+            create: ingredientsData,
+          },
+
           // categories: {
           //   createMany: {
           //     data: [
@@ -163,7 +184,35 @@ export const recipeRouter = createTRPCRouter({
           //   },
           // },
         },
+        include: {
+          ingredients: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
       });
+      console.log("ingredients after save");
+      console.log(ingredients);
+
+      for (const ingredient of ingredients) {
+        const nd = await getIngredientNutritionsCollection(
+          ingredient.name,
+          ingredient.id
+        );
+        console.log("nd");
+        console.log(nd);
+        if (nd) {
+          await ctx.prisma.nutrients.createMany({
+            data: [...nd],
+          });
+        }
+      }
+
+      return {
+        success: true,
+      };
     }),
 
   /**

@@ -5,7 +5,6 @@ import { UserAvatar } from "../UserAvatar";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -15,25 +14,18 @@ import { AlertTriangle } from "lucide-react";
 import { minuteToReadableTime } from "../../utils/timeConverter";
 import type { RouterOutputs } from "../../utils/api";
 import type {
-  MeasurementUnits,
   Recipe as RecipeType,
   RecipeCategory,
   RecipeImage,
   User,
+  Ingredients,
 } from "@prisma/client";
 
 type RecipeOutput = Pick<RouterOutputs["recipe"]["getRecipeByID"], "recipe">;
 type RecipeComponentProps = {
   recipe: RecipeType & {
     user: User;
-    ingredients: {
-      ingredient: {
-        name: string;
-      };
-      ingredient_id: number;
-      quantity: number;
-      measurement_unit: MeasurementUnits;
-    }[];
+    ingredients: Ingredients[];
     images: RecipeImage[];
     categories: RecipeCategory[];
   };
@@ -109,9 +101,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                     Prep
                   </div>
                   <div className="break-words text-center font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite">
-                    {minuteToReadableTime(
-                      recipe.preparation_time_minutes as number
-                    )}
+                    {minuteToReadableTime(recipe.preparation_time_minutes)}
                   </div>
                 </div>
                 <div className="border-l-2 border-l-slate-300 px-4">
@@ -132,7 +122,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                   >
                     {minuteToReadableTime(
                       recipe.cooking_time_minutes +
-                        (recipe.preparation_time_minutes as number)
+                        recipe.preparation_time_minutes
                     )}
                   </div>
                 </div>
@@ -143,14 +133,14 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
               <div className="relative mx-4 mt-1 h-auto first:pt-0 sm:flex sm:flex-col sm:items-center sm:justify-center">
                 {recipe.ingredients.map((ingredient, idx) => (
                   <div
-                    key={`${ingredient.ingredient_id}${idx}`}
+                    key={`${ingredient.id}${idx}`}
                     className="text-justify font-poppins text-lg font-normal leading-[30.8px] sm:text-left"
                   >
                     <div className="cursor-default break-words">
                       <span className="font-bold text-primaryDark dark:text-white">
                         {`${ingredient.quantity} ${ingredient.measurement_unit}`}
                       </span>
-                      {ingredient.ingredient.name}
+                      {ingredient.name}
                     </div>
                   </div>
                 ))}
