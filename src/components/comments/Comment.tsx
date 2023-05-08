@@ -2,6 +2,7 @@ import React from "react";
 import { PostOperations } from "./CommentOperations";
 import { UserAvatar } from "../UserAvatar";
 import type { Comment as CommentType } from "@prisma/client";
+import { format } from "date-fns";
 
 type CommentProps = CommentType & {
   user: {
@@ -31,10 +32,7 @@ export const PostItem: React.FC<CommentProps> = ({
             className="mt-2 h-8 w-8 rounded-full sm:h-10 sm:w-10"
             user={{
               name: user && user.name ? user.name : "Anonymous",
-              image:
-                user && user.image
-                  ? user.image
-                  : "https://images.unsplash.com/photo-1604426633861-11b2faead63c?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80",
+              image: user && user.image,
             }}
           />
         </div>
@@ -43,21 +41,14 @@ export const PostItem: React.FC<CommentProps> = ({
           <div className="flex items-center">
             <strong>{user && user.name ? user.name : "Anonymous"}</strong>{" "}
             <span className="mx-2 text-xs text-gray-400">
-              {createdAt instanceof Date
-                ? createdAt.toLocaleDateString()
-                : new Date().toLocaleDateString()}
+              {format(createdAt, "dd MMMM yyyy")}
               {/* 3:34 PM */}
             </span>
             <div className="my-2 ml-auto">
               <PostOperations post={{ id, title: text }} />
             </div>
           </div>
-          <p className="text-sm">
-            {text} Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-            Quod aspernatur voluptatum quo rem itaque iusto nihil voluptas
-            impedit ullam cum facilis commodi dolore perspiciatis debitis natus
-            autem adipisci, error nemo.
-          </p>
+          <p className="text-sm">{text}</p>
         </div>
       </div>
     </div>
@@ -80,10 +71,7 @@ export const Comment: React.FC<CommentProps> = ({
               <UserAvatar
                 user={{
                   name: user && user.name ? user.name : "Anonymous",
-                  image:
-                    user && user.image
-                      ? user.image
-                      : "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
+                  image: user && user.image,
                 }}
                 className="mr-2 h-8 w-8 rounded-full"
               />
@@ -91,9 +79,7 @@ export const Comment: React.FC<CommentProps> = ({
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               <time dateTime="2022-02-08" title="February 8th, 2022">
-                {createdAt instanceof Date
-                  ? createdAt.toLocaleDateString()
-                  : new Date().toLocaleDateString()}
+                {format(createdAt, "dd MMMM yyyy")}
                 {/* Feb. 8, 2022 */}
               </time>
             </p>

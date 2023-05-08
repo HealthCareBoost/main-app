@@ -89,17 +89,17 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
                 role="list"
                 className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
               >
-                {Array.from("123456").map((a, idx) => (
-                  <li key={`${a}${idx}${Math.random()}`}>
+                {data.recipe.categories.map(({ category }, idx) => (
+                  <li key={`${category.id}${idx}${Math.random()}`}>
                     <div className="flex items-center">
                       <a
                         href="#"
                         className="mr-2 text-sm font-medium text-primaryDark dark:text-white"
                       >
-                        Category
+                        {category.name}
                       </a>
                       {/* last element in category array */}
-                      {a === "6" ? null : (
+                      {idx + 1 === data.recipe.categories.length ? null : (
                         <svg
                           width="16"
                           height="20"
@@ -120,16 +120,18 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
             <Separator orientation="horizontal" className="my-4" />
           </main>
         </div>
-        <CommentTextarea recipe_id={recipe_id} />
-        {recipeComments &&
-          recipeComments.comments &&
-          recipeComments.comments.map((comment, idx) =>
-            idx % 2 === 0 ? (
-              <Comment key={comment.id} {...comment} />
-            ) : (
-              <PostItem key={comment.id} {...comment} />
-            )
-          )}
+        <div className="mx-auto grid w-3/4 gap-4 p-4 sm:gap-8">
+          <CommentTextarea recipe_id={recipe_id} />
+          {recipeComments &&
+            recipeComments.comments &&
+            recipeComments.comments.map((comment, idx) =>
+              idx % 2 === 0 ? (
+                <PostItem key={comment.id} {...comment} />
+              ) : (
+                <Comment key={comment.id} {...comment} />
+              )
+            )}
+        </div>
       </div>
     </>
   );

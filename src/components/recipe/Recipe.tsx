@@ -20,6 +20,9 @@ import type {
   User,
   Ingredients,
 } from "@prisma/client";
+import { cn } from "../../utils/cn";
+import { Separator } from "../ui/Separator";
+import { CldImage } from "next-cloudinary";
 
 type RecipeOutput = Pick<RouterOutputs["recipe"]["getRecipeByID"], "recipe">;
 type RecipeComponentProps = {
@@ -27,7 +30,12 @@ type RecipeComponentProps = {
     user: User;
     ingredients: Ingredients[];
     images: RecipeImage[];
-    categories: RecipeCategory[];
+    categories: {
+      category: {
+        id: number;
+        name: string;
+      };
+    }[];
   };
 };
 
@@ -55,14 +63,30 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
 
           <div className="relative mb-2 w-full bg-slate-100 pt-[50%]">
             <div className="absolute top-0 right-0 flex h-full w-full items-center justify-center overflow-hidden">
-              <Image
-                className="h-auto w-full"
-                src={
-                  "https://mysaffronappgc.imgix.net/1676446384966-nFn7yyLwu.jpeg?max-h=800&max-w=1600&fit=crop&auto=compress&ixlib=js-2.3.1&s=953ad10063b1c2d22c5a429aed1fcc89"
-                }
-                alt={"meal"}
-                fill
-              />
+              {recipe.images.length > 0 &&
+              recipe.images[0] &&
+              recipe.images[0].path ? (
+                <CldImage
+                  width="600"
+                  height="600"
+                  alt="meal"
+                  loading="lazy"
+                  className="h-auto w-full"
+                  // v1683539800/let-me-cook/lmfvef1ml3maubbwilqu.webp
+                  // src="https://res.cloudinary.com/ddm9sjjq5/image/upload/v1683539800/let-me-cook/lmfvef1ml3maubbwilqu.webp"
+                  src={`https://res.cloudinary.com/ddm9sjjq5/image/upload/${recipe.images[0].path}`}
+                ></CldImage>
+              ) : (
+                <Image
+                  className="h-auto w-full object-cover"
+                  src={
+                    "/default-recipe.png"
+                    // "https://mysaffronappgc.imgix.net/1676446384966-nFn7yyLwu.jpeg?max-h=800&max-w=1600&fit=crop&auto=compress&ixlib=js-2.3.1&s=953ad10063b1c2d22c5a429aed1fcc89"
+                  }
+                  alt={"meal"}
+                  fill
+                />
+              )}
             </div>
           </div>
           <div className="flex flex-col">
@@ -75,9 +99,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                   <UserAvatar
                     user={{
                       name: recipe.user.name ? recipe.user.name : "Anonymous",
-                      image: recipe.user.image
-                        ? recipe.user.image
-                        : "https://flowbite.com/docs/images/people/profile-picture-2.jpg",
+                      image: recipe.user.image,
                     }}
                     className="mr-2 h-8 w-8 rounded-full"
                   />
@@ -90,7 +112,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                   </a>
                 </div>
                 <div className="font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite">
-                  Serves: {recipe.categories.length}
+                  Serves: {recipe.ingredients.length}
                   {/* To add later */}
                 </div>
               </div>
@@ -130,14 +152,33 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
             </div>
 
             <div className="my-4 flex w-full flex-col items-center sm:flex-row sm:justify-between">
-              <div className="relative mx-4 mt-1 h-auto first:pt-0 sm:flex sm:flex-col sm:items-center sm:justify-center">
+              <div className="relative mx-4 mt-1 h-auto self-baseline first:pt-0 sm:flex sm:flex-col sm:justify-center">
+                <div
+                  className={`mb-2 w-full cursor-default break-words text-justify font-poppins text-[30px] text-lg font-semibold leading-[30.8px] text-primaryDark dark:text-white xs:text-[32px] sm:text-left`}
+                >
+                  Ingredients
+                </div>
                 {recipe.ingredients.map((ingredient, idx) => (
                   <div
                     key={`${ingredient.id}${idx}`}
-                    className="text-justify font-poppins text-lg font-normal leading-[30.8px] sm:text-left"
+                    className="my-2 text-justify font-poppins text-lg font-normal leading-[30.8px] sm:text-left"
                   >
+                    {/* <div className="cursor-default break-words">
+                      <span className="font-bold text-slate-700"></span>
+                      For the chili:
+                    </div>
                     <div className="cursor-default break-words">
-                      <span className="font-bold text-primaryDark dark:text-white">
+                      <span className="font-bold text-slate-700">2 cups </span>
+                      uncooked elbow pasta
+                    </div>
+                    <div className="cursor-default break-words">
+                      <span className="font-bold text-slate-700">
+                        1 tablespoon{" "}
+                      </span>
+                      vegetable oil
+                    </div> */}
+                    <div className="cursor-default break-words text-dimDark dark:text-dimWhite">
+                      <span className="mx-1 font-medium text-primaryDark dark:text-white">
                         {`${ingredient.quantity} ${ingredient.measurement_unit}`}
                       </span>
                       {ingredient.name}
@@ -191,6 +232,11 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                         The % Daily Value (DV) tells you how much a nutrient in
                         a food serving contributes to a daily diet. 2,000
                         calories a day is used for general nutrition advice.
+                        <Separator />
+                        <p className="mt-2 text-xs text-red-500">
+                          Also the nutrition information given may not be true.
+                          Please don&apos;t sue us!
+                        </p>
                       </HoverCardContent>
                     </HoverCard>
 

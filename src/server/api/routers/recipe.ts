@@ -33,7 +33,16 @@ export const recipeRouter = createTRPCRouter({
           include: {
             images: true,
             user: true,
-            categories: true,
+            categories: {
+              select: {
+                category: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
             ingredients: true,
           },
         });
