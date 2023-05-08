@@ -3,7 +3,7 @@ import type { z } from "zod";
 import { Loader2 } from "lucide-react";
 import type { AppProps } from "next/app";
 import { RegisterSchema } from "../../utils/validations/authSchema";
-import { useZodForm } from "../../utils/useZodFormHook";
+import { useZodForm } from "../../hooks/useZodFormHook";
 import { api } from "../../utils/api";
 import { signIn } from "next-auth/react";
 import { cn } from "../../utils/cn";

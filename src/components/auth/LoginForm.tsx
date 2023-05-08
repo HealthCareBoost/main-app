@@ -2,7 +2,7 @@ import React from "react";
 import { Loader2 } from "lucide-react";
 import type { AppProps } from "next/app";
 import { LoginSchema } from "../../utils/validations/authSchema";
-import { useZodForm } from "../../utils/useZodFormHook";
+import { useZodForm } from "../../hooks/useZodFormHook";
 import { signIn } from "next-auth/react";
 import { cn } from "../../utils/cn";
 import { Input } from "../ui/FormInput";

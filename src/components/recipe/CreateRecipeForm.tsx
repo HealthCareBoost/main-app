@@ -3,7 +3,7 @@ import { Card, CardContent } from "../ui/Card";
 import React, { useState } from "react";
 import { api } from "../../utils/api";
 import type { ImageInfo } from "../../utils/validations/imageSchema";
-import { useZodForm } from "../../utils/useZodFormHook";
+import { useZodForm } from "../../hooks/useZodFormHook";
 import { RecipeSchema } from "../../utils/validations/createRecipeSchema";
 import { Controller, useFieldArray } from "react-hook-form";
 import { Form } from "../ui/FormProvider";
@@ -16,6 +16,8 @@ import { Button } from "../ui/Button";
 import { Trash } from "lucide-react";
 import { styles } from "../../styles/style";
 import { Separator } from "../ui/Separator";
+import { toast } from "../../hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function Example() {
   return (
@@ -558,7 +560,7 @@ export const CreateRecipeForm: React.FC = () => {
   // const addImagesMutation = api.recipe.addImages.useMutation();
   // const saveIngredientsMutation = api.ingredients.addIngredient.useMutation();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
+  const router = useRouter();
   const [imageData, setImageData] = useState<ImageInfo[]>([]);
   const form = useZodForm({
     schema: RecipeSchema,
@@ -614,11 +616,25 @@ export const CreateRecipeForm: React.FC = () => {
 
           console.log(imageData);
           // then create new recipe
-          await createRecipeMutation.mutateAsync({
+          const { recipe, success } = await createRecipeMutation.mutateAsync({
             ...data,
             images: imageData,
           });
           setIsSubmitting(false);
+
+          if (success && recipe) {
+            router.push(`/recipe/${recipe.id}`);
+            return toast({
+              title: "Recipe Created",
+              description: "New recipe was created.",
+            });
+          } else {
+            return toast({
+              title: "Something went wrong.",
+              description: "Recipe creation failed! Please try again.",
+              variant: "destructive",
+            });
+          }
         }}
       >
         <div className="space-y-12">

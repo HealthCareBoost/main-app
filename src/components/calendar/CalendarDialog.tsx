@@ -11,7 +11,7 @@ import { MealTypes } from "@prisma/client";
 import { Form } from "../ui/FormProvider";
 import { FormSelect } from "../ui/FormSelect";
 import { Input } from "../ui/FormInput";
-import { useZodForm } from "../../utils/useZodFormHook";
+import { useZodForm } from "../../hooks/useZodFormHook";
 import { z } from "zod";
 import format from "date-fns/format";
 import { api } from "../../utils/api";

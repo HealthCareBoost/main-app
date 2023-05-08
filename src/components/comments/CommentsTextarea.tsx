@@ -1,7 +1,7 @@
 import React from "react";
 import { Textarea } from "../ui/TextArea";
 import { Form } from "../ui/FormProvider";
-import { useZodForm } from "../../utils/useZodFormHook";
+import { useZodForm } from "../../hooks/useZodFormHook";
 import { z } from "zod";
 import { buttonVariants } from "../ui/Button";
 import { cn } from "../../utils/cn";
