@@ -9,32 +9,28 @@ import ThemeButton from "./ui/ChangeThemeButton";
 import { UserAccountNav } from "./user/UserProfileNav";
 import { LandingLoginButton } from "./landing/LandingButton";
 import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
+import { getCurrentUser } from "../utils/session";
 
 interface MainNavProps {
   children?: React.ReactNode;
 }
 
+export const DynamicLogo = dynamic(
+  () => import("../components/Logo").then((mod) => mod.Logo),
+  { ssr: false }
+);
+
 export function MainNav({}: MainNavProps) {
   //   const segment = useSelectedLayoutSegment();
-  const { theme } = useTheme();
+  // const user = getCurrentUser().then((res) => console.log(res));
   const { data: sessionData } = useSession();
+  console.log(sessionData);
+  console.log(sessionData?.user);
 
   return (
     <nav className="navbar flex w-full items-center justify-between py-6">
-      <Image
-        alt="logo"
-        src={theme === "dark" ? "/assets/cook-dark.png" : "/assets/cook.png"}
-        className="h-auto w-[172px]"
-        height={172}
-        width={172}
-        style={{
-          height: "auto",
-          width: "172px",
-        }}
-        placeholder="blur"
-        blurDataURL={"assets/cook.png"}
-      />
-
+      <DynamicLogo />
       <ul className="hidden flex-1 list-none items-center justify-start sm:flex">
         {MainNavLinks.map((nav) => (
           <li

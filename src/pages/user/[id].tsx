@@ -30,7 +30,7 @@ import { toast } from "../../hooks/use-toast";
 import { styles } from "../../styles/style";
 import { api } from "../../utils/api";
 import { cn } from "../../utils/cn";
-import { useZodForm } from "../../utils/useZodFormHook";
+import { useZodForm } from "../../hooks/useZodFormHook";
 import { ChangeNameSchema } from "../../utils/validations/authSchema";
 // import * as DialogPrimitive from "@radix-ui/react-dialog";
 

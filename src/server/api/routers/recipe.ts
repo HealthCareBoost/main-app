@@ -158,7 +158,7 @@ export const recipeRouter = createTRPCRouter({
       // data: [{}],
       // });
 
-      const { ingredients } = await ctx.prisma.recipe.create({
+      const recipe = await ctx.prisma.recipe.create({
         data: {
           creator_id: ctx.session.user.id,
           name: input.name,
@@ -203,9 +203,9 @@ export const recipeRouter = createTRPCRouter({
         },
       });
       console.log("ingredients after save");
-      console.log(ingredients);
+      console.log(recipe.ingredients);
 
-      for (const ingredient of ingredients) {
+      for (const ingredient of recipe.ingredients) {
         const nd = await getIngredientNutritionsCollection(
           ingredient.name,
           ingredient.id
@@ -221,6 +221,7 @@ export const recipeRouter = createTRPCRouter({
 
       return {
         success: true,
+        recipe,
       };
     }),
 

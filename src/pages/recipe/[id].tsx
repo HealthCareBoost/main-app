@@ -6,6 +6,7 @@ import { api } from "../../utils/api";
 // import { useRouter } from "next/router";
 // import { LandingNavbar } from "../../components/landing/LandingNavbar";
 import { styles } from "../../styles/style";
+import Layout from "../../components/Layout";
 
 import dynamic from "next/dynamic";
 // import { Recipe } from "@prisma/client";
@@ -42,8 +43,8 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
     console.log(isCommentsLoading);
   }
 
-  console.log(isLoading);
-  console.log(!data);
+  // console.log(isLoading);
+  // console.log(!data);
   // console.log(data.recipe);
 
   if (isLoading || !data || !data.recipe) {
@@ -75,11 +76,7 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
   //   </div>
   // );
   return (
-    <>
-      <div className={`${styles.paddingX} ${styles.flexCenter}`}>
-        <LN />
-      </div>
-
+    <Layout>
       <div className="container">
         <div className="flex w-full flex-grow flex-col flex-wrap py-4 sm:flex-row sm:flex-nowrap">
           <RecipeOptions recipe_id={recipe_id} />
@@ -133,7 +130,7 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
             )}
         </div>
       </div>
-    </>
+    </Layout>
   );
 };
 

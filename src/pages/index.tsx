@@ -1,22 +1,11 @@
 import { type NextPage } from "next";
-import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
 import { api } from "../utils/api";
-import { useEffect } from "react";
 
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
-  const getIngredientByID = api.ingredients.getIngredientByID.useQuery({
-    id: 236,
-  });
-  const mutation = api.ingredients.addIngredient.useMutation();
-  // test
-  useEffect(() => {
-    console.log(getIngredientByID);
-    // const name = "egg";
-    // mutation.mutate({ ingredientName: name });
-  }, []);
 
   return (
     <>

@@ -1,13 +1,14 @@
 import React from "react";
 
-import dynamic from "next/dynamic";
 import { styles } from "../styles/style";
+import { MainNav } from "./MainNav";
 // import { FooterSmall } from "./landing/LandingFooter";
 
-export const LN = dynamic(
-  () => import("../components/MainNav").then((mod) => mod.MainNav),
-  { ssr: false }
-);
+// import dynamic from "next/dynamic";
+// export const LN = dynamic(
+//   () => import("../components/MainNav").then((mod) => mod.MainNav),
+//   { ssr: false }
+// );
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -15,7 +16,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <div className="h-full w-full dark:bg-primaryDark">
         <div className={`${styles.paddingX} ${styles.flexCenter}`}>
           <div className={`${styles.boxWidth}`}>
-            <LN />
+            <MainNav />
           </div>
         </div>
         {children}
