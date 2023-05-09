@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { CommentOperations } from "./CommentOperations";
 import { UserAvatar } from "../UserAvatar";
 import type { Comment as CommentType } from "@prisma/client";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
+import { UpdateCommentTextarea } from "./CommentUpdate";
 
 type CommentProps = CommentType & {
   user: {
@@ -15,7 +16,8 @@ type CommentProps = CommentType & {
 
 export const PostItem: React.FC<CommentProps> = ({
   id,
-  // recipe_id,
+  recipe_id,
+  edited,
   createdAt,
   text,
   user,
@@ -23,6 +25,7 @@ export const PostItem: React.FC<CommentProps> = ({
   const { data: sessionData } = useSession();
   const isLoggedIn = sessionData && sessionData.user;
   const ownComment = isLoggedIn && sessionData.user.id === user.id;
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   return (
     <div className="space-y-4">
@@ -46,16 +49,31 @@ export const PostItem: React.FC<CommentProps> = ({
           <div className="flex items-center">
             <strong>{user && user.name ? user.name : "Anonymous"}</strong>{" "}
             <span className="mx-2 text-xs text-gray-400">
-              {format(createdAt, "dd MMMM yyyy")}
+              {format(createdAt, "dd MMMM yyyy")} {edited && "(edited)"}
               {/* 3:34 PM */}
             </span>
             {ownComment ? (
               <div className="my-2 ml-auto">
-                <CommentOperations comment={{ id, title: text }} />
+                <CommentOperations
+                  setIsEditing={setIsEditing}
+                  comment={{ id }}
+                />
               </div>
             ) : null}
           </div>
-          <p className="text-sm">{text}</p>
+          {/* <p className="text-sm">{text}</p>*/}
+          <div className="text-sm">
+            {isEditing ? (
+              <UpdateCommentTextarea
+                setIsEditing={setIsEditing}
+                comment_id={id}
+                recipe_id={recipe_id}
+                text={text}
+              />
+            ) : (
+              text
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -72,6 +90,7 @@ export const Comment: React.FC<CommentProps> = ({
   const { data: sessionData } = useSession();
   const isLoggedIn = sessionData && sessionData.user;
   const ownComment = isLoggedIn && sessionData.user.id === user.id;
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   return (
     <>
@@ -96,7 +115,7 @@ export const Comment: React.FC<CommentProps> = ({
             </p>
           </div>
           {ownComment ? (
-            <CommentOperations comment={{ id: id, title: text }} />
+            <CommentOperations comment={{ id }} setIsEditing={setIsEditing} />
           ) : null}
         </footer>
         <p className="text-gray-500 dark:text-gray-400">

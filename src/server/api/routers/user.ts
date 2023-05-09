@@ -426,6 +426,32 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
+  updateComment: protectedProcedure
+    .input(
+      z.object({
+        comment_id: z.string().min(1),
+        text: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const comment = await ctx.prisma.comment.update({
+          data: {
+            text: input.text,
+            edited: true,
+            updatedAt: new Date(),
+          },
+          where: {
+            id: input.comment_id,
+          },
+        });
+        return { success: true, comment };
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
+    }),
+
   changeName: protectedProcedure
     .input(
       z.object({

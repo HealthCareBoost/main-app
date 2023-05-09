@@ -22,6 +22,7 @@ import {
 } from "../../components/ui/DropDown";
 import { toast } from "../../hooks/use-toast";
 import { api } from "../../utils/api";
+import { Comment } from "@prisma/client";
 
 // async function deleteComment(commentId: string) {
 //   const response = await fetch(`/api/comments/${commentId}`, {
@@ -40,10 +41,14 @@ import { api } from "../../utils/api";
 // }
 
 interface CommentOperationsProps {
-  comment: Pick<{ id: string; title: string }, "id" | "title">;
+  comment: Pick<Comment, "id">;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function CommentOperations({ comment }: CommentOperationsProps) {
+export function CommentOperations({
+  comment,
+  setIsEditing,
+}: CommentOperationsProps) {
   const router = useRouter();
   const [showDeleteAlert, setShowDeleteAlert] = React.useState<boolean>(false);
   const [isDeleteLoading, setIsDeleteLoading] = React.useState<boolean>(false);
@@ -80,10 +85,11 @@ export function CommentOperations({ comment }: CommentOperationsProps) {
           <span className="sr-only">Open</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>
-            <Link href={`/editor/${comment.id}`} className="flex w-full">
-              Edit
-            </Link>
+          <DropdownMenuItem
+            className="flex w-full cursor-pointer items-center"
+            onSelect={() => setIsEditing(true)}
+          >
+            Edit
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem

@@ -111,7 +111,14 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
           </main>
         </div>
         <div className="mx-auto grid w-3/4 gap-4 p-4 sm:gap-8">
-          <CommentTextarea recipe_id={recipe_id} />
+          <div className="mx-auto w-3/4 max-w-3xl px-4" id="comments">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-primaryDark dark:text-white lg:text-2xl">
+                Comments (21)
+              </h2>
+            </div>
+            <CommentTextarea recipe_id={recipe_id} />
+          </div>
           {recipeComments &&
             recipeComments.comments &&
             recipeComments.comments.map(

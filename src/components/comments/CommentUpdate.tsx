@@ -9,17 +9,24 @@ import { api } from "../../utils/api";
 import { toast } from "../../hooks/use-toast";
 import { useRouter } from "next/navigation";
 
-type CommentTextareaProps = {
+type UpdateCommentProps = {
   recipe_id: string;
+  comment_id: string;
+  text: string;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const CommentTextarea: React.FC<CommentTextareaProps> = ({
+export const UpdateCommentTextarea: React.FC<UpdateCommentProps> = ({
   recipe_id,
+  comment_id,
+  text,
+  setIsEditing,
 }) => {
   const router = useRouter();
-  const commentMutation = api.user.comment.useMutation({
+  const updateCommentMutation = api.user.updateComment.useMutation({
     onError: (error: unknown) => {
       console.error(error);
+      setIsEditing(false);
       return toast({
         title: "Something went wrong.",
         description: "Your post was not created. Please try again.",
@@ -29,6 +36,7 @@ export const CommentTextarea: React.FC<CommentTextareaProps> = ({
     onSuccess: () => {
       // onSuccess(_data, _variables, _context) {
       // This forces a cache invalidation.
+      setIsEditing(false);
       router.refresh();
       router.push(`/recipe/${recipe_id}#comment`);
     },
@@ -37,6 +45,7 @@ export const CommentTextarea: React.FC<CommentTextareaProps> = ({
     schema: z.object({
       comment: z.string().min(1),
     }),
+    defaultValues: { comment: text },
   });
 
   return (
@@ -44,8 +53,8 @@ export const CommentTextarea: React.FC<CommentTextareaProps> = ({
       className="mb-6"
       onSubmit={(data) => {
         // console.log(data);
-        commentMutation.mutate({
-          recipe_id,
+        updateCommentMutation.mutate({
+          comment_id,
           text: data.comment,
         });
       }}
@@ -68,7 +77,7 @@ export const CommentTextarea: React.FC<CommentTextareaProps> = ({
           "bg-orange-gradient hover:text-primaryDark hover:dark:text-white"
         )}
       >
-        Post Comment
+        Update
       </button>
     </Form>
   );
