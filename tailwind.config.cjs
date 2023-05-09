@@ -45,6 +45,8 @@ module.exports = {
         dimWhite: "rgba(255, 255, 255, 0.7)",
         dimDark: "rgba(64, 64, 64, 0.7)",
         dimBlue: "rgba(9, 151, 124, 0.1)",
+        blackGradient:
+          "linear-gradient(144.39deg, #ffffff -278.56%, #6d6d6d -78.47%, #11101d 91.61%);",
       },
       gridTemplateRows: {
         "[auto,auto,1fr]": "auto auto 1fr",

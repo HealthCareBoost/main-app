@@ -24,6 +24,15 @@ const UpdateRecipe: NextPage<{ recipe_id: string }> = ({ recipe_id }) => {
   return (
     <Layout>
       <div className="container">
+        <h1
+          className={`mb-4 text-center font-poppins text-[52px] font-semibold leading-[75px] text-primaryDark dark:text-white ss:text-[71px] ss:leading-[100px]`}
+        >
+          Update{" "}
+          <span className="text-gradient">
+            {" "}
+            {data.recipe.name ? data.recipe.name : "Recipe"}{" "}
+          </span>
+        </h1>
         <CreateRecipeForm recipeToUpdate={RecipeMapper(data)} />
       </div>
     </Layout>

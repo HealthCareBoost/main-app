@@ -2,15 +2,12 @@
 
 import * as React from "react";
 import { MobileNav } from "./MobileNav";
-import Image from "next/image";
-import { useTheme } from "next-themes";
 import { MainNavLinks } from "../utils/NavlinksTypes";
 import ThemeButton from "./ui/ChangeThemeButton";
 import { UserAccountNav } from "./user/UserProfileNav";
 import { LandingLoginButton } from "./landing/LandingButton";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
-import { getCurrentUser } from "../utils/session";
 
 interface MainNavProps {
   children?: React.ReactNode;
