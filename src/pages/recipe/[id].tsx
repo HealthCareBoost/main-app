@@ -1,15 +1,9 @@
 import React from "react";
 import type { GetStaticProps } from "next";
 import { type NextPage } from "next";
-// import type { RouterOutputs } from "../../utils/api";
 import { api } from "../../utils/api";
-// import { useRouter } from "next/router";
-// import { LandingNavbar } from "../../components/landing/LandingNavbar";
-import { styles } from "../../styles/style";
 import Layout from "../../components/Layout";
-
 import dynamic from "next/dynamic";
-// import { Recipe } from "@prisma/client";
 
 export const LN = dynamic(
   () =>
@@ -34,7 +28,6 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
     id: recipe_id,
   });
 
-  const likeRecipe = api.recipe.likeRecipe.useMutation();
   const { data: recipeComments, isLoading: isCommentsLoading } =
     api.recipe.getCommentsForRecipe.useQuery({ recipe_id });
 
@@ -121,12 +114,14 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
           <CommentTextarea recipe_id={recipe_id} />
           {recipeComments &&
             recipeComments.comments &&
-            recipeComments.comments.map((comment, idx) =>
-              idx % 2 === 0 ? (
+            recipeComments.comments.map(
+              (comment) => (
+                // idx % 2 === 0 ? (
                 <PostItem key={comment.id} {...comment} />
-              ) : (
-                <Comment key={comment.id} {...comment} />
+                // ) : (
+                // <Comment key={comment.id} {...comment} />
               )
+              // )
             )}
         </div>
       </div>

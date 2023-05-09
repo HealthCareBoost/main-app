@@ -1,7 +1,8 @@
 "use client";
-import * as React from "react";
+import { Loader2, MoreVertical, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import * as React from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,33 +21,56 @@ import {
   DropdownMenuTrigger,
 } from "../../components/ui/DropDown";
 import { toast } from "../../hooks/use-toast";
-import { Loader2, MoreVertical } from "lucide-react";
-import { Trash } from "lucide-react";
+import { api } from "../../utils/api";
 
-async function deletePost(postId: string) {
-  const response = await fetch(`/api/posts/${postId}`, {
-    method: "DELETE",
-  });
+// async function deleteComment(commentId: string) {
+//   const response = await fetch(`/api/comments/${commentId}`, {
+//     method: "DELETE",
+//   });
 
-  if (!response?.ok) {
-    toast({
-      title: "Something went wrong.",
-      description: "Your post was not deleted. Please try again.",
-      variant: "destructive",
-    });
-  }
+//   if (!response?.ok) {
+//     toast({
+//       title: "Something went wrong.",
+//       description: "Your comment was not deleted. Please try again.",
+//       variant: "destructive",
+//     });
+//   }
 
-  return true;
+//   return true;
+// }
+
+interface CommentOperationsProps {
+  comment: Pick<{ id: string; title: string }, "id" | "title">;
 }
 
-interface PostOperationsProps {
-  post: Pick<{ id: string; title: string }, "id" | "title">;
-}
-
-export function PostOperations({ post }: PostOperationsProps) {
+export function CommentOperations({ comment }: CommentOperationsProps) {
   const router = useRouter();
   const [showDeleteAlert, setShowDeleteAlert] = React.useState<boolean>(false);
   const [isDeleteLoading, setIsDeleteLoading] = React.useState<boolean>(false);
+
+  const deleteMutation = api.user.deleteComment.useMutation();
+
+  const deleteComment = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    setIsDeleteLoading(true);
+
+    const { success, error } = await deleteMutation.mutateAsync({
+      comment_id: comment.id,
+    });
+
+    if (!success || error) {
+      toast({
+        title: "Something went wrong.",
+        description: "Your comment was not deleted. Please try again.",
+        variant: "destructive",
+      });
+    }
+    setIsDeleteLoading(false);
+    setShowDeleteAlert(false);
+    router.refresh();
+  };
 
   return (
     <>
@@ -57,7 +81,7 @@ export function PostOperations({ post }: PostOperationsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem>
-            <Link href={`/editor/${post.id}`} className="flex w-full">
+            <Link href={`/editor/${comment.id}`} className="flex w-full">
               Edit
             </Link>
           </DropdownMenuItem>
@@ -74,7 +98,7 @@ export function PostOperations({ post }: PostOperationsProps) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Are you sure you want to delete this post?
+              Are you sure you want to delete this comment?
             </AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone.
@@ -83,18 +107,7 @@ export function PostOperations({ post }: PostOperationsProps) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              // onClick={async (event) => {
-              //   event.preventDefault();
-              //   setIsDeleteLoading(true);
-
-              //   const deleted = await deletePost(post.id);
-
-              //   if (deleted) {
-              //     setIsDeleteLoading(false);
-              //     setShowDeleteAlert(false);
-              //     router.refresh();
-              //   }
-              // }}
+              onClick={(e) => void deleteComment(e)}
               className="bg-red-600 focus:ring-red-600"
             >
               {isDeleteLoading ? (

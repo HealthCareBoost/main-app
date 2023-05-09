@@ -401,6 +401,31 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
+  deleteComment: protectedProcedure
+    .input(
+      z.object({
+        comment_id: z.string().min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const comment = await ctx.prisma.comment.delete({
+          where: {
+            id: input.comment_id,
+          },
+        });
+
+        if (comment) {
+          return { success: true };
+        } else {
+          throw Error("Comment was not deleted");
+        }
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
+    }),
+
   changeName: protectedProcedure
     .input(
       z.object({

@@ -1,5 +1,5 @@
 import React from "react";
-import { PostOperations } from "./CommentOperations";
+import { CommentOperations } from "./CommentOperations";
 import { UserAvatar } from "../UserAvatar";
 import type { Comment as CommentType } from "@prisma/client";
 import { format } from "date-fns";
@@ -15,7 +15,7 @@ type CommentProps = CommentType & {
 
 export const PostItem: React.FC<CommentProps> = ({
   id,
-  recipe_id,
+  // recipe_id,
   createdAt,
   text,
   user,
@@ -51,7 +51,7 @@ export const PostItem: React.FC<CommentProps> = ({
             </span>
             {ownComment ? (
               <div className="my-2 ml-auto">
-                <PostOperations post={{ id, title: text }} />
+                <CommentOperations comment={{ id, title: text }} />
               </div>
             ) : null}
           </div>
@@ -64,7 +64,7 @@ export const PostItem: React.FC<CommentProps> = ({
 
 export const Comment: React.FC<CommentProps> = ({
   id,
-  recipe_id,
+  // recipe_id,
   createdAt,
   text,
   user,
@@ -96,7 +96,7 @@ export const Comment: React.FC<CommentProps> = ({
             </p>
           </div>
           {ownComment ? (
-            <PostOperations post={{ id: "aaaa", title: "aaaaa" }} />
+            <CommentOperations comment={{ id: id, title: text }} />
           ) : null}
         </footer>
         <p className="text-gray-500 dark:text-gray-400">

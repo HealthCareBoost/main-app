@@ -605,6 +605,9 @@ export const recipeRouter = createTRPCRouter({
           where: {
             recipe_id: input.recipe_id,
           },
+          orderBy: {
+            createdAt: "desc",
+          },
           include: {
             user: {
               select: {

@@ -26,7 +26,7 @@ export const CommentTextarea: React.FC<{ recipe_id: string }> = ({
       // onSuccess(_data, _variables, _context) {
       // This forces a cache invalidation.
       router.refresh();
-      router.push(`/recipe/${recipe_id}`);
+      router.push(`/recipe/${recipe_id}#comment`);
     },
   });
   const form = useZodForm({
@@ -60,7 +60,7 @@ export const CommentTextarea: React.FC<{ recipe_id: string }> = ({
           rows={6}
           placeholder="Write a comment..."
           className={cn(
-            "mb-6 w-full rounded-lg rounded-t-lg border border-slate-300 bg-white py-2 px-4 text-sm focus:outline-none focus:ring-0 dark:border-slate-700 dark:bg-bgDark dark:placeholder-slate-400"
+            "mb-6 w-full rounded-lg rounded-t-lg border border-slate-300 bg-white py-2 px-4 text-sm focus:outline-none focus:ring-0 dark:border-slate-700 dark:bg-primaryDark dark:placeholder-slate-400"
           )}
           required
           {...form.register("comment")}
