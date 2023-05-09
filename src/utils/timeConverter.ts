@@ -6,7 +6,28 @@ export const timeToMinutes: (hours: number, minutes: number) => number = (
   return hours * 60 + minutes;
 };
 
-export const minuteToReadableTime: (minutes: number) => string | undefined = (
+export const minutesToFormTime: (
+  preparation_time_minutes: number,
+  cooking_time_minutes: number
+) => {
+  cookingHours: number;
+  cookingMinutes: number;
+  preparationHours: number;
+  preparationMinutes: number;
+} = (preparation_time_minutes, cooking_time_minutes) => {
+  const preparationHours = Math.floor(preparation_time_minutes / 60);
+  const preparationMinutes = preparation_time_minutes % 60;
+  const cookingHours = Math.floor(cooking_time_minutes / 60);
+  const cookingMinutes = cooking_time_minutes % 60;
+  return {
+    cookingHours,
+    cookingMinutes,
+    preparationHours,
+    preparationMinutes,
+  };
+};
+
+export const minutesToReadableTime: (minutes: number) => string | undefined = (
   minutes
 ) => {
   if (minutes <= 0) return;

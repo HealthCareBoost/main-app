@@ -1,6 +1,10 @@
+import { AlertTriangle } from "lucide-react";
+import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 import React from "react";
 import { styles } from "../../styles/style";
+import type { RecipeComponentProps } from "../../utils/recipe/recipeTypes";
+import { minutesToReadableTime } from "../../utils/timeConverter";
 import { UserAvatar } from "../UserAvatar";
 import {
   Card,
@@ -10,34 +14,7 @@ import {
   CardTitle,
 } from "../ui/Card";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/HoverCard";
-import { AlertTriangle } from "lucide-react";
-import { minuteToReadableTime } from "../../utils/timeConverter";
-import type { RouterOutputs } from "../../utils/api";
-import type {
-  Recipe as RecipeType,
-  RecipeCategory,
-  RecipeImage,
-  User,
-  Ingredients,
-} from "@prisma/client";
-import { cn } from "../../utils/cn";
 import { Separator } from "../ui/Separator";
-import { CldImage } from "next-cloudinary";
-
-type RecipeOutput = Pick<RouterOutputs["recipe"]["getRecipeByID"], "recipe">;
-type RecipeComponentProps = {
-  recipe: RecipeType & {
-    user: User;
-    ingredients: Ingredients[];
-    images: RecipeImage[];
-    categories: {
-      category: {
-        id: number;
-        name: string;
-      };
-    }[];
-  };
-};
 
 export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
   return (
@@ -123,7 +100,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                     Prep
                   </div>
                   <div className="break-words text-center font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite">
-                    {minuteToReadableTime(recipe.preparation_time_minutes)}
+                    {minutesToReadableTime(recipe.preparation_time_minutes)}
                   </div>
                 </div>
                 <div className="border-l-2 border-l-slate-300 px-4">
@@ -131,7 +108,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                     Cook
                   </div>
                   <div className="break-words text-center font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite">
-                    {minuteToReadableTime(recipe.cooking_time_minutes)}
+                    {minutesToReadableTime(recipe.cooking_time_minutes)}
                   </div>
                 </div>
                 <div className="border-l-2 border-l-slate-300 pl-4 pr-0">
@@ -142,7 +119,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                     data-testid="recipe-time-value-2"
                     className="break-words text-center font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite"
                   >
-                    {minuteToReadableTime(
+                    {minutesToReadableTime(
                       recipe.cooking_time_minutes +
                         recipe.preparation_time_minutes
                     )}

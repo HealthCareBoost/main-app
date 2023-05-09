@@ -18,6 +18,7 @@ import { styles } from "../../styles/style";
 import { Separator } from "../ui/Separator";
 import { toast } from "../../hooks/use-toast";
 import { useRouter } from "next/navigation";
+import type { RecipeForm } from "../../utils/recipe/recipeTypes";
 
 export default function Example() {
   return (
@@ -555,7 +556,13 @@ export default function Example() {
   );
 }
 
-export const CreateRecipeForm: React.FC = () => {
+type CreateRecipeFormProps = {
+  recipeToUpdate?: RecipeForm;
+};
+
+export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
+  recipeToUpdate,
+}) => {
   const createRecipeMutation = api.recipe.createRecipe.useMutation();
   // const addImagesMutation = api.recipe.addImages.useMutation();
   // const saveIngredientsMutation = api.ingredients.addIngredient.useMutation();
@@ -564,15 +571,17 @@ export const CreateRecipeForm: React.FC = () => {
   const [imageData, setImageData] = useState<ImageInfo[]>([]);
   const form = useZodForm({
     schema: RecipeSchema,
-    defaultValues: {
-      ingredients: [
-        {
-          ingredient_name: "milk",
-          measurement_unit: "Milliliter",
-          quantity: 150,
+    defaultValues: recipeToUpdate
+      ? recipeToUpdate
+      : {
+          ingredients: [
+            {
+              ingredient_name: "milk",
+              measurement_unit: "Milliliter",
+              quantity: 150,
+            },
+          ],
         },
-      ],
-    },
   });
 
   const { fields, append, remove } = useFieldArray({
