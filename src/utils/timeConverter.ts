@@ -10,7 +10,7 @@ export const minuteToReadableTime: (minutes: number) => string | undefined = (
   minutes
 ) => {
   if (minutes <= 0) return;
-  const hours = Math.round(minutes / 60);
+  const hours = Math.floor(minutes / 60);
   const minutesLeft = minutes % 60;
   let str = ``;
   if (hours > 0) {

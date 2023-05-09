@@ -3,6 +3,7 @@ import { PostOperations } from "./CommentOperations";
 import { UserAvatar } from "../UserAvatar";
 import type { Comment as CommentType } from "@prisma/client";
 import { format } from "date-fns";
+import { useSession } from "next-auth/react";
 
 type CommentProps = CommentType & {
   user: {
@@ -19,6 +20,10 @@ export const PostItem: React.FC<CommentProps> = ({
   text,
   user,
 }) => {
+  const { data: sessionData } = useSession();
+  const isLoggedIn = sessionData && sessionData.user;
+  const ownComment = isLoggedIn && sessionData.user.id === user.id;
+
   return (
     <div className="space-y-4">
       <div className="flex">
@@ -44,9 +49,11 @@ export const PostItem: React.FC<CommentProps> = ({
               {format(createdAt, "dd MMMM yyyy")}
               {/* 3:34 PM */}
             </span>
-            <div className="my-2 ml-auto">
-              <PostOperations post={{ id, title: text }} />
-            </div>
+            {ownComment ? (
+              <div className="my-2 ml-auto">
+                <PostOperations post={{ id, title: text }} />
+              </div>
+            ) : null}
           </div>
           <p className="text-sm">{text}</p>
         </div>
@@ -62,6 +69,10 @@ export const Comment: React.FC<CommentProps> = ({
   text,
   user,
 }) => {
+  const { data: sessionData } = useSession();
+  const isLoggedIn = sessionData && sessionData.user;
+  const ownComment = isLoggedIn && sessionData.user.id === user.id;
+
   return (
     <>
       <article className="mb-6 rounded-lg bg-white p-6 text-base dark:border dark:border-slate-200 dark:bg-bgDark">
@@ -84,7 +95,9 @@ export const Comment: React.FC<CommentProps> = ({
               </time>
             </p>
           </div>
-          <PostOperations post={{ id: "aaaa", title: "aaaaa" }} />
+          {ownComment ? (
+            <PostOperations post={{ id: "aaaa", title: "aaaaa" }} />
+          ) : null}
         </footer>
         <p className="text-gray-500 dark:text-gray-400">
           {text}

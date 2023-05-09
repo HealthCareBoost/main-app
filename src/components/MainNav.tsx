@@ -25,8 +25,8 @@ export function MainNav({}: MainNavProps) {
   //   const segment = useSelectedLayoutSegment();
   // const user = getCurrentUser().then((res) => console.log(res));
   const { data: sessionData } = useSession();
-  console.log(sessionData);
-  console.log(sessionData?.user);
+  // console.log(sessionData);
+  // console.log(sessionData?.user);
 
   return (
     <nav className="navbar flex w-full items-center justify-between py-6">
