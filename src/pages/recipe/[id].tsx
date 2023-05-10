@@ -72,7 +72,7 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
     <Layout>
       <div className="container">
         <div className="flex w-full flex-grow flex-col flex-wrap py-4 sm:flex-row sm:flex-nowrap">
-          <RecipeOptions recipe_id={recipe_id} />
+          <RecipeOptions recipe_id={recipe_id} user={data.recipe.user} />
           <main role="main" className="w-full flex-grow px-3 pt-1 md:w-1/2">
             <nav aria-label="Breadcrumb">
               <ol

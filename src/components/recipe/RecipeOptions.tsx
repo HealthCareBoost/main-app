@@ -1,12 +1,23 @@
 import React, { useState } from "react";
-import { Bookmark, Heart, HeartOff, Home, MessageCircle } from "lucide-react";
+import {
+  Bookmark,
+  FileEdit,
+  Heart,
+  HeartOff,
+  Home,
+  MessageCircle,
+  Trash,
+} from "lucide-react";
 import { BookmarkMinus } from "lucide-react";
 import { api } from "../../utils/api";
 import { useRouter } from "next/navigation";
 import { toast } from "../../hooks/use-toast";
+import { useSession } from "next-auth/react";
+import type { User } from "@prisma/client";
 
-export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
+export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
   recipe_id,
+  user,
 }) => {
   // const { theme } = useTheme();
 
@@ -14,6 +25,11 @@ export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
   const { data, isLoading } = api.recipe.getUserPreferences.useQuery({
     recipe_id,
   });
+
+  const { data: sessionData } = useSession();
+  const isLoggedIn = sessionData && sessionData.user;
+  const ownRecipe = isLoggedIn && sessionData.user.id === user.id;
+
   const [isLiked, setIsLiked] = useState<boolean>(
     data && data.preferences && data.preferences.liked
       ? data.preferences.liked
@@ -154,6 +170,43 @@ export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
               </span>
             </button>
           </li>
+          {ownRecipe ? (
+            <>
+              <li className="my-2 flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
+                <button
+                  className="truncate sm:flex sm:flex-col sm:justify-center"
+                  onClick={() => router.push(`/recipe/update/${recipe_id}`)}
+                >
+                  <FileEdit
+                    width={28}
+                    height={28}
+                    stroke="black"
+                    className="mx-4 inline w-7 sm:self-center"
+                  />
+
+                  <span className="hidden self-center text-center dark:text-primaryDark sm:inline">
+                    Edit
+                  </span>
+                </button>
+              </li>
+              <li className="my-2 flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
+                <button
+                  className="truncate sm:flex sm:flex-col sm:justify-center"
+                  onClick={() => console.log("delete")}
+                >
+                  <Trash
+                    width={28}
+                    height={28}
+                    stroke="black"
+                    className="mx-4 inline w-7 sm:self-center"
+                  />
+                  <span className="hidden self-center text-center dark:text-primaryDark sm:inline">
+                    Delete
+                  </span>
+                </button>
+              </li>
+            </>
+          ) : null}
         </ul>
       </div>
     </div>

@@ -18,7 +18,9 @@ import { styles } from "../../styles/style";
 import { Separator } from "../ui/Separator";
 import { toast } from "../../hooks/use-toast";
 import { useRouter } from "next/navigation";
-import type { RecipeForm } from "../../utils/recipe/recipeTypes";
+import type { RecipeComponentProps } from "../../utils/recipe/recipeTypes";
+import type { z } from "zod";
+import { RecipeMapper } from "../../utils/recipeMapper";
 
 export default function Example() {
   return (
@@ -557,13 +559,17 @@ export default function Example() {
 }
 
 type CreateRecipeFormProps = {
-  recipeToUpdate?: RecipeForm;
+  recipeToUpdate?: RecipeComponentProps;
 };
+
+type FormData = z.infer<typeof RecipeSchema>;
 
 export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
   recipeToUpdate,
 }) => {
   const createRecipeMutation = api.recipe.createRecipe.useMutation();
+  const updateRecipeMutation = api.recipe.update.useMutation();
+
   // const addImagesMutation = api.recipe.addImages.useMutation();
   // const saveIngredientsMutation = api.ingredients.addIngredient.useMutation();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -572,7 +578,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
   const form = useZodForm({
     schema: RecipeSchema,
     defaultValues: recipeToUpdate
-      ? recipeToUpdate
+      ? RecipeMapper(recipeToUpdate)
       : {
           ingredients: [
             {
@@ -592,57 +598,116 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
     },
   });
 
+  const onSubmitCreate = async (data: FormData) => {
+    setIsSubmitting(true);
+    console.log("***** form data *****");
+    console.log(data);
+    console.log("***** form data *****");
+
+    // send ingredients to be saved and calulate nutr
+    // try {
+    //   if (data.ingredients && data.ingredients.length > 0) {
+    //     for (const ingredient of data.ingredients) {
+    //       const result = await saveIngredientsMutation.mutateAsync({
+    //         ingredientName: ingredient.ingredient_name,
+    //       });
+
+    //       console.log(result.success);
+    //       if (result.success && result.ingredient) {
+    //         recipeIngredients.push(result.ingredient);
+    //       }
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // } finally {
+    //   console.log("All ingredients nutritions are saved");
+    //   console.log(recipeIngredients);
+    // }
+
+    console.log(imageData);
+    // then create new recipe
+    const { recipe, success } = await createRecipeMutation.mutateAsync({
+      ...data,
+      images: imageData,
+    });
+    setIsSubmitting(false);
+
+    if (success && recipe) {
+      router.push(`/recipe/${recipe.id}`);
+      return toast({
+        title: "Recipe Created",
+        description: "New recipe was created.",
+      });
+    } else {
+      return toast({
+        title: "Something went wrong.",
+        description: "Recipe creation failed! Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const onSubmitUpdate = async (data: FormData) => {
+    if (!recipeToUpdate) return;
+    setIsSubmitting(true);
+    console.log("***** form data *****");
+    console.log(data);
+    console.log("***** form data *****");
+
+    // send ingredients to be saved and calulate nutr
+    // try {
+    //   if (data.ingredients && data.ingredients.length > 0) {
+    //     for (const ingredient of data.ingredients) {
+    //       const result = await saveIngredientsMutation.mutateAsync({
+    //         ingredientName: ingredient.ingredient_name,
+    //       });
+
+    //       console.log(result.success);
+    //       if (result.success && result.ingredient) {
+    //         recipeIngredients.push(result.ingredient);
+    //       }
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // } finally {
+    //   console.log("All ingredients nutritions are saved");
+    //   console.log(recipeIngredients);
+    // }
+
+    console.log(imageData);
+    // then create new recipe
+    const { success, recipe } = await updateRecipeMutation.mutateAsync({
+      recipe_data: { ...data, images: imageData },
+      recipe_id: recipeToUpdate.recipe.id,
+    });
+    setIsSubmitting(false);
+
+    if (success && recipe) {
+      router.push(`/recipe/${recipe.id}`);
+      return toast({
+        title: "Recipe Updated.",
+        description: "Recipe information was updated successfully.",
+      });
+    } else {
+      return toast({
+        title: "Something went wrong.",
+        description: "Recipe creation failed! Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <>
       <Form
         form={form}
-        onSubmit={async (data) => {
-          setIsSubmitting(true);
-          console.log("***** form data *****");
-          console.log(data);
-          console.log("***** form data *****");
-
-          // send ingredients to be saved and calulate nutr
-          // try {
-          //   if (data.ingredients && data.ingredients.length > 0) {
-          //     for (const ingredient of data.ingredients) {
-          //       const result = await saveIngredientsMutation.mutateAsync({
-          //         ingredientName: ingredient.ingredient_name,
-          //       });
-
-          //       console.log(result.success);
-          //       if (result.success && result.ingredient) {
-          //         recipeIngredients.push(result.ingredient);
-          //       }
-          //     }
-          //   }
-          // } catch (error) {
-          //   console.error(error);
-          // } finally {
-          //   console.log("All ingredients nutritions are saved");
-          //   console.log(recipeIngredients);
-          // }
-
-          console.log(imageData);
-          // then create new recipe
-          const { recipe, success } = await createRecipeMutation.mutateAsync({
-            ...data,
-            images: imageData,
-          });
-          setIsSubmitting(false);
-
-          if (success && recipe) {
-            router.push(`/recipe/${recipe.id}`);
-            return toast({
-              title: "Recipe Created",
-              description: "New recipe was created.",
-            });
+        onSubmit={(data) => {
+          if (recipeToUpdate) {
+            void onSubmitUpdate(data);
           } else {
-            return toast({
-              title: "Something went wrong.",
-              description: "Recipe creation failed! Please try again.",
-              variant: "destructive",
-            });
+            void onSubmitCreate(data);
           }
         }}
       >
@@ -800,7 +865,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
                   onClick={() => {
                     append({
                       ingredient_name: "milk",
-                      measurement_unit: "Gram",
+                      measurement_unit: "Milliliter",
                       quantity: 150,
                     });
                   }}

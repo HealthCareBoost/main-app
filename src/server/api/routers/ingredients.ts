@@ -12,13 +12,6 @@ type NutrientData = {
   unit: string;
 };
 
-type Nutrient = {
-  name: string;
-  amount: number;
-  unit: string;
-  ingredient_id: number;
-};
-
 export const ingredientsRouter = createTRPCRouter({
   addIngredient: publicProcedure
     .input(
@@ -186,9 +179,8 @@ export const getIngredientNutritions: (
 };
 
 export const getIngredientNutritionsCollection: (
-  ingredientName: string,
-  ingredient_id: number
-) => Promise<Nutrient[] | null> = async (ingredientName, ingredient_id) => {
+  ingredientName: string
+) => Promise<NutrientData[] | null> = async (ingredientName) => {
   const options = {
     method: "GET",
     url: `${env.FOOD_API_URL}search`,
@@ -226,7 +218,7 @@ export const getIngredientNutritionsCollection: (
       const ingridientDetails = res.data as IngridientDetailsResponce;
       // console.log(ingridientDetails);
 
-      const nutrientsMap: Nutrient[] = [];
+      const nutrientsMap: NutrientData[] = [];
       ingridientDetails.nutrition.nutrients.filter((item) => {
         if (
           item.name === "Protein" ||
@@ -236,7 +228,6 @@ export const getIngredientNutritionsCollection: (
           item.name === "Sugar"
         ) {
           nutrientsMap.push({
-            ingredient_id: ingredient_id,
             name: item.name,
             amount: item.amount,
             unit: item.unit,

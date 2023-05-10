@@ -8,6 +8,10 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { getFiltersForQuery } from "../../../utils/mapFilters";
 import { timeToMinutes } from "../../../utils/timeConverter";
 import { getIngredientNutritionsCollection } from "./ingredients";
+import type {
+  IngredientToUpdate,
+  NewIngredient,
+} from "../../../utils/recipe/recipeTypes";
 
 export const recipeRouter = createTRPCRouter({
   /**
@@ -205,19 +209,26 @@ export const recipeRouter = createTRPCRouter({
       console.log("ingredients after save");
       console.log(recipe.ingredients);
 
-      for (const ingredient of recipe.ingredients) {
-        const nd = await getIngredientNutritionsCollection(
-          ingredient.name,
-          ingredient.id
-        );
-        console.log("nd");
-        console.log(nd);
-        if (nd) {
-          await ctx.prisma.nutrients.createMany({
-            data: [...nd],
-          });
+      await ctx.prisma.$transaction(async (prisma) => {
+        for (const ingredient of recipe.ingredients) {
+          const nutritionData = await getIngredientNutritionsCollection(
+            ingredient.name
+          );
+          console.log("nutritionData");
+          console.log(nutritionData);
+          if (nutritionData) {
+            const dataToSave = nutritionData.map((x) => ({
+              ...x,
+              ingredient_id: ingredient.id,
+            }));
+            console.log("dataToSave");
+            console.log(dataToSave);
+            await prisma.nutrients.createMany({
+              data: [...dataToSave],
+            });
+          }
         }
-      }
+      });
 
       return {
         success: true,
@@ -248,6 +259,145 @@ export const recipeRouter = createTRPCRouter({
           is_deleted: true,
         },
       });
+    }),
+
+  update: protectedProcedure
+    .input(z.object({ recipe_id: z.string(), recipe_data: RecipeSchema }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const { recipe_data, recipe_id } = input;
+
+        // const currentRecipeData = await ctx.prisma.recipe.findUniqueOrThrow({
+        //   where: { id: recipe_id },
+        //   include: {
+        //     ingredients: true,
+        //     categories: true,
+        //     images: true,
+        //   },
+        // });
+
+        const ingredientsToUpdate: IngredientToUpdate[] = [];
+        const newIngrediensAdded: NewIngredient[] = [];
+
+        console.log("reipe ingr form");
+        console.log(recipe_data.ingredients);
+
+        for (const ingredient of recipe_data.ingredients) {
+          const foundIngredient = await ctx.prisma.ingredients.findFirst({
+            where: {
+              AND: [
+                {
+                  name: ingredient.ingredient_name,
+                },
+                {
+                  recipe_id,
+                },
+              ],
+            },
+          });
+
+          console.log(foundIngredient);
+
+          if (!foundIngredient) {
+            newIngrediensAdded.push({
+              quantity: ingredient.quantity,
+              measurement_unit: ingredient.measurement_unit,
+              name: ingredient.ingredient_name,
+            });
+          }
+
+          if (foundIngredient) {
+            const isChanged =
+              ingredient.ingredient_name !== foundIngredient.name ||
+              foundIngredient.quantity !== ingredient.quantity ||
+              foundIngredient.measurement_unit !== ingredient.measurement_unit;
+
+            if (isChanged) {
+              ingredientsToUpdate.push({
+                id: foundIngredient.id,
+                quantity: ingredient.quantity,
+                measurement_unit: ingredient.measurement_unit,
+                name: ingredient.ingredient_name,
+              });
+            }
+          }
+        }
+
+        console.log("ingredientsToUpdate");
+        console.log(ingredientsToUpdate);
+        await ctx.prisma.$transaction(async (prisma) => {
+          for (const object of ingredientsToUpdate) {
+            await prisma.ingredients.update({
+              where: {
+                id: object.id,
+              },
+              data: {
+                name: object.name,
+                measurement_unit: object.measurement_unit,
+                quantity: object.quantity,
+              },
+            });
+          }
+        });
+
+        const updateRecipe = await ctx.prisma.recipe.update({
+          where: {
+            id: recipe_id,
+          },
+          data: {
+            name: recipe_data.name,
+            cooking_time_minutes: timeToMinutes(
+              recipe_data.cookingHours,
+              recipe_data.cookingMinutes
+            ),
+            preparation_time_minutes: timeToMinutes(
+              recipe_data.preparationHours,
+              recipe_data.preparationMinutes
+            ),
+            description: recipe_data.description,
+            difficulty_level: recipe_data.difficultyLevel,
+            recipe_steps: recipe_data.recipe_steps,
+            ingredients: {
+              create: newIngrediensAdded,
+            },
+          },
+          include: { ingredients: true },
+        });
+
+        console.log("updateRecipe");
+        console.log(updateRecipe);
+        await ctx.prisma.$transaction(async (prisma) => {
+          for (const ingredient of updateRecipe.ingredients) {
+            const isNew = !!newIngrediensAdded.find(
+              (i: NewIngredient) => i.name === ingredient.name
+            );
+
+            console.log(`${ingredient.name} ${isNew ? "new" : "not"}`);
+            if (isNew) {
+              const nutritionData = await getIngredientNutritionsCollection(
+                ingredient.name
+              );
+              console.log("nutritionData");
+              console.log(nutritionData);
+              if (nutritionData) {
+                const dataToSave = nutritionData.map((x) => ({
+                  ...x,
+                  ingredient_id: ingredient.id,
+                }));
+                console.log("dataToSave");
+                console.log(dataToSave);
+                await prisma.nutrients.createMany({
+                  data: [...dataToSave],
+                });
+              }
+            }
+          }
+        });
+        return { success: true, recipe: updateRecipe };
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
     }),
 
   addImages: protectedProcedure
