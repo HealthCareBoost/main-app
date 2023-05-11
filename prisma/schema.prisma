@@ -57,6 +57,7 @@ model User {
     recipes       Recipe[]
     daily_diet    UserDailyDiet[]
     comments      Comment[]
+    likes         UserLike[]
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
     is_deleted    Boolean   @default(false)
@@ -94,18 +95,13 @@ model Recipe {
     updatedAt                   DateTime    @updatedAt
     is_deleted                  Boolean     @default(false)   
     total_likes                 Int         @default(0)
+    user_likes                  UserLike[]
     daily_diet                  UserDailyDiet[]
     comments                    Comment[]
     ingredients                 Ingredients[]
 
     @@index([creator_id])
 }
-
-// To be added
-// model UserLikes {
-//     recipe_id             String
-//     user_id             String
-// }
 
 model Comment {
     id                   String  @id @default(cuid())
@@ -132,25 +128,25 @@ model Comment {
 // }
 
 model RecipeImage {
-    id              Int  @id @default(autoincrement())
+    id                      Int  @id @default(autoincrement())
     // asset_id: "edf513d98bef7cd3216d27dad5917959";
     // id: "uw-file3";
     // public_id: "folder/hcypqsvezocwxymemdzv";
     // signature: "5fe5952664d94c1f684bec1c1ee5de1f5eb73429";
-    recipe_id       String
-    recipe          Recipe    @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
-    path            String
-    filename        String
-    original_filename    String
-    original_extension   String
-    format        String
-    size_in_bytes   Int
-    createdAt       DateTime  @default(now())
-    updatedAt       DateTime  @updatedAt
-    is_deleted      Boolean   @default(false) 
-    height          Int
-    width           Int
-    url             String
+    recipe_id               String
+    recipe                  Recipe    @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
+    path                    String
+    filename                String
+    original_filename       String
+    original_extension      String
+    format                  String
+    size_in_bytes           Int
+    createdAt               DateTime  @default(now())
+    updatedAt               DateTime  @updatedAt
+    is_deleted              Boolean   @default(false) 
+    height                  Int
+    width                   Int
+    url                     String
     @@index([recipe_id])
 }
 
@@ -221,6 +217,19 @@ model UserPreferences {
     createdAt       DateTime  @default(now())
     updatedAt       DateTime  @updatedAt
     @@unique([user_id, recipe_id])
+}
+
+model UserLike {
+    user_id         String
+    recipe_id       String
+    value           Int
+    user            User      @relation(fields: [user_id], references: [id])
+    recipe          Recipe    @relation(fields: [recipe_id], references: [id])
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @updatedAt
+    
+    @@unique([user_id, recipe_id])
+    @@index([recipe_id, user_id])
 }
 
 model UserDailyDiet {
