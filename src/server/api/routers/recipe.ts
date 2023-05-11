@@ -620,7 +620,7 @@ export const recipeRouter = createTRPCRouter({
     .input(
       z.object({
         recipe_id: z.string(),
-        // isLiked: z.boolean()
+        // isLiked: z.boolean(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -640,7 +640,7 @@ export const recipeRouter = createTRPCRouter({
           },
         });
 
-        const { liked } = await ctx.prisma.userPreferences.upsert({
+        const updateUserLikes = ctx.prisma.userPreferences.upsert({
           where: {
             user_id_recipe_id: {
               user_id: user_id,
@@ -648,13 +648,12 @@ export const recipeRouter = createTRPCRouter({
             },
           },
           update: {
-            updatedAt: new Date(),
             liked: isLiked === null || isLiked.liked === false ? true : false,
           },
           create: {
-            liked: true,
-            recipe_id: input.recipe_id,
             user_id: user_id,
+            recipe_id: input.recipe_id,
+            liked: true,
             made: false,
             saved: false,
           },
@@ -662,6 +661,23 @@ export const recipeRouter = createTRPCRouter({
             liked: true,
           },
         });
+
+        const updateRecipeTotalLikes = ctx.prisma.recipe.update({
+          data: {
+            total_likes: {
+              increment: isLiked === null || isLiked.liked === false ? 1 : -1,
+            },
+          },
+          where: {
+            id: input.recipe_id,
+          },
+        });
+
+        const [{ liked }, recipeData] = await ctx.prisma.$transaction([
+          updateUserLikes,
+          updateRecipeTotalLikes,
+        ]);
+
         return { success: true, liked };
       } catch (error) {
         console.error(error);

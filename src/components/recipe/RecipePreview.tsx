@@ -4,6 +4,8 @@ import millify from "millify";
 import { Separator } from "../ui/Separator";
 import { useTheme } from "next-themes";
 import type { RecipesQueryResult } from "./RecipeReducer";
+import { CldImage } from "next-cloudinary";
+import { minutesToReadableTime } from "../../utils/timeConverter";
 
 type RecipePreviewProps = {
   recipes: NonNullable<RecipesQueryResult>;
@@ -21,12 +23,33 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipes }) => {
             className="overflow-hidden rounded-2xl border-2 border-orange-300 bg-gray-50 dark:bg-primaryDark"
           >
             <div className="relative flex h-[180px] items-center overflow-hidden">
-              <Image
-                width={1000}
-                height={1000}
-                src="https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg"
-                alt="Hamburger"
-              />
+              {recipe.images.length > 0 &&
+              recipe.images[0] &&
+              recipe.images[0].path ? (
+                <CldImage
+                  width="600"
+                  height="600"
+                  alt="meal"
+                  priority
+                  // loading="lazy"
+                  className="h-auto w-full"
+                  // v1683539800/let-me-cook/lmfvef1ml3maubbwilqu.webp
+                  // src="https://res.cloudinary.com/ddm9sjjq5/image/upload/v1683539800/let-me-cook/lmfvef1ml3maubbwilqu.webp"
+                  src={`https://res.cloudinary.com/ddm9sjjq5/image/upload/${recipe.images[0].path}`}
+                ></CldImage>
+              ) : (
+                <Image
+                  className="h-auto w-full object-cover"
+                  src={
+                    "/default-recipe.png"
+                    // "https://mysaffronappgc.imgix.net/1676446384966-nFn7yyLwu.jpeg?max-h=800&max-w=1600&fit=crop&auto=compress&ixlib=js-2.3.1&s=953ad10063b1c2d22c5a429aed1fcc89"
+                  }
+                  alt={"meal"}
+                  sizes="h-auto w-full"
+                  priority
+                  fill
+                />
+              )}
             </div>
 
             <div className="p-6">
@@ -36,14 +59,14 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipes }) => {
                     {recipe.name}
                   </h2>
                   <p className="break-words text-gray-400 dark:text-dimWhite">
-                    {recipe.user.name}
+                    {recipe.user.name ? recipe.user.name : "Anonymous"}
                   </p>
                 </div>
                 <div className="flex flex-col items-center">
                   <div className="mt-2 flex flex-row items-center rounded-full bg-orange-400 p-3 text-sm font-medium text-white">
                     <span className="mx-2 text-primaryDark dark:text-white">
                       {/* 5.0 (2.5k) */}
-                      {millify(2500)}
+                      {millify(recipe.total_likes)}
                     </span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +117,10 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipes }) => {
 
                   <span className="ml-2 text-center text-gray-600 dark:text-dimWhite">
                     {/* 10 - 15 Mins */}
-                    {recipe.preparation_time_minutes}
+                    {minutesToReadableTime(
+                      recipe.preparation_time_minutes +
+                        recipe.cooking_time_minutes
+                    )}
                   </span>
 
                   {/* <Separator

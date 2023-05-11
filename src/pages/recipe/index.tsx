@@ -11,6 +11,7 @@ import {
   RecipeReducer,
   RecipeReducerActions,
 } from "../../components/recipe/RecipeReducer";
+import Layout from "../../components/Layout";
 
 const RecipePreviewPage: NextPage = () => {
   const [recipeState, recipeDispatch] = useReducer(RecipeReducer, initialState);
@@ -44,10 +45,7 @@ const RecipePreviewPage: NextPage = () => {
 
   return (
     <RecipeContext.Provider value={{ recipeDispatch, recipeState }}>
-      <div className="w-full overflow-hidden dark:bg-primaryDark">
-        <div className={`${styles.paddingX} ${styles.flexCenter}`}>
-          <LandingNavbar />
-        </div>
+      <Layout>
         <section className="h-full w-full overflow-hidden bg-white dark:bg-primaryDark lg:block">
           <div className="p-4">
             <div className="rounded-md shadow-2xl transition-all">
@@ -62,7 +60,7 @@ const RecipePreviewPage: NextPage = () => {
             </div>
           </div>
         </section>
-      </div>
+      </Layout>
     </RecipeContext.Provider>
   );
 };

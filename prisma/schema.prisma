@@ -47,20 +47,21 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    recipes       Recipe[]
-    daily_diet    UserDailyDiet[]
-    comments      Comment[]
-    likes         UserLike[]
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
-    is_deleted    Boolean   @default(false)
+    id              String    @id @default(cuid())
+    name            String?
+    email           String?   @unique
+    emailVerified   DateTime?
+    image           String?
+    accounts        Account[]
+    sessions        Session[]
+    recipes         Recipe[]
+    daily_diet      UserDailyDiet[]
+    comments        Comment[]
+    preferences     UserPreferences[]  
+    // likes           UserLike[]
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @updatedAt
+    is_deleted      Boolean   @default(false)
 }
 
 model NameEmailMap {
@@ -95,7 +96,7 @@ model Recipe {
     updatedAt                   DateTime    @updatedAt
     is_deleted                  Boolean     @default(false)   
     total_likes                 Int         @default(0)
-    user_likes                  UserLike[]
+    // user_likes                  UserLike[]
     daily_diet                  UserDailyDiet[]
     comments                    Comment[]
     ingredients                 Ingredients[]
@@ -210,27 +211,30 @@ model RecipeCategory {
 
 model UserPreferences {
     user_id         String
+    user            User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
     recipe_id       String
     made            Boolean
     liked           Boolean
     saved           Boolean
     createdAt       DateTime  @default(now())
     updatedAt       DateTime  @updatedAt
-    @@unique([user_id, recipe_id])
-}
-
-model UserLike {
-    user_id         String
-    recipe_id       String
-    value           Int
-    user            User      @relation(fields: [user_id], references: [id])
-    recipe          Recipe    @relation(fields: [recipe_id], references: [id])
-    createdAt       DateTime  @default(now())
-    updatedAt       DateTime  @updatedAt
     
     @@unique([user_id, recipe_id])
-    @@index([recipe_id, user_id])
+    @@index([user_id])
 }
+
+// model UserLike {
+//     user_id         String
+//     recipe_id       String
+//     value           Boolean
+//     user            User      @relation(fields: [user_id], references: [id])
+//     recipe          Recipe    @relation(fields: [recipe_id], references: [id])
+//     createdAt       DateTime  @default(now())
+//     updatedAt       DateTime  @updatedAt
+    
+//     @@unique([user_id, recipe_id])
+//     @@index([recipe_id, user_id])
+// }
 
 model UserDailyDiet {
     user_id       String

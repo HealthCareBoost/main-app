@@ -345,7 +345,7 @@ export const userRouter = createTRPCRouter({
           filedsToSave.made = input.made;
         }
 
-        await ctx.prisma.userPreferences.upsert({
+        const updatePreferences = ctx.prisma.userPreferences.upsert({
           where: {
             user_id_recipe_id: {
               user_id,
@@ -363,6 +363,8 @@ export const userRouter = createTRPCRouter({
             made: input.made !== undefined ? input.made : false,
           },
         });
+
+        return ctx.prisma.$transaction([updatePreferences]);
       } catch (error) {
         console.error(error);
         return { success: false, error };
