@@ -3,7 +3,6 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import axios from "axios";
 import { env } from "../../../env/server.mjs";
-import { MeasurementUnits } from "@prisma/client";
 // import { MeasurementUnits } from "@prisma/client";
 
 type NutrientData = {
@@ -18,7 +17,7 @@ export const ingredientsRouter = createTRPCRouter({
       z.object({
         recipe_id: z.string(),
         ingredientName: z.string(),
-        measurement_unit: z.nativeEnum(MeasurementUnits),
+        measurement_unit: z.string(),
         quantity: z.number(),
       })
     )

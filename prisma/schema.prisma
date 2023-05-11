@@ -158,7 +158,7 @@ model Ingredients {
     updatedAt           DateTime  @updatedAt
     is_deleted          Boolean   @default(false)  
     quantity            Float    
-    measurement_unit    MeasurementUnits
+    measurement_unit    String // MeasurementUnits
     nutrition           Nutrients[]
     recipe_id           String
     recipe              Recipe    @relation(fields: [recipe_id], references: [id], onDelete: Cascade)

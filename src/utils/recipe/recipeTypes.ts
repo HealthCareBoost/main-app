@@ -6,7 +6,6 @@ import type {
   Recipe as RecipeType,
   RecipeImage,
   User,
-  MeasurementUnits,
 } from "@prisma/client";
 
 export type RecipeForm = z.infer<typeof RecipeSchema>;
@@ -49,12 +48,12 @@ export type RecipeComponentProps = {
 export type NewIngredient = {
   name: string;
   quantity: number;
-  measurement_unit: MeasurementUnits;
+  measurement_unit: string; //MeasurementUnits;
 };
 
 export type IngredientToUpdate = {
   id: number;
   name: string;
   quantity: number;
-  measurement_unit: MeasurementUnits;
+  measurement_unit: string; //MeasurementUnits;
 };

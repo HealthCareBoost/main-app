@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { type NextPage } from "next";
 import { LandingNavbar } from "../../components/landing/LandingNavbar";
 import { CategorySidebar } from "../../components/recipe/CategorySidebar";
@@ -12,21 +12,28 @@ import {
   RecipeReducerActions,
 } from "../../components/recipe/RecipeReducer";
 import Layout from "../../components/Layout";
+import { Button } from "../../components/ui/Button";
 
 const RecipePreviewPage: NextPage = () => {
   const [recipeState, recipeDispatch] = useReducer(RecipeReducer, initialState);
+  const [page, setPage] = useState(0);
 
-  const { isLoading, data } = api.recipe.getPaginatedRecipies.useQuery({
-    take: recipeState.take,
-    cursor: recipeState.cursor,
-    filters: {
-      categoryId: recipeState.selectedCategoryId,
-      difficulty: recipeState.selectedDifficulty,
-      timeToCook: recipeState.selectedTimeToCook,
-      orderBy: recipeState.orderBy,
-    },
-  });
-  console.log(data);
+  const { isLoading, data, refetch } = api.recipe.getPaginatedRecipies.useQuery(
+    {
+      cursor: recipeState.cursor,
+      take: recipeState.take,
+      filters: {
+        categoryId: recipeState.selectedCategoryId,
+        difficulty: recipeState.selectedDifficulty,
+        timeToCook: recipeState.selectedTimeToCook,
+        orderBy: recipeState.orderBy,
+      },
+    }
+    // {
+    //   getNextPageParam: (lastPage) => lastPage.nextCursor,
+    // }
+  );
+  // console.log(data);
 
   useEffect(() => {
     function fetchRecipes() {
@@ -34,14 +41,24 @@ const RecipePreviewPage: NextPage = () => {
         return;
       }
       if (data) {
+        // console.log(data.pages);
         recipeDispatch({
           type: RecipeReducerActions.RECIPES_FETCHED,
-          payload: { recipes: data },
+          payload: { recipes: data.recipes },
         });
       }
     }
     fetchRecipes();
   }, [data, isLoading]);
+
+  // const handleFetchNextPage = async () => {
+  //   await fetchNextPage();
+  //   setPage((prev) => prev + 1);
+  // };
+
+  // const handleFetchPreviousPage = () => {
+  //   setPage((prev) => prev - 1);
+  // };
 
   return (
     <RecipeContext.Provider value={{ recipeDispatch, recipeState }}>
@@ -55,6 +72,8 @@ const RecipePreviewPage: NextPage = () => {
                   <div className="h-full px-8 py-6">
                     <RecipeGrid />
                   </div>
+                  <Button onClick={() => void refetch()}>Next</Button>
+                  <Button onClick={() => void refetch()}>Next</Button>
                 </div>
               </div>
             </div>

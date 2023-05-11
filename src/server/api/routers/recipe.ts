@@ -469,6 +469,7 @@ export const recipeRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       console.log("************************");
+      console.log(input);
       // if (input.cursor) {
       //   console.log(`Cursor: ${input.cursor}`);
       //   console.log(
@@ -540,80 +541,50 @@ export const recipeRouter = createTRPCRouter({
         orderBy = result.orderBy;
         whereConditions = result.whereConditions;
       }
+      const limit =
+        input.take !== undefined ? input.take : Constants.DEFAULT_SELECT_NUMBER;
 
-      if (input.cursor !== undefined) {
-        // Cursor-based pagination
-        return ctx.prisma.recipe.findMany({
-          take:
-            input.take !== undefined
-              ? input.take
-              : Constants.DEFAULT_SELECT_NUMBER,
-          skip: 1,
-          cursor: {
-            id: input.cursor,
+      const recipes = await ctx.prisma.recipe.findMany({
+        take: limit,
+        skip: 1,
+        cursor: input.cursor
+          ? {
+              id: input.cursor,
+            }
+          : undefined,
+        where: {
+          AND: [{ is_deleted: false }, ...whereConditions],
+        },
+        orderBy: {
+          ...(orderBy as
+            | Prisma.Enumerable<Prisma.RecipeOrderByWithRelationInput>
+            | undefined),
+        },
+        include: {
+          user: {
+            select: { name: true, id: true },
           },
-          where: {
-            AND: [{ is_deleted: false }, ...whereConditions],
-          },
-          orderBy: {
-            ...(orderBy as
-              | Prisma.Enumerable<Prisma.RecipeOrderByWithRelationInput>
-              | undefined),
-          },
-          include: {
-            user: {
-              select: { name: true, id: true },
-            },
-            categories: {
-              select: {
-                category: {
-                  select: {
-                    name: true,
-                    id: true,
-                  },
+          categories: {
+            select: {
+              category: {
+                select: {
+                  name: true,
+                  id: true,
                 },
               },
             },
-            images: true,
           },
-        });
-      } else {
-        // offset pagination
-        // const results = await ctx.prisma.recipe.findMany({
-        //   skip: 3,
-        //   take: 4,
-        // });
-        return ctx.prisma.recipe.findMany({
-          take:
-            input.take !== undefined
-              ? input.take
-              : Constants.DEFAULT_SELECT_NUMBER,
-          where: {
-            AND: [{ is_deleted: false }, ...whereConditions],
-          },
-          orderBy: {
-            ...(orderBy as
-              | Prisma.Enumerable<Prisma.RecipeOrderByWithRelationInput>
-              | undefined),
-          },
-          include: {
-            user: {
-              select: { name: true, id: true },
-            },
-            categories: {
-              select: {
-                category: {
-                  select: {
-                    name: true,
-                    id: true,
-                  },
-                },
-              },
-            },
-            images: true,
-          },
-        });
+          images: true,
+        },
+      });
+
+      let nextCursor: string | undefined = undefined;
+      if (recipes.length > limit) {
+        const nextItem = recipes.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
       }
+
+      return { recipes, nextCursor };
     }),
 
   likeRecipe: protectedProcedure

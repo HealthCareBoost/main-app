@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { MeasurementUnits } from "@prisma/client";
 import { DifficultyLevel, Categories } from "../enumsMap";
 import { ImageInfoSchema } from "./imageSchema";
 
@@ -40,7 +39,8 @@ export const RecipeSchema = z.object({
     .object({
       ingredient_name: z.string().min(3).max(50),
       quantity: z.coerce.number().min(0.1),
-      measurement_unit: z.nativeEnum(MeasurementUnits),
+      measurement_unit: z.string(),
+      // measurement_unit: z.nativeEnum(MeasurementUnits),
     })
     .array(),
 });
