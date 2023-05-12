@@ -38,6 +38,46 @@ type CreateRecipeFormProps = {
 
 type FormData = z.infer<typeof RecipeSchema>;
 
+function containsOnlyNumbers(str: string | undefined) {
+  if (str === undefined) return false;
+  return /^[0-9]+$/.test(str);
+}
+
+const transformIngredientsFromList = (ingredientText: string) => {
+  const text = ingredientText
+    .split(/\r?\n/) // Split input text into an array of lines
+    .filter((line) => line.trim() !== "") // Filter out lines that are empty or contain only whitespace
+    .join("\n");
+  // console.log(text);
+
+  const ingredientData: {
+    ingredient_name: string;
+    quantity: number;
+    measurement_unit: string;
+  }[] = [];
+
+  const lines = text.split("\n");
+  for (const line of lines) {
+    const lineWords = line.split(" ");
+
+    if (lineWords.length > 2) {
+      const [quantity, unit, ...rest] = lineWords;
+      const name = rest.join(" ");
+      // console.log(quantity);
+      // console.log(unit);
+
+      if (quantity && unit && name) {
+        ingredientData.push({
+          ingredient_name: name.trim(),
+          measurement_unit: unit.trim(),
+          quantity: containsOnlyNumbers(quantity) ? parseFloat(quantity) : 0,
+        });
+      }
+    }
+  }
+  return ingredientData;
+};
+
 export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
   recipeToUpdate,
 }) => {
@@ -337,7 +377,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
               <CardContent className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <Button
                   type="button"
-                  className="sticky top-2 col-span-full sm:col-span-4 sm:col-start-2"
+                  className="sticky top-2 col-span-full sm:col-span-4"
                   onClick={() => {
                     append({
                       ingredient_name: "",
@@ -348,6 +388,74 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
                 >
                   Add Ingredient
                 </Button>
+
+                <div className="col-span-full flex items-center sm:hidden">
+                  <Separator />
+                  <span className="mx-4 font-poppins text-base font-semibold leading-7">
+                    OR
+                  </span>
+                  <Separator />
+                </div>
+
+                <div className="col-span-full sm:col-span-2">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button className="mx-auto w-full text-center">
+                        Import List
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Import Ingredients List</DialogTitle>
+                        <DialogDescription>
+                          Paste your ingredient list here. Add one ingredient
+                          per line. Include the quantity (i.e. cups,
+                          tablespoons) and any special preparation (i.e. sifted,
+                          softened, chopped).
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <div className="col-span-4">
+                            <textarea
+                              id="text"
+                              className={
+                                "flex w-full rounded-md border border-slate-300 bg-transparent py-2 px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-50 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900"
+                              }
+                              placeholder={`Example:\n2 cups of flour, sifted\n1 cup sugar\n2 tablespoons butter, softened`}
+                              rows={8}
+                              value={ingredientText}
+                              onChange={(e) => {
+                                setIngredientText(e.target.value);
+                                // console.log(e.target.value);
+                              }}
+                              name="text"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button
+                          onClick={() => {
+                            const ingredientsArray =
+                              transformIngredientsFromList(ingredientText);
+
+                            // remove old ingredients
+                            for (const _ of fields) {
+                              remove();
+                            }
+
+                            for (const ingr of ingredientsArray) {
+                              append({ ...ingr });
+                            }
+                          }}
+                        >
+                          Submit
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
 
                 {fields.map((item, index) => {
                   return (
@@ -453,105 +561,12 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
           </div>
         </div>
 
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="mx-auto w-3/5 text-center">
-              Edit Profile Name
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
-              <DialogDescription>
-                Make changes to your profile here. Click save when you&apos;re
-                done.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <div className="col-span-4">
-                  <Label htmlFor="">Ingr</Label>
-                  <textarea
-                    id="text"
-                    className={
-                      "flex w-full rounded-md border border-slate-300 bg-transparent py-2 px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-50 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900"
-                    }
-                    placeholder="Describe the steps for the recipe in details.Write the recipe steps in sequence of preparation and cooking."
-                    rows={8}
-                    value={ingredientText}
-                    onChange={(e) => {
-                      setIngredientText(e.target.value);
-                      // console.log(e.target.value);
-                    }}
-                    name="text"
-                  />
-                </div>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                onClick={() => {
-                  const text = ingredientText
-                    .split(/\r?\n/) // Split input text into an array of lines
-                    .filter((line) => line.trim() !== "") // Filter out lines that are empty or contain only whitespace
-                    .join("\n");
-                  // console.log(text);
-
-                  function containsOnlyNumbers(str: string | undefined) {
-                    if (str === undefined) return false;
-                    return /^[0-9]+$/.test(str);
-                  }
-
-                  const nd: {
-                    ingredient_name: string;
-                    quantity: number;
-                    measurement_unit: string; //MeasurementUnits;
-                  }[] = [];
-
-                  const lines = text.split("\n");
-                  for (const line of lines) {
-                    const words = line.split(" ");
-
-                    if (words.length > 2) {
-                      const [quantity, unit, ...rest] = words;
-                      // console.log(quantity);
-                      // console.log(unit);
-                      const name = rest.join(" ");
-                      // console.log(ingredient);
-
-                      if (quantity && unit && name) {
-                        nd.push({
-                          ingredient_name: name,
-                          measurement_unit: unit,
-                          quantity: containsOnlyNumbers(quantity)
-                            ? parseFloat(quantity)
-                            : 0,
-                        });
-                      }
-                    }
-                  }
-                  console.log(nd);
-                  for (const obj of nd) {
-                    append({ ...obj });
-                  }
-                }}
-              >
-                Save changes
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
         <div className="mt-6 flex items-center justify-end gap-x-6">
           <Button
             // className="col-start-3 row-start-1 row-end-3"
             variant={"default"}
             type="submit"
             disabled={isSubmitting}
-            // onClick={() => {
-            //   console.log("data");
-            //   console.log(form);
-            // }}
           >
             {/* <Check className="h-4 w-4" />  */}
             Save
