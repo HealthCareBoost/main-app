@@ -1,21 +1,19 @@
 import type { DifficultyLevel, Recipe, RecipeImage } from "@prisma/client";
 import { Constants } from "../../utils/constants";
 
-export type RecipesQueryResult =
-  | (Recipe & {
-      user: {
-        id: string;
-        name: string | null;
-      };
-      images: RecipeImage[];
-      categories: {
-        category: {
-          id: number;
-          name: string;
-        };
-      }[];
-    })[]
-  | undefined;
+export type RecipesQueryResult = Recipe & {
+  user: {
+    id: string;
+    name: string | null;
+  };
+  images: RecipeImage[];
+  categories: {
+    category: {
+      id: number;
+      name: string;
+    };
+  }[];
+};
 
 export type RecipeFiltersType = {
   take: number;
@@ -35,7 +33,7 @@ export type RecipeFiltersType = {
     | "createdAt"
     | "name"
     | undefined;
-  recipes: RecipesQueryResult;
+  recipes: RecipesQueryResult[] | undefined;
 };
 
 export const RecipeReducerActions = {
@@ -53,7 +51,7 @@ export const initialState = {
   selectedDifficulty: undefined,
   selectedTimeToCook: undefined,
   orderBy: undefined,
-  recipes: [] as RecipesQueryResult,
+  recipes: [] as RecipesQueryResult[],
 };
 
 export const RecipeReducer: (
@@ -94,7 +92,7 @@ export const RecipeReducer: (
     }
 
     case RecipeReducerActions.RECIPES_FETCHED: {
-      console.log(action.payload.recipes);
+      console.log(action.payload);
       return {
         ...state,
         cursor: action.payload.cursor,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Bookmark,
   FileEdit,
@@ -42,6 +42,12 @@ export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
   );
   const likeMutation = api.recipe.likeRecipe.useMutation();
   const saveMutation = api.recipe.saveRecipe.useMutation();
+
+  useEffect(() => {
+    if (data && data.preferences) {
+      setIsLiked(data.preferences.liked);
+    }
+  }, [data]);
 
   const onSaveClick = async () => {
     console.log("save");

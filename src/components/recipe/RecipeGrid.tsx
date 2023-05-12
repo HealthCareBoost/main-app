@@ -27,9 +27,17 @@ export const RecipeGrid: React.FC = () => {
   );
 };
 
-const renderContent = (recipes: RecipesQueryResult) => {
+const renderContent = (recipes: RecipesQueryResult[] | undefined) => {
   if (recipes !== undefined && recipes.length > 0) {
-    return <RecipePreview recipes={recipes} />;
+    return (
+      <div className="p-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
+          {recipes.map((recipe) => (
+            <RecipePreview key={recipe.id} recipe={recipe} />
+          ))}
+        </div>
+      </div>
+    );
   } else {
     return (
       <div className="mt-[20%] flex h-full min-h-[300px] w-full items-center justify-center">
