@@ -676,7 +676,7 @@ export const recipeRouter = createTRPCRouter({
       }
     }),
 
-  getUserPreferences: protectedProcedure
+  getUserPreferences: publicProcedure
     .input(
       z.object({
         recipe_id: z.string(),
@@ -684,6 +684,10 @@ export const recipeRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       try {
+        if (!ctx.session) {
+          return { success: false };
+        }
+
         const user_id = ctx.session.user.id;
         const userPreferences = await ctx.prisma.userPreferences.findUnique({
           where: {

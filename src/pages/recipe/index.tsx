@@ -81,6 +81,7 @@ const RecipePreviewPage: NextPage = () => {
                     <RecipeGrid />
                     <div className="flex flex-row items-center justify-end">
                       <Button
+                        className="bg-orange-gradient text-primaryDark"
                         disabled={currentPage <= 0}
                         onClick={() => void handleFetchPreviousPage()}
                       >
@@ -88,6 +89,7 @@ const RecipePreviewPage: NextPage = () => {
                       </Button>
                       <span className="mx-4">{currentPage + 1}</span>
                       <Button
+                        className="bg-orange-gradient text-primaryDark"
                         disabled={isFetching || !nextCursor}
                         onClick={() => void handleFetchNextPage()}
                       >

@@ -21,15 +21,14 @@ export const LandingLoginButton: React.FC<{
   styles?: string;
 }> = ({ styles }) => {
   return (
-    <button
-      type="button"
+    <Link
       className={`bg-orange-gradient primaryDark mx-2 flex items-center rounded-md py-3 px-5 text-center align-middle font-poppins text-[16px] font-medium outline-none transition-colors dark:text-primaryDark sm:text-sm ${
         styles ? styles : ""
       }`}
+      type="button"
+      href={"/login"}
     >
-      <Link type="button" href={"/login"}>
-        Login
-      </Link>
-    </button>
+      Login
+    </Link>
   );
 };

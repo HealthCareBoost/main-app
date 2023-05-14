@@ -9,6 +9,7 @@ import { minutesToReadableTime } from "../../utils/timeConverter";
 import Link from "next/link";
 import { api } from "../../utils/api";
 import { Heart, HeartOff } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 type RecipePreviewProps = {
   recipe: NonNullable<RecipesQueryResult>;
@@ -16,6 +17,7 @@ type RecipePreviewProps = {
 
 export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
   const { theme } = useTheme();
+  const { data: sessionData } = useSession();
   const likeMutation = api.recipe.likeRecipe.useMutation();
   const { data: userPreferences } = api.recipe.getUserPreferences.useQuery({
     recipe_id: recipe.id,
@@ -35,6 +37,10 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
   }, [userPreferences]);
 
   const onLikeClick = async () => {
+    if (!sessionData || !sessionData.user) {
+      return;
+    }
+
     const { success, error, liked } = await likeMutation.mutateAsync({
       recipe_id: recipe.id,
     });
@@ -63,7 +69,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
 
   return (
     <div className="overflow-hidden rounded-2xl border-2 border-orange-300 bg-gray-50 dark:bg-primaryDark">
-      <div className="relative flex h-[180px] items-center overflow-hidden">
+      <div className="relative flex h-[180px] overflow-hidden">
         {recipe.images.length > 0 &&
         recipe.images[0] &&
         recipe.images[0].path ? (
