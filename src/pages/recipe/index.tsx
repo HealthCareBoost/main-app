@@ -1,6 +1,5 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { type NextPage } from "next";
-import { LandingNavbar } from "../../components/landing/LandingNavbar";
 import { CategorySidebar } from "../../components/recipe/CategorySidebar";
 import { RecipeGrid } from "../../components/recipe/RecipeGrid";
 import { styles } from "../../styles/style";
@@ -16,24 +15,31 @@ import { Button } from "../../components/ui/Button";
 
 const RecipePreviewPage: NextPage = () => {
   const [recipeState, recipeDispatch] = useReducer(RecipeReducer, initialState);
-  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
 
-  const { isLoading, data, refetch } = api.recipe.getPaginatedRecipies.useQuery(
-    {
-      cursor: recipeState.cursor,
-      take: recipeState.take,
-      filters: {
-        categoryId: recipeState.selectedCategoryId,
-        difficulty: recipeState.selectedDifficulty,
-        timeToCook: recipeState.selectedTimeToCook,
-        orderBy: recipeState.orderBy,
+  // const c = api.category.setAll.useMutation().mutate();
+  // useEffect(() => {
+  //   c();
+  // }, []);
+
+  const { fetchNextPage, isFetching, hasNextPage, isLoading, data } =
+    api.recipe.getPaginatedRecipies.useInfiniteQuery(
+      {
+        // cursor: recipeState.cursor,
+        take: recipeState.take,
+        filters: {
+          categoryId: recipeState.selectedCategoryId,
+          difficulty: recipeState.selectedDifficulty,
+          timeToCook: recipeState.selectedTimeToCook,
+          orderBy: recipeState.orderBy,
+        },
       },
-    }
-    // {
-    //   getNextPageParam: (lastPage) => lastPage.nextCursor,
-    // }
-  );
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      }
+    );
   // console.log(data);
+  const nextCursor = data?.pages[currentPage]?.nextCursor;
 
   useEffect(() => {
     function fetchRecipes() {
@@ -41,24 +47,26 @@ const RecipePreviewPage: NextPage = () => {
         return;
       }
       if (data) {
-        // console.log(data.pages);
+        console.log(data);
+        // const allRecipes = data.pages.flatMap((page) => page.recipes) ?? [];
+        const recipes = data.pages[currentPage]?.recipes;
         recipeDispatch({
           type: RecipeReducerActions.RECIPES_FETCHED,
-          payload: { recipes: data.recipes },
+          payload: { recipes },
         });
       }
     }
     fetchRecipes();
-  }, [data, isLoading]);
+  }, [data, isLoading, currentPage]);
 
-  // const handleFetchNextPage = async () => {
-  //   await fetchNextPage();
-  //   setPage((prev) => prev + 1);
-  // };
+  const handleFetchNextPage = async () => {
+    await fetchNextPage();
+    setCurrentPage((prev) => prev + 1);
+  };
 
-  // const handleFetchPreviousPage = () => {
-  //   setPage((prev) => prev - 1);
-  // };
+  const handleFetchPreviousPage = () => {
+    setCurrentPage((prev) => prev - 1);
+  };
 
   return (
     <RecipeContext.Provider value={{ recipeDispatch, recipeState }}>
@@ -71,9 +79,22 @@ const RecipePreviewPage: NextPage = () => {
                 <div className="col-span-5 ss:col-span-3 ss:border-l ss:border-l-dimWhite ss:dark:border-l-slate-700 xl:col-span-4">
                   <div className="h-full px-8 py-6">
                     <RecipeGrid />
+                    <div className="flex flex-row items-center justify-end">
+                      <Button
+                        disabled={currentPage <= 0}
+                        onClick={() => void handleFetchPreviousPage()}
+                      >
+                        Prev
+                      </Button>
+                      <span className="mx-4">{currentPage + 1}</span>
+                      <Button
+                        disabled={isFetching || !nextCursor}
+                        onClick={() => void handleFetchNextPage()}
+                      >
+                        Next
+                      </Button>
+                    </div>
                   </div>
-                  <Button onClick={() => void refetch()}>Next</Button>
-                  <Button onClick={() => void refetch()}>Next</Button>
                 </div>
               </div>
             </div>

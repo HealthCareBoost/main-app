@@ -439,8 +439,13 @@ export const recipeRouter = createTRPCRouter({
   getPaginatedRecipies: publicProcedure
     .input(
       z.object({
-        cursor: z.string().optional(),
-        take: z.number().positive().optional(),
+        cursor: z.string().nullish(),
+        take: z
+          .number()
+          .positive()
+          .min(1)
+          .max(Constants.MAX_SELECT_NUMBER)
+          .default(Constants.DEFAULT_SELECT_NUMBER),
         filters: z
           .object({
             categoryId: z.number().positive().optional(),
@@ -501,52 +506,16 @@ export const recipeRouter = createTRPCRouter({
         | { cooking_time_minutes: { gte: number } }
         | { categories: { every: { category: { id: number } } } }
       )[] = [];
-      // const mock = Array.from("1234567890|Z", (e) => {
-      //   // console.log(e);
-      //   return {
-      //     categories: [
-      //       { category: { name: "Vegetarian", id: 6 } },
-      //       { category: { name: "Breakfast", id: 7 } },
-      //       { category: { name: "BBQ", id: 8 } },
-      //       { category: { name: "Vegan", id: 9 } },
-      //     ],
-      //     cooking_time_minutes: 60,
-      //     createdAt: "Wed Feb 22 2023 17:16:04 GMT+0200",
-      //     creator_id: "cldwtl3t60000uyjw3jdvykr9",
-      //     description: "aaaaaaaaaa",
-      //     difficulty_level: "medium",
-      //     id: `${e}`,
-      //     images: [
-      //       {
-      //         id: 1,
-      //         recipe_id: "",
-      //         url: "https://res.cloudinary.com/ddm9sjjq5/image/upload/v1677078943/let-me-cook/rfcfeghcxnoy6ldxmkam.png",
-      //       },
-      //     ] as RecipeImage[],
-      //     name: `LetMeCook ${e}`,
-      //     preparation_time: "21 hours",
-      //     recipe_steps: "steps stepsstepsstepsstepsstepsstepssteps",
-      //     total_likes: 0,
-      //     user: {
-      //       id: "cldwtl3t60000uyjw3jdvykr9",
-      //       name: "Genadi Tsolov",
-      //     },
-      //     video_url: "No video",
-      //   };
-      // });
-      //return mock;
 
       if (input.filters) {
         const result = getFiltersForQuery(input.filters);
         orderBy = result.orderBy;
         whereConditions = result.whereConditions;
       }
-      const limit =
-        input.take !== undefined ? input.take : Constants.DEFAULT_SELECT_NUMBER;
 
       const recipes = await ctx.prisma.recipe.findMany({
-        take: limit,
-        skip: 1,
+        take: input.take + 1,
+        // skip: 1,
         cursor: input.cursor
           ? {
               id: input.cursor,
@@ -579,8 +548,9 @@ export const recipeRouter = createTRPCRouter({
       });
 
       let nextCursor: string | undefined = undefined;
-      if (recipes.length > limit) {
-        const nextItem = recipes.pop(); // return the last item from the array
+      if (recipes.length > input.take) {
+        // return the last item from the array
+        const nextItem = recipes.pop();
         nextCursor = nextItem?.id;
       }
 

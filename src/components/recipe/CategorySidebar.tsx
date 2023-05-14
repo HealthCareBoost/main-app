@@ -3,6 +3,7 @@ import { api } from "../../utils/api";
 import { DifficultyLevel, TimeIntervals } from "../../utils/enumsMap";
 import { RecipeContext } from "./RecipeContext";
 import { RecipeReducerActions } from "./RecipeReducer";
+import { ScrollArea } from "../ui/ScrollArea";
 
 // type CategorySidebarProps = {
 //   // categories: [];
@@ -176,10 +177,13 @@ export const CategorySidebar: React.FC = () => {
             //     --radix-scroll-area-corner-width: 0px;
             //     --radix-scroll-area-corner-height: 0px;
           >
-            <div
-              //overflow-y-scroll
-              className="scrollbar h-full w-full rounded-[inherit]"
-            >
+            {/* scrollbar */}
+            <ScrollArea className="scrollbar h-72 w-full overflow-y-scroll rounded-[inherit]">
+              {/* <div
+                //overflow-y-scroll
+                className="scrollbar h-full w-full rounded-[inherit]"
+              >
+            */}
               <div className="table min-w-full space-y-1 p-2">
                 {categoriesQuery.data &&
                   categoriesQuery.data.length > 1 &&
@@ -229,7 +233,7 @@ export const CategorySidebar: React.FC = () => {
                     </OptionButton>
                   ))}
               </div>
-            </div>
+            </ScrollArea>
           </div>
         </div>
       </div>
