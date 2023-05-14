@@ -94,3 +94,18 @@ export const TimeIntervals = {
     higher: 3 * 24 * 60,
   },
 } as const;
+
+export const RecipeFiltersMap = {
+  name: "Name",
+  // cooking_time: "Time",
+  total_likes: "Likes",
+  createdAt: "Newest",
+  difficulty_level: "Difficulty",
+} as const;
+
+export type OrderByValues =
+  | "name"
+  // | "cooking_time"
+  | "total_likes"
+  | "createdAt"
+  | "difficulty_level";

@@ -95,7 +95,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
 
       <div className="p-6">
         <div className="flex flex-col items-center justify-between ss:flex-row ss:items-start ">
-          <div>
+          <div className="text-center ss:text-left">
             <Link
               href={`/recipe/${recipe.id}`}
               className="text-lg font-semibold text-gray-800 dark:text-white"

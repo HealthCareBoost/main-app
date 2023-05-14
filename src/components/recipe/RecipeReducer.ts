@@ -1,5 +1,6 @@
 import type { DifficultyLevel, Recipe, RecipeImage } from "@prisma/client";
 import { Constants } from "../../utils/constants";
+import type { OrderByValues } from "../../utils/enumsMap";
 
 export type RecipesQueryResult = Recipe & {
   user: {
@@ -26,13 +27,7 @@ export type RecipeFiltersType = {
         lower: number;
       }
     | undefined;
-  orderBy:
-    | "cooking_time"
-    | "total_likes"
-    | "difficulty_level"
-    | "createdAt"
-    | "name"
-    | undefined;
+  orderBy: OrderByValues | undefined;
   recipes: RecipesQueryResult[] | undefined;
 };
 

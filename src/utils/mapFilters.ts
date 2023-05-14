@@ -1,4 +1,5 @@
 import type { DifficultyLevel } from "@prisma/client";
+import type { OrderByValues } from "./enumsMap";
 
 type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
   U[keyof U];
@@ -14,13 +15,7 @@ export const getFiltersForQuery: (
               lower: number;
             }
           | undefined;
-        orderBy?:
-          | "cooking_time"
-          | "total_likes"
-          | "difficulty_level"
-          | "createdAt"
-          | "name"
-          | undefined;
+        orderBy?: OrderByValues | undefined;
       }
     | undefined
 ) => {
@@ -76,7 +71,7 @@ export const getFiltersForQuery: (
         break;
       }
       case "total_likes": {
-        orderBy.total_likes = "asc";
+        orderBy.total_likes = "desc";
         break;
       }
       case "name": {
@@ -84,13 +79,13 @@ export const getFiltersForQuery: (
         break;
       }
       case "createdAt": {
-        orderBy.createdAt = "asc";
+        orderBy.createdAt = "desc";
         break;
       }
-      case "cooking_time": {
-        orderBy.cooking_time_minutes = "asc";
-        break;
-      }
+      // case "cooking_time": {
+      //   orderBy.cooking_time_minutes = "asc";
+      //   break;
+      // }
       default: {
         orderBy.id = "asc";
         break;

@@ -3,10 +3,20 @@ import { LoadingSpinner } from "../Loading";
 import { Separator } from "../ui/Separator";
 import { RecipeContext } from "./RecipeContext";
 import { RecipePreview } from "./RecipePreview";
-import { type RecipesQueryResult } from "./RecipeReducer";
+import { RecipeReducerActions, type RecipesQueryResult } from "./RecipeReducer";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/Select";
+import type { OrderByValues } from "../../utils/enumsMap";
+import { RecipeFiltersMap } from "../../utils/enumsMap";
 
 export const RecipeGrid: React.FC = () => {
-  const { recipeState } = useContext(RecipeContext);
+  const { recipeState, recipeDispatch } = useContext(RecipeContext);
 
   return (
     <div
@@ -14,13 +24,40 @@ export const RecipeGrid: React.FC = () => {
       style={{ animationDuration: "0s" }} //"animation-duration: 0s"
     >
       <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Latest Recipes
-          </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Top picks for you. Updated daily.
-          </p>
+        <div className="grid w-full gap-4 space-y-1 ss:grid-cols-2">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Latest Recipes
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Top picks for you. Updated daily.
+            </p>
+          </div>
+          <Select
+            onValueChange={(value) => {
+              recipeDispatch({
+                type: RecipeReducerActions.CHANGE_ORDER_BY,
+                payload: {
+                  orderBy: value as OrderByValues,
+                },
+              });
+            }}
+          >
+            <SelectTrigger className="w-[180px] justify-self-end">
+              <SelectValue placeholder="Order By" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {Object.entries(RecipeFiltersMap).map(([key, val]) => {
+                  return (
+                    <SelectItem value={key} key={key}>
+                      {val}
+                    </SelectItem>
+                  );
+                })}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <Separator orientation="horizontal" className="my-4" />
