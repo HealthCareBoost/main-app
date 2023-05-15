@@ -16,7 +16,8 @@ import type { OrderByValues } from "../../utils/enumsMap";
 import { RecipeFiltersMap } from "../../utils/enumsMap";
 
 export const RecipeGrid: React.FC = () => {
-  const { recipeState, recipeDispatch } = useContext(RecipeContext);
+  const { recipeState, recipeDispatch, returnToFirstPage } =
+    useContext(RecipeContext);
 
   return (
     <div
@@ -41,6 +42,7 @@ export const RecipeGrid: React.FC = () => {
                   orderBy: value as OrderByValues,
                 },
               });
+              returnToFirstPage();
             }}
           >
             <SelectTrigger className="w-[180px] justify-self-end">

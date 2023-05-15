@@ -68,8 +68,14 @@ const RecipePreviewPage: NextPage = () => {
     setCurrentPage((prev) => prev - 1);
   };
 
+  const returnToFirstPage = () => {
+    setCurrentPage(0);
+  };
+
   return (
-    <RecipeContext.Provider value={{ recipeDispatch, recipeState }}>
+    <RecipeContext.Provider
+      value={{ recipeDispatch, recipeState, returnToFirstPage }}
+    >
       <Layout>
         <section className="h-full w-full overflow-hidden bg-white dark:bg-primaryDark lg:block">
           <div className="p-4">

@@ -45,7 +45,8 @@ const OptionButton: React.FC<ButtonProps> = ({
 };
 
 export const CategorySidebar: React.FC = () => {
-  const { recipeDispatch, recipeState } = useContext(RecipeContext);
+  const { recipeDispatch, recipeState, returnToFirstPage } =
+    useContext(RecipeContext);
   const categoriesQuery = api.category.getAll.useQuery();
 
   return (
@@ -98,6 +99,7 @@ export const CategorySidebar: React.FC = () => {
                         selectedTimeToCook: undefined,
                       },
                     });
+                    returnToFirstPage();
                   } else {
                     recipeDispatch({
                       type: RecipeReducerActions.CHANGE_TIME_TO_COOK,
@@ -109,6 +111,7 @@ export const CategorySidebar: React.FC = () => {
                         // orderBy: "cooking_time",
                       },
                     });
+                    returnToFirstPage();
                   }
                 }}
               >
@@ -149,6 +152,7 @@ export const CategorySidebar: React.FC = () => {
                         selectedDifficulty: undefined,
                       },
                     });
+                    returnToFirstPage();
                   } else {
                     recipeDispatch({
                       type: RecipeReducerActions.CHANGE_DIFFICULTY,
@@ -157,6 +161,7 @@ export const CategorySidebar: React.FC = () => {
                         // orderBy: "difficulty_level",
                       },
                     });
+                    returnToFirstPage();
                   }
                 }}
                 key={key}
@@ -201,6 +206,7 @@ export const CategorySidebar: React.FC = () => {
                               selectedCategoryId: undefined,
                             },
                           });
+                          returnToFirstPage();
                         } else {
                           recipeDispatch({
                             type: RecipeReducerActions.CHANGE_CATEGORY,
@@ -209,6 +215,7 @@ export const CategorySidebar: React.FC = () => {
                               // orderBy: "total_likes",
                             },
                           });
+                          returnToFirstPage();
                         }
                       }}
                     >

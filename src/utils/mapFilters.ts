@@ -4,6 +4,25 @@ import type { OrderByValues } from "./enumsMap";
 type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
   U[keyof U];
 
+export type WhereConditionsType = (
+  | {
+      difficulty_level: DifficultyLevel;
+    }
+  | {
+      total_time_minutes: {
+        lte: number;
+      };
+    }
+  | {
+      total_time_minutes: {
+        gte: number;
+      };
+    }
+  | {
+      categories: { every: { category: { id: number } } };
+    }
+)[];
+
 export const getFiltersForQuery: (
   filters:
     | {
@@ -27,24 +46,7 @@ export const getFiltersForQuery: (
     name?: string;
     cooking_time_minutes?: string;
   }>;
-  whereConditions: (
-    | {
-        difficulty_level: DifficultyLevel;
-      }
-    | {
-        cooking_time_minutes: {
-          lte: number;
-        };
-      }
-    | {
-        cooking_time_minutes: {
-          gte: number;
-        };
-      }
-    | {
-        categories: { every: { category: { id: number } } };
-      }
-  )[];
+  whereConditions: WhereConditionsType;
 } = (filters) => {
   const orderBy: {
     id?: string;
@@ -52,7 +54,7 @@ export const getFiltersForQuery: (
     total_likes?: string;
     createdAt?: string;
     name?: string;
-    cooking_time_minutes?: string;
+    total_time_minutes?: string;
   } = {};
 
   const whereConditions = [];
@@ -82,10 +84,10 @@ export const getFiltersForQuery: (
         orderBy.createdAt = "desc";
         break;
       }
-      // case "cooking_time": {
-      //   orderBy.cooking_time_minutes = "asc";
-      //   break;
-      // }
+      case "cooking_time": {
+        orderBy.total_time_minutes = "asc";
+        break;
+      }
       default: {
         orderBy.id = "asc";
         break;
@@ -101,10 +103,10 @@ export const getFiltersForQuery: (
 
   if (filters.timeToCook !== undefined) {
     whereConditions.push({
-      cooking_time_minutes: { lte: filters.timeToCook.higher },
+      total_time_minutes: { lte: filters.timeToCook.higher },
     });
     whereConditions.push({
-      cooking_time_minutes: { gte: filters.timeToCook.lower },
+      total_time_minutes: { gte: filters.timeToCook.lower },
     });
   }
 

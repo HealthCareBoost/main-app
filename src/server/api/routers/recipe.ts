@@ -5,7 +5,10 @@ import { Constants } from "../../../utils/constants";
 import { RecipeSchema } from "../../../utils/validations/createRecipeSchema";
 import { ImageInfoSchema } from "../../../utils/validations/imageSchema";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-import { getFiltersForQuery } from "../../../utils/mapFilters";
+import {
+  WhereConditionsType,
+  getFiltersForQuery,
+} from "../../../utils/mapFilters";
 import { timeToMinutes } from "../../../utils/timeConverter";
 import { getIngredientNutritionsCollection } from "./ingredients";
 import type {
@@ -173,6 +176,10 @@ export const recipeRouter = createTRPCRouter({
           preparation_time_minutes: timeToMinutes(
             input.preparationHours,
             input.preparationMinutes
+          ),
+          total_time_minutes: timeToMinutes(
+            input.preparationHours + input.cookingHours,
+            input.preparationMinutes + input.cookingMinutes
           ),
           description: input.description,
           difficulty_level: input.difficultyLevel,
@@ -461,7 +468,7 @@ export const recipeRouter = createTRPCRouter({
               .optional(),
             orderBy: z
               .enum([
-                // "cooking_time",
+                "cooking_time",
                 "total_likes",
                 "difficulty_level",
                 "createdAt",
@@ -500,12 +507,7 @@ export const recipeRouter = createTRPCRouter({
       // }
       console.log("************************");
       let orderBy = {};
-      let whereConditions: (
-        | { difficulty_level: DifficultyLevel }
-        | { cooking_time_minutes: { lte: number } }
-        | { cooking_time_minutes: { gte: number } }
-        | { categories: { every: { category: { id: number } } } }
-      )[] = [];
+      let whereConditions: WhereConditionsType = [];
 
       if (input.filters) {
         const result = getFiltersForQuery(input.filters);

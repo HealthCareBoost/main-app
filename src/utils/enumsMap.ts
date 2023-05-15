@@ -97,7 +97,7 @@ export const TimeIntervals = {
 
 export const RecipeFiltersMap = {
   name: "Name",
-  // cooking_time: "Time",
+  cooking_time: "Time",
   total_likes: "Likes",
   createdAt: "Newest",
   difficulty_level: "Difficulty",
@@ -105,7 +105,7 @@ export const RecipeFiltersMap = {
 
 export type OrderByValues =
   | "name"
-  // | "cooking_time"
+  | "cooking_time"
   | "total_likes"
   | "createdAt"
   | "difficulty_level";

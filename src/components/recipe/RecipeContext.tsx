@@ -7,6 +7,7 @@ export type RecipeContextType = {
     type: string;
     payload: Partial<RecipeFiltersType>;
   }>;
+  returnToFirstPage: () => void;
 };
 
 export const RecipeContext = createContext<RecipeContextType>(
