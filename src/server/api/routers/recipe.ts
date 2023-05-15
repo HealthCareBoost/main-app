@@ -737,4 +737,57 @@ export const recipeRouter = createTRPCRouter({
         return { success: false, error };
       }
     }),
+
+  getRecipesRecomended: publicProcedure
+    .input(
+      z.object({
+        user_id: z.string().min(1),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const recipe_ids = await ctx.prisma.userPreferences.findMany({
+        select: {
+          recipe_id: true,
+        },
+        where: {
+          AND: [
+            {
+              user_id: input.user_id,
+            },
+            { OR: [{ liked: true }, { saved: true }] },
+          ],
+        },
+        take: Constants.DEFAULT_SELECT_NUMBER,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      const arr = recipe_ids.map((el) => el.recipe_id);
+
+      return ctx.prisma.recipe.findMany({
+        take: Constants.DEFAULT_SELECT_NUMBER,
+        where: {
+          id: {
+            in: arr,
+          },
+        },
+        include: {
+          user: {
+            select: { name: true, id: true },
+          },
+          images: true,
+          categories: {
+            select: {
+              category: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    }),
 });

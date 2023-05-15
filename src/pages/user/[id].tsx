@@ -30,7 +30,11 @@ import { api } from "../../utils/api";
 import { cn } from "../../utils/cn";
 import { useZodForm } from "../../hooks/useZodFormHook";
 import { ChangeNameSchema } from "../../utils/validations/authSchema";
-// import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { Separator } from "../../components/ui/Separator";
+import { format } from "date-fns";
+import type { StatsKey } from "../../utils/statsTitleMap";
+import { statsToTitleMap } from "../../utils/statsTitleMap";
+import { RecomendedRecipes } from "../../components/recipe/Recomended";
 
 export const LN = dynamic(
   () =>
@@ -51,6 +55,9 @@ const UserProfile: NextPage<{ user_id: string }> = (
     user_id,
   });
   const changeName = api.user.changeName.useMutation();
+  const { data: recomendedRecipes } = api.recipe.getRecipesRecomended.useQuery({
+    user_id,
+  });
 
   const isLoggedIn = sessionData && sessionData.user;
   const ownProfile = isLoggedIn && sessionData.user.id === user_id;
@@ -256,6 +263,23 @@ const UserProfile: NextPage<{ user_id: string }> = (
               </div>
             </main>
           </div>
+          <Separator className="h-1" />
+          <section className="grid h-full grid-cols-1 gap-4 sm:grid-cols-4">
+            <div className="my-4 sm:col-span-full sm:col-start-2">
+              <h1 className={`${styles.heading2} text-center sm:col-span-3`}>
+                Recomended For You
+              </h1>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Temporibus nihil veniam earum voluptatem eaque tempora ea quia
+              dicta adipisci! Reiciendis quam ratione aliquid architecto rem
+              culpa accusamus omnis cupiditate officia?
+            </div>
+            <div className="sm:col-span-full sm:col-start-2">
+              {recomendedRecipes && recomendedRecipes.length > 0 && (
+                <RecomendedRecipes recipes={recomendedRecipes} />
+              )}
+            </div>
+          </section>
         </div>
       </Layout>
     </>
@@ -269,10 +293,6 @@ import type { GetStaticProps } from "next";
 import superjson from "superjson";
 import { appRouter } from "../../server/api/root";
 import { prisma } from "../../server/db";
-import { Separator } from "../../components/ui/Separator";
-import { format } from "date-fns";
-import type { StatsKey } from "../../utils/statsTitleMap";
-import { statsToTitleMap } from "../../utils/statsTitleMap";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({

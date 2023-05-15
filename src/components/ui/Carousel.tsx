@@ -1,12 +1,13 @@
-import React from "react";
-// Import Swiper React components
 import type { SwiperProps } from "swiper/react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Scrollbar, Navigation } from "swiper";
 
 // Import Swiper styles
 import "swiper/css";
+import "swiper/css/scrollbar";
+import "swiper/css/navigation";
 
-type SwiperNodes = {
+export type SwiperNodes = {
   node: React.ReactNode;
   key: string;
 };
@@ -19,8 +20,13 @@ export const SwiperCarousel: React.FC<{
     <Swiper
       spaceBetween={50}
       slidesPerView={3}
-      onSlideChange={() => console.log("slide change")}
-      onSwiper={(swiper) => console.log(swiper)}
+      // onSlideChange={() => console.log('slide change')}
+      // onSwiper={(swiper) => console.log(swiper)}
+      scrollbar={{
+        hide: true,
+      }}
+      navigation={true}
+      modules={[Navigation, Scrollbar]}
       {...props}
     >
       {items.map((el) => {

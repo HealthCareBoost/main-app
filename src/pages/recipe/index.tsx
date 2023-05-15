@@ -77,7 +77,7 @@ const RecipePreviewPage: NextPage = () => {
       value={{ recipeDispatch, recipeState, returnToFirstPage }}
     >
       <Layout>
-        <section className="h-full w-full overflow-hidden bg-white dark:bg-primaryDark lg:block">
+        <section className="container h-full w-full overflow-hidden bg-white dark:bg-primaryDark lg:block">
           <div className="p-4">
             <div className="rounded-md shadow-2xl transition-all">
               <div className="grid grid-cols-4 xl:grid-cols-5">

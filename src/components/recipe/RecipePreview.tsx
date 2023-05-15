@@ -23,6 +23,9 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
     recipe_id: recipe.id,
   });
   const [totalLikes, setTotalLikes] = useState<number>(recipe.total_likes);
+  const time = minutesToReadableTime(
+    recipe.preparation_time_minutes + recipe.cooking_time_minutes
+  );
 
   const [isLiked, setIsLiked] = useState<boolean>(
     userPreferences && userPreferences.preferences
@@ -167,9 +170,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
 
             <span className="ml-2 text-center text-gray-600 dark:text-dimWhite">
               {/* 10 - 15 Mins */}
-              {minutesToReadableTime(
-                recipe.preparation_time_minutes + recipe.cooking_time_minutes
-              )}
+              {time ? time : "Instant"}
             </span>
 
             {/* <Separator
