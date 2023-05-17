@@ -39,18 +39,18 @@ export function MainNav({}: MainNavProps) {
             <a href={`${nav.href}`}>{nav.title}</a>
           </li>
         ))}
-        <div className="ml-auto flex flex-row items-center">
-          {sessionData && sessionData.user ? (
-            <UserAccountNav
-              className="mx-2 h-8 w-8"
-              user={{ ...sessionData.user }}
-            />
-          ) : (
-            <LandingLoginButton />
-          )}
-          <ThemeButton styles="mx-2" />
-        </div>
       </ul>
+      <div className="ml-auto hidden flex-row items-center sm:flex">
+        {sessionData && sessionData.user ? (
+          <UserAccountNav
+            className="mx-2 h-8 w-8"
+            user={{ ...sessionData.user }}
+          />
+        ) : (
+          <LandingLoginButton />
+        )}
+        <ThemeButton styles="mx-2" />
+      </div>
       <MobileNav items={MainNavLinks} />
     </nav>
   );

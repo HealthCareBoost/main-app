@@ -9,12 +9,14 @@ export function Logo() {
   return (
     <Image
       alt="logo"
+      priority
       src={theme === "dark" ? "/assets/cook-dark.png" : "/assets/cook.png"}
       className="h-auto w-[172px]"
       height={172}
       width={172}
       style={{
-        height: "auto",
+        // height: "auto",
+        height: "36px",
         width: "172px",
       }}
       placeholder="blur"

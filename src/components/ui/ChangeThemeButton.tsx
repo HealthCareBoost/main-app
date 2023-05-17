@@ -23,7 +23,6 @@ const ThemeButton: React.FC<{ styles?: string }> = ({ styles }) => {
         styles ? styles : ""
       }`}
       type="button"
-      id="radix-:R1rb6i:"
       aria-haspopup="menu"
       aria-expanded="false"
       data-state="closed"
