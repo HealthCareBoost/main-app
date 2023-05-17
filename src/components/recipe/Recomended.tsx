@@ -3,10 +3,14 @@ import { RecipePreview } from "../../components/recipe/RecipePreview";
 import type { RecipesQueryResult } from "../../components/recipe/RecipeReducer";
 import type { SwiperNodes } from "../../components/ui/Carousel";
 import { SwiperCarousel } from "../../components/ui/Carousel";
+import useWindowDimensions from "../../hooks/useMediaQuery";
+import { WindowSizes } from "../../utils/constants";
 
 export const RecomendedRecipes: React.FC<{
   recipes: RecipesQueryResult[];
 }> = ({ recipes }) => {
+  const { width } = useWindowDimensions();
+  // console.log(width);
   const items: SwiperNodes[] = recipes.map((r) => {
     return {
       node: <RecipePreview recipe={r} />,
@@ -15,8 +19,31 @@ export const RecomendedRecipes: React.FC<{
   });
   return (
     <SwiperCarousel
-      props={{ slidesPerView: 2, className: "w-full" }}
+      props={{
+        slidesPerView: slidesPerWindowWidth(width),
+        className: "w-full",
+      }}
       items={items}
     />
   );
+};
+
+const slidesPerWindowWidth: (width: number | undefined) => number = (width) => {
+  if (!width) return 1;
+  if (width <= WindowSizes.sm) {
+    console.log("width <= sm");
+    console.log(width <= WindowSizes.sm);
+    return 1;
+  }
+  if (width <= WindowSizes.lg) {
+    console.log("width <= lg");
+    console.log(width <= WindowSizes.lg);
+    return 2;
+  }
+  if (width >= WindowSizes.lg) {
+    console.log("width >= xl");
+    console.log(width >= WindowSizes.xl);
+    return 3;
+  }
+  return 1;
 };
