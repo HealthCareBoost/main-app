@@ -7,16 +7,7 @@ import { api } from "../utils/api";
 import { removeTimezoneOffset } from "../utils/formatTimezone";
 import type { DietInfo } from "./calendar/CalendarContext";
 import { CalendarContext } from "./calendar/CalendarContext";
-
-const days = [
-  { name: "Monday", short: "Mon" },
-  { name: "Tuesday", short: "Tue" },
-  { name: "Wednesday", short: "Wed" },
-  { name: "Thursday", short: "Thu" },
-  { name: "Friday", short: "Fri" },
-  { name: "Saturday", short: "Sat" },
-  { name: "Sunday", short: "Sun" },
-];
+import { WEEK_DAYS } from "../utils/constants";
 
 export const Calendar: React.FC = () => {
   const [daysOfWeek, setDaysOfWeek] = useState<string[]>([]);
@@ -100,7 +91,7 @@ export const Calendar: React.FC = () => {
             <table className="h-full w-full">
               <thead>
                 <tr>
-                  {days.map(({ name, short }, idx) => (
+                  {WEEK_DAYS.map(({ name, short }, idx) => (
                     <th
                       key={`${name}${idx}`}
                       className="lg:w-30 md:w-30 h-10 w-10 border-r p-2 text-xs sm:w-20 xl:w-40 xl:text-sm"

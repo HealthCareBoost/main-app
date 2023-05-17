@@ -11,3 +11,13 @@ export const WindowSizes = {
   lg: 1200,
   xl: 1700,
 } as const;
+
+export const WEEK_DAYS = [
+  { name: "Monday", short: "Mon" },
+  { name: "Tuesday", short: "Tue" },
+  { name: "Wednesday", short: "Wed" },
+  { name: "Thursday", short: "Thu" },
+  { name: "Friday", short: "Fri" },
+  { name: "Saturday", short: "Sat" },
+  { name: "Sunday", short: "Sun" },
+] as const;

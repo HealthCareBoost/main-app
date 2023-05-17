@@ -13,7 +13,6 @@ export default function IndexPage() {
             <button
               type="button"
               role="menuitem"
-              id="radix-:R1d5j6iH1:"
               aria-haspopup="menu"
               aria-expanded="false"
               data-state="closed"
@@ -27,7 +26,6 @@ export default function IndexPage() {
             <button
               type="button"
               role="menuitem"
-              id="radix-:R2d5j6iH1:"
               aria-haspopup="menu"
               aria-expanded="false"
               data-state="closed"
@@ -45,7 +43,6 @@ export default function IndexPage() {
             <button
               type="button"
               role="menuitem"
-              id="radix-:R3d5j6iH1:"
               aria-haspopup="menu"
               aria-expanded="false"
               data-state="closed"
@@ -59,7 +56,6 @@ export default function IndexPage() {
             <button
               type="button"
               role="menuitem"
-              id="radix-:R4d5j6iH1:"
               aria-haspopup="menu"
               aria-expanded="false"
               data-state="closed"
@@ -73,7 +69,6 @@ export default function IndexPage() {
             <button
               type="button"
               role="menuitem"
-              id="radix-:R5d5j6iH1:"
               aria-haspopup="menu"
               aria-expanded="false"
               data-state="closed"
@@ -596,7 +591,6 @@ export default function IndexPage() {
                             aria-selected="true"
                             aria-controls="radix-:R2l5j6i:-content-music"
                             data-state="active"
-                            id="radix-:R2l5j6i:-trigger-music"
                             className="relative inline-flex min-w-[100px] items-center justify-center rounded-[0.185rem] px-3 py-1.5 text-sm font-medium text-slate-700 transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm dark:text-slate-200 dark:data-[state=active]:bg-slate-900 dark:data-[state=active]:text-slate-100"
                             tabIndex={-1}
                             data-orientation="horizontal"
@@ -614,7 +608,6 @@ export default function IndexPage() {
                             aria-selected="false"
                             aria-controls="radix-:R2l5j6i:-content-podcasts"
                             data-state="inactive"
-                            id="radix-:R2l5j6i:-trigger-podcasts"
                             className="inline-flex min-w-[100px] items-center justify-center rounded-[0.185rem] px-3 py-1.5 text-sm font-medium text-slate-700 transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm dark:text-slate-200 dark:data-[state=active]:bg-slate-900 dark:data-[state=active]:text-slate-100"
                             tabIndex={-1}
                             data-orientation="horizontal"
@@ -630,7 +623,6 @@ export default function IndexPage() {
                             data-state="inactive"
                             data-disabled=""
                             disabled
-                            id="radix-:R2l5j6i:-trigger-live"
                             className="inline-flex min-w-[100px] items-center justify-center rounded-[0.185rem] px-3 py-1.5 text-sm font-medium text-slate-700 transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm dark:text-slate-200 dark:data-[state=active]:bg-slate-900 dark:data-[state=active]:text-slate-100"
                             tabIndex={-1}
                             data-orientation="horizontal"
@@ -647,7 +639,6 @@ export default function IndexPage() {
                         <button
                           className="relative inline-flex h-10 w-10 items-center justify-center rounded-full bg-transparent py-2 px-4 text-sm font-medium transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-transparent dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-transparent"
                           type="button"
-                          id="radix-:R3el5j6i:"
                           aria-haspopup="menu"
                           aria-expanded="false"
                           data-state="closed"
@@ -670,7 +661,6 @@ export default function IndexPage() {
                         data-orientation="horizontal"
                         role="tabpanel"
                         aria-labelledby="radix-:R2l5j6i:-trigger-music"
-                        id="radix-:R2l5j6i:-content-music"
                         tabIndex={0}
                         className="mt-2 rounded-md border border-none border-slate-200 p-0 dark:border-slate-700"
                         style={{ animationDuration: "0s" }} //"animation-duration: 0s"
@@ -1497,7 +1487,6 @@ export default function IndexPage() {
                         role="tabpanel"
                         aria-labelledby="radix-:R2l5j6i:-trigger-podcasts"
                         hidden
-                        id="radix-:R2l5j6i:-content-podcasts"
                         tabIndex={0}
                         className="mt-2 h-full flex-col rounded-md border border-none border-slate-200 p-0 data-[state=active]:flex dark:border-slate-700"
                       ></div>
