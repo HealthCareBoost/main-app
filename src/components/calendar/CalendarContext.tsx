@@ -30,8 +30,16 @@ type GlobalContextType = {
   setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
   // smallCalendarMonth: number;
   // setSmallCalendarMonth: React.Dispatch<React.SetStateAction<number>>;
-  daySelected: Date | null;
-  setDaySelected: React.Dispatch<React.SetStateAction<Date | null>>;
+  selectedDay: Date;
+  setSelectedDay: React.Dispatch<React.SetStateAction<Date>>;
+
+  isDialogOpen: boolean;
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+  dailyDietInfo: DietInfo | undefined;
+  setDailyDiet: React.Dispatch<React.SetStateAction<DietInfo | undefined>>;
+  onDietUpdate: () => void;
+
   // showEventModal: boolean;
   // setShowEventModal: React.Dispatch<React.SetStateAction<string | null>>;
   // dispatchCalEvent: () => void; //({ type:string; payload: {}; }) => void;
@@ -45,36 +53,23 @@ type GlobalContextType = {
 };
 
 export const GlobalContext = createContext<GlobalContextType>({
-  currentDate: new Date(),
-  setCurrentDate: () => {
-    console.log();
-  },
-  // smallCalendarMonth: 0,
-  // setSmallCalendarMonth: () => {
+  // currentDate: new Date(),
+  // setCurrentDate: () => {
   //   console.log();
   // },
-  daySelected: null,
-  setDaySelected: () => {
-    console.log();
-  },
-  // showEventModal: false,
-  // setShowEventModal: () => {
+  // isDialogOpen: false,
+  // setIsDialogOpen: () => {
   //   console.log();
   // },
-  // dispatchCalEvent: () => {
+  // dailyDietInfo: undefined,
+  // onDietUpdate: () => {
   //   console.log();
   // },
-  // savedEvents: [],
-  // selectedEvent: null,
-  // setSelectedEvent: () => {
+  // setDailyDiet: () => {
   //   console.log();
   // },
-  // setLabels: () => {
+  // selectedDay: new Date(),
+  // setSelectedDay: () => {
   //   console.log();
   // },
-  // labels: [],
-  // updateLabel: () => {
-  //   console.log();
-  // },
-  // filteredEvents: [],
-});
+} as GlobalContextType);

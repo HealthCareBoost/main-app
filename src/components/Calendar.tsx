@@ -96,20 +96,16 @@ export const Calendar: React.FC = () => {
                       key={`${name}${idx}`}
                       className="lg:w-30 md:w-30 h-10 w-10 border-r p-2 text-xs sm:w-20 xl:w-40 xl:text-sm"
                     >
-                      <span className="hidden sm:block md:block lg:block xl:block">
-                        {name}
-                      </span>
+                      <span className="hidden sm:block">{name}</span>
                       {format(todayRef.current, "dd-MMMM-yyyy") ===
                         daysOfWeek[idx] && <p>today</p>}
-                      <span className="hidden sm:block md:block lg:block xl:block">
+                      <span className="hidden sm:block">
                         {daysOfWeek[idx] !== undefined
                           ? format(new Date(daysOfWeek[idx] as string), "dd")
                           : daysOfWeek[idx]}
                       </span>
-                      <span className="block sm:hidden md:hidden lg:hidden xl:hidden">
-                        {short}
-                      </span>
-                      <span className="block sm:hidden md:hidden lg:hidden xl:hidden">
+                      <span className="block sm:hidden">{short}</span>
+                      <span className="block sm:hidden">
                         {daysOfWeek[idx] !== undefined
                           ? format(new Date(daysOfWeek[idx] as string), "dd")
                           : daysOfWeek[idx]}

@@ -71,13 +71,13 @@ export const CalendarDialog: React.FC = () => {
         date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
         meal_type: data.meal_type,
         previous_recipe_id: dailyDietInfo.recipe_id,
-        //   new_recipe_id: "cleftij6j0001uyk0uvp5g4xk",
+        new_recipe_id: "clhen667d0000uyksp9gk7unj",
       });
     } else {
       await saveDiet.mutateAsync({
         date: removeTimezoneOffset(new Date(selectedDay.toDateString())),
         meal_type: data.meal_type,
-        recipe_id: "cleftij6j0001uyk0uvp5g4xk",
+        recipe_id: "clhen667d0000uyksp9gk7unj",
       });
     }
     setDailyDiet(undefined);

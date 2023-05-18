@@ -120,13 +120,21 @@ export const userRouter = createTRPCRouter({
               recipe: {
                 select: { name: true },
               },
+              // user: {
+              //   select: {
+              //     id: true,
+              //     name: true,
+              //   },
+              // },
             },
           });
         } else {
           throw new Error("need 2 valid dates");
         }
       } catch (error) {
-        throw error;
+        console.error(error);
+        // throw error;
+        return { error };
       }
     }),
 
