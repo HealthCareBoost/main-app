@@ -133,8 +133,8 @@ export const userRouter = createTRPCRouter({
         }
       } catch (error) {
         console.error(error);
-        // throw error;
-        return { error };
+        throw error;
+        // return { error };
       }
     }),
 
