@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { startOfWeek, addDays, format, subWeeks, addWeeks } from "date-fns";
-import { CalendarHeader } from "./calendar/Header";
-import { Dialog } from "./ui/Dialog";
-import { CalendarDialog } from "./calendar/CalendarDialog";
-import { api } from "../utils/api";
-import { removeTimezoneOffset } from "../utils/formatTimezone";
-import type { DietInfo } from "./calendar/CalendarContext";
-import { CalendarContext } from "./calendar/CalendarContext";
-import { WEEK_DAYS } from "../utils/constants";
+import { WeeklyCalendarHeader } from "./WeeklyCalendarHeader";
+import { Dialog } from "../ui/Dialog";
+import { WeeklyCalendarDialog } from "./CalendarDialog";
+import { api } from "../../utils/api";
+import type { DietInfo } from "./CalendarContext";
+import { WeeklyCalendarContext } from "./CalendarContext";
+import { WEEK_DAYS } from "../../utils/constants";
+import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
 
-export const Calendar: React.FC = () => {
+export const WeeklyCalendar: React.FC = () => {
   const [daysOfWeek, setDaysOfWeek] = useState<string[]>([]);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const todayRef = useRef<Date>(currentDate);
@@ -55,7 +55,7 @@ export const Calendar: React.FC = () => {
   }, [currentDate]);
 
   return (
-    <CalendarContext.Provider
+    <WeeklyCalendarContext.Provider
       value={{
         currentDate,
         selectedDay,
@@ -80,7 +80,7 @@ export const Calendar: React.FC = () => {
               setIsOpen(open);
             }}
           >
-            <CalendarHeader
+            <WeeklyCalendarHeader
               getNextWeek={() => {
                 setCurrentDate(addWeeks(currentDate, 1));
               }}
@@ -293,10 +293,10 @@ export const Calendar: React.FC = () => {
               </tbody>
             </table>
 
-            <CalendarDialog />
+            <WeeklyCalendarDialog />
           </Dialog>
         </div>
       </div>
-    </CalendarContext.Provider>
+    </WeeklyCalendarContext.Provider>
   );
 };

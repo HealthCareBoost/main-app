@@ -1,23 +1,23 @@
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useContext } from "react";
-import { removeTimezoneOffset } from "../../utils/formatTimezone";
 import { Button } from "../ui/Button";
 import { Dialog, DialogTrigger } from "../ui/Dialog";
 import { Separator } from "../ui/Separator";
-import { CalendarContext } from "./CalendarContext";
-import { CalendarDialog } from "./CalendarDialog";
+import { WeeklyCalendarContext } from "./CalendarContext";
+import { WeeklyCalendarDialog } from "./CalendarDialog";
+import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
 
 type CalendarHeaderProps = {
   getPreviousWeek: () => void;
   getNextWeek: () => void;
 };
 
-export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
+export const WeeklyCalendarHeader: React.FC<CalendarHeaderProps> = ({
   getNextWeek,
   getPreviousWeek,
 }) => {
-  const { currentDate, setSelectedDay } = useContext(CalendarContext);
+  const { currentDate, setSelectedDay } = useContext(WeeklyCalendarContext);
 
   return (
     <div className="header flex justify-between border-b p-2">
@@ -116,7 +116,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
               Set meal for today
             </Button>
           </DialogTrigger>
-          <CalendarDialog />
+          <WeeklyCalendarDialog />
         </Dialog>
       </div>
     </div>

@@ -1,7 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
-import React, { useState } from "react";
 import Link from "next/link";
-import { Calendar } from "../components/Calendar";
+import React from "react";
 
 const NotFoundPage: React.FC = () => {
   return (
@@ -14,7 +12,6 @@ const NotFoundPage: React.FC = () => {
           <body class="h-full">
           ```
         */}
-      {/* <Calendar /> */}
       <main className="grid min-h-full place-items-center bg-white py-24 px-6 sm:py-32 lg:px-8">
         <div className="text-center">
           <p className="text-base font-semibold text-indigo-600">404</p>

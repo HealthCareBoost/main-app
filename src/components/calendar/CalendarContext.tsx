@@ -1,7 +1,7 @@
 import { type MealTypes } from "@prisma/client";
 import { createContext } from "react";
 
-type CalendarContextType = {
+type WeeklyCalendarContextType = {
   currentDate: Date;
   selectedDay: Date;
   setSelectedDay: React.Dispatch<React.SetStateAction<Date>>;
@@ -27,11 +27,11 @@ export type MealTypeFilter = {
   checked: boolean;
 };
 
-export const CalendarContext = createContext<CalendarContextType>(
-  {} as CalendarContextType
+export const WeeklyCalendarContext = createContext<WeeklyCalendarContextType>(
+  {} as WeeklyCalendarContextType
 );
 
-type GlobalContextType = {
+type CalendarContextType = {
   currentDate: Date;
   setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
   // smallCalendarMonth: number;
@@ -61,6 +61,6 @@ type GlobalContextType = {
   // filteredEvents: [];
 };
 
-export const GlobalContext = createContext<GlobalContextType>(
-  {} as GlobalContextType
+export const CalendarContext = createContext<CalendarContextType>(
+  {} as CalendarContextType
 );
