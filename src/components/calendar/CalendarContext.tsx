@@ -21,6 +21,12 @@ export type DietInfo = {
   meal_type: MealTypes;
 };
 
+export type MealTypeFilter = {
+  key: string;
+  name: "BREAKFAST" | "DINNER" | "LUNCH" | "SNACK";
+  checked: boolean;
+};
+
 export const CalendarContext = createContext<CalendarContextType>(
   {} as CalendarContextType
 );
@@ -40,6 +46,9 @@ type GlobalContextType = {
   setDailyDiet: React.Dispatch<React.SetStateAction<DietInfo | undefined>>;
   onDietUpdate: () => void;
 
+  filters: MealTypeFilter[];
+  setFilters: React.Dispatch<React.SetStateAction<MealTypeFilter[]>>;
+
   // showEventModal: boolean;
   // setShowEventModal: React.Dispatch<React.SetStateAction<string | null>>;
   // dispatchCalEvent: () => void; //({ type:string; payload: {}; }) => void;
@@ -52,24 +61,6 @@ type GlobalContextType = {
   // filteredEvents: [];
 };
 
-export const GlobalContext = createContext<GlobalContextType>({
-  // currentDate: new Date(),
-  // setCurrentDate: () => {
-  //   console.log();
-  // },
-  // isDialogOpen: false,
-  // setIsDialogOpen: () => {
-  //   console.log();
-  // },
-  // dailyDietInfo: undefined,
-  // onDietUpdate: () => {
-  //   console.log();
-  // },
-  // setDailyDiet: () => {
-  //   console.log();
-  // },
-  // selectedDay: new Date(),
-  // setSelectedDay: () => {
-  //   console.log();
-  // },
-} as GlobalContextType);
+export const GlobalContext = createContext<GlobalContextType>(
+  {} as GlobalContextType
+);

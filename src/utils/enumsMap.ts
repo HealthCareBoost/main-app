@@ -109,3 +109,28 @@ export type OrderByValues =
   | "total_likes"
   | "createdAt"
   | "difficulty_level";
+
+export const LABEL_COLORS = {
+  red: "#fecaca",
+  rose: "#fecdd3",
+
+  amber: "#fde68a",
+  yellow: "#fef08a",
+
+  purple: "#e9d5ff",
+  violet: "#ddd6fe",
+
+  green: "#bbf7d0",
+  emerald: "#a7f3d0",
+
+  indigo: "#c7d2fe",
+  blue: "#bfdbfe",
+  sky: "#bae6fd",
+} as const;
+
+export const MEAL_TYPE_COLORS = {
+  BREAKFAST: LABEL_COLORS.amber,
+  DINNER: LABEL_COLORS.indigo,
+  LUNCH: LABEL_COLORS.green,
+  SNACK: LABEL_COLORS.red,
+} as const;

@@ -99,10 +99,30 @@ export const userRouter = createTRPCRouter({
       z.object({
         from: z.date().nullable(),
         to: z.date().nullable(),
+        filters: z
+          .object({
+            key: z.string(),
+            name: z.nativeEnum(MealTypes),
+            checked: z.boolean(),
+          })
+          .array()
+          .nullish(),
       })
     )
     .query(({ input, ctx }) => {
       try {
+        const queryFilters: { NOT: { meal_type: MealTypes } }[] = [];
+
+        if (input.filters && input.filters.length > 0) {
+          input.filters.map((filter) => {
+            if (!filter.checked) {
+              queryFilters.push({
+                NOT: { meal_type: filter.key as MealTypes },
+              });
+            }
+          });
+        }
+
         if (input.from !== null && input.to !== null) {
           return ctx.prisma.userDailyDiet.findMany({
             where: {
@@ -114,6 +134,7 @@ export const userRouter = createTRPCRouter({
                     gte: input.from,
                   },
                 },
+                ...queryFilters,
               ],
             },
             include: {

@@ -1,26 +1,4 @@
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/src/components/ui/Popover";
-import {
-  addMonths,
-  format,
-  getDate,
-  getMonth,
-  getYear,
-  subMonths,
-} from "date-fns";
-import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
-import { type NextPage } from "next";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import Layout from "../../components/Layout";
-import type { DietInfo } from "../../components/calendar/CalendarContext";
-import { GlobalContext } from "../../components/calendar/CalendarContext";
-import { Button } from "../../components/ui/Button";
-import { Calendar } from "../../components/ui/Calendar";
-import { removeTimezoneOffset } from "@/src/utils/formatTimezone";
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -29,35 +7,58 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/src/components/ui/Dialog";
-import { api } from "@/src/utils/api";
-import { useZodForm } from "@/src/hooks/useZodFormHook";
-import { z } from "zod";
-import { MealTypes } from "@prisma/client";
-import { Form } from "@/src/components/ui/FormProvider";
 import { Input } from "@/src/components/ui/FormInput";
+import { Form } from "@/src/components/ui/FormProvider";
 import { FormSelect } from "@/src/components/ui/FormSelect";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/src/components/ui/Popover";
+import { useZodForm } from "@/src/hooks/useZodFormHook";
+import { api } from "@/src/utils/api";
+import { removeTimezoneOffset } from "@/src/utils/formatTimezone";
+import { MealTypes } from "@prisma/client";
+import {
+  addMonths,
+  endOfMonth,
+  format,
+  getDay,
+  getMonth,
+  getYear,
+  startOfMonth,
+  subMonths,
+} from "date-fns";
+import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { type NextPage } from "next";
+import { useRouter } from "next/navigation";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { z } from "zod";
+import Layout from "../../components/Layout";
+import type {
+  DietInfo,
+  MealTypeFilter,
+} from "../../components/calendar/CalendarContext";
+import { GlobalContext } from "../../components/calendar/CalendarContext";
+import { Button } from "../../components/ui/Button";
+import { Calendar } from "../../components/ui/Calendar";
+import { Separator } from "@/src/components/ui/Separator";
+import { LABEL_COLORS, MEAL_TYPE_COLORS } from "@/src/utils/enumsMap";
+import { cn } from "@/src/utils/cn";
+import { Checkbox } from "@/src/components/ui/Checkbox";
+
+const labelColor: (type: MealTypes) => string = (meal_type) => {
+  return MEAL_TYPE_COLORS[meal_type]
+    ? MEAL_TYPE_COLORS[meal_type]
+    : LABEL_COLORS.yellow;
+};
 
 const GetMonthDays = (date: Date) => {
-  // month = Math.floor(month);
-  // const year = dayjs().year();
-  // const firstDayOfTheMonth = dayjs(new Date(year, month, 1)).day();
-  // let currentMonthCount = 0 - firstDayOfTheMonth;
-  // const daysMatrix = new Array(5).fill([]).map(() => {
-  //   return new Array(7).fill(null).map(() => {
-  //     currentMonthCount++;
-  //     return dayjs(new Date(year, month, currentMonthCount));
-  //   });
-  // });
-  // return daysMatrix;
-
   const year = getYear(date);
-  // console.log(year);
   const month = getMonth(date);
-  // console.log(month);
-  // console.log(Math.floor(month));
-  const firstDayOfTheMonth = getDate(new Date(year, month, 1));
+  // set first day to monday
+  const firstDayOfTheMonth = getDay(new Date(year, month, 1)) - 1;
   let currentMonthCount = 0 - firstDayOfTheMonth;
-
   const daysMatrix = new Array(5).fill([]).map(() => {
     return new Array(7).fill(null).map(() => {
       currentMonthCount++;
@@ -67,22 +68,7 @@ const GetMonthDays = (date: Date) => {
   return daysMatrix;
 };
 
-const getLimit = (monthDays: Date[][], type: "start" | "end") => {
-  if (type === "start") {
-    const firstArr = monthDays.shift();
-    return firstArr ? firstArr.shift() : new Date();
-  }
-
-  if (type === "end") {
-    const lastArr = monthDays.pop();
-    return lastArr ? lastArr.pop() : subMonths(new Date(), 1);
-  }
-
-  return new Date();
-};
-
 const UserDiet: NextPage = () => {
-  // console.log(GetMonthDays(new Date()));
   const [currenMonth, setCurrentMonth] = useState(GetMonthDays(new Date()));
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDay, setSelectedDay] = useState<Date>(currentDate);
@@ -92,11 +78,14 @@ const UserDiet: NextPage = () => {
     undefined
   );
 
-  const { data, refetch } = api.user.getUserWeeklyDiet.useQuery({
-    from: removeTimezoneOffset(new Date(2023, 4, 30)),
-    to: removeTimezoneOffset(new Date(2023, 6, 3)),
-  });
-  console.log(currenMonth);
+  const initial_filters: MealTypeFilter[] = Object.entries(MealTypes).map(
+    ([key, val]) => ({
+      key,
+      name: val,
+      checked: true,
+    })
+  );
+  const [filters, setFilters] = useState<MealTypeFilter[]>(initial_filters);
 
   useEffect(() => {
     setCurrentMonth(GetMonthDays(currentDate));
@@ -117,6 +106,8 @@ const UserDiet: NextPage = () => {
           onDietUpdate: () => {
             console.log("diet update");
           },
+          filters,
+          setFilters,
         }}
       >
         <Dialog
@@ -128,7 +119,7 @@ const UserDiet: NextPage = () => {
             setIsDialogOpen(open);
           }}
         >
-          <div className="container mx-auto mt-10 flex h-screen w-full flex-col ">
+          <div className="container mx-auto flex h-full w-full flex-col ">
             <CalendarHeader />
             <div className="flex flex-1">
               <CalendarSidebar />
@@ -147,8 +138,10 @@ export default UserDiet;
 const CalendarHeader: React.FC = () => {
   const { currentDate, setCurrentDate, setSelectedDay } =
     useContext(GlobalContext);
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
+
   return (
-    <header className="flex items-center px-4 py-2">
+    <header className="mb-4 flex items-center justify-end border border-red-500 px-4 py-2 sm:mb-0">
       <Button
         onClick={() => {
           setCurrentDate(new Date());
@@ -156,68 +149,6 @@ const CalendarHeader: React.FC = () => {
       >
         Today
       </Button>
-      <ChevronLeft
-        onClick={() => {
-          setCurrentDate((prev) => subMonths(prev, 1));
-        }}
-      />
-      <ChevronRight
-        onClick={() => {
-          setCurrentDate((prev) => addMonths(prev, 1));
-        }}
-      />
-      <div>{format(currentDate, "MMMM yyyy")}</div>
-    </header>
-  );
-};
-
-const CalendarSidebar: React.FC = () => {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const [currenMonth, setCurrentMonth] = useState(GetMonthDays(new Date()));
-
-  const { currentDate, setCurrentDate, setSelectedDay, selectedDay } =
-    useContext(GlobalContext);
-
-  useEffect(() => {
-    console.log("setCurrentDate uwU");
-    setCurrentMonth(GetMonthDays(currentDate));
-  }, [currentDate]);
-
-  useEffect(() => {
-    setCurrentDate(currentDate);
-  }, [currentDate, setCurrentDate]);
-
-  function getDayClass(day: Date): string {
-    const date_format = "dd-MMMM-yyyy";
-    const today = format(new Date(), date_format);
-    const currDay = format(day, date_format);
-    const slcDay = selectedDay && format(selectedDay, date_format);
-
-    if (today === currDay) {
-      return "bg-blue-500 rounded-full text-white";
-    } else if (currDay === slcDay) {
-      return "bg-blue-100 rounded-full text-blue-600 font-bold";
-    } else {
-      return "";
-    }
-  }
-
-  return (
-    <aside className="hidden sm:col-span-3 sm:block">
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button
-            className="mx-2 flex-1 p-1"
-            onClick={() => {
-              setSelectedDay(removeTimezoneOffset(new Date()));
-            }}
-            variant="default"
-          >
-            Set meal for today
-          </Button>
-        </DialogTrigger>
-        <NewCalendarDialog />
-      </Dialog>
       <Popover>
         <PopoverTrigger asChild>
           <Button className="block sm:hidden">
@@ -228,9 +159,10 @@ const CalendarSidebar: React.FC = () => {
         <PopoverContent className="">
           <Calendar
             mode="single"
-            selected={currentDate}
+            selected={date}
             onSelect={(day) => {
-              console.log(day);
+              // console.log(day);
+              setDate(date);
               setCurrentDate((prev) => (day ? day : prev));
             }}
             className="rounded-md border p-1"
@@ -238,6 +170,63 @@ const CalendarSidebar: React.FC = () => {
         </PopoverContent>
       </Popover>
 
+      <Separator className={"inline"} orientation={"vertical"} />
+      <ChevronLeft
+        onClick={() => {
+          setCurrentDate((prev) => subMonths(prev, 1));
+        }}
+      />
+      <div>{format(currentDate, "MMMM yyyy")}</div>
+      <ChevronRight
+        onClick={() => {
+          setCurrentDate((prev) => addMonths(prev, 1));
+        }}
+      />
+    </header>
+  );
+};
+
+const CalendarSidebar: React.FC = () => {
+  const [currenMonth, setCurrentMonth] = useState(GetMonthDays(new Date()));
+
+  const { currentDate, setCurrentDate, setSelectedDay, selectedDay } =
+    useContext(GlobalContext);
+
+  useEffect(() => {
+    setCurrentMonth(GetMonthDays(currentDate));
+  }, [currentDate]);
+
+  useEffect(() => {
+    setCurrentDate(currentDate);
+  }, [currentDate, setCurrentDate]);
+
+  return (
+    <aside className="hidden sm:col-span-3 sm:block">
+      <Dialog>
+        <div className="my-2">
+          <Button
+            className="mx-2 flex-1 p-1"
+            onClick={() => {
+              console.log("Generate diet");
+            }}
+            variant="default"
+          >
+            Autogenerate
+          </Button>
+          <DialogTrigger asChild>
+            <Button
+              className="mx-2 flex-1 p-1"
+              onClick={() => {
+                setSelectedDay(removeTimezoneOffset(new Date()));
+              }}
+              variant="default"
+            >
+              Set meal for today
+            </Button>
+          </DialogTrigger>
+        </div>
+        <NewCalendarDialog />
+      </Dialog>
       <Calendar
         mode="single"
         selected={currentDate}
@@ -245,8 +234,10 @@ const CalendarSidebar: React.FC = () => {
           console.log(day);
           setCurrentDate((prev) => (day ? day : prev));
         }}
-        className="-ml-4 mr-2 hidden rounded-md border sm:block"
+        className="m-0 mx-auto hidden rounded-md border sm:block"
       />
+
+      <Filters />
       {/* <div className="mt-9">
         <header className="flex justify-between">
           <p className="font-bold text-gray-500">
@@ -293,50 +284,128 @@ const CalendarSidebar: React.FC = () => {
 };
 
 const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
-  const { setSelectedDay, setDailyDiet, setIsDialogOpen } =
-    useContext(GlobalContext);
+  const {
+    setSelectedDay,
+    setDailyDiet,
+    setIsDialogOpen,
+    dailyDietInfo,
+    currentDate,
+    filters,
+  } = useContext(GlobalContext);
   const currentDay: (day: Date) => string = (day) => {
     return format(day, "dd-MMMM-yyyy") === format(new Date(), "dd-MMMM-yyyy")
       ? "bg-orange-400 text-primaryDark rounded-full w-7"
       : "";
   };
 
+  const { data, refetch } = api.user.getUserWeeklyDiet.useQuery({
+    from: removeTimezoneOffset(startOfMonth(currentDate)),
+    to: removeTimezoneOffset(endOfMonth(currentDate)),
+    filters: filters,
+  });
+
+  console.log(data);
+
   return (
-    <div className="grid flex-1 grid-cols-7 grid-rows-5 ss:col-span-7">
-      {month.map((week, i) => (
-        <React.Fragment key={i}>
-          {week.map((day, idx) => (
-            <div
-              onClick={() => {
-                // console.log(day);
-                setDailyDiet(undefined);
-                setSelectedDay(new Date(day));
-                setIsDialogOpen(true);
-              }}
-              className="flex flex-col border border-slate-400"
-              key={`${idx}-${day.toString()}`}
-            >
-              <div className="flex flex-col items-center">
-                {i === 0 && (
-                  <>
-                    <p className="mt-1 hidden text-base sm:block">
-                      {format(day, "EEEE")}
-                    </p>
-                    <p className="blocktext-base mt-1 sm:hidden">
-                      {format(day, "EE")}
-                    </p>
-                  </>
-                )}
-                <p
-                  className={`my-1 p-1 text-center text-base ${currentDay(
-                    day
-                  )}`}
+    <div className="grid flex-1 grid-cols-7 grid-rows-5">
+      {month.map((week, weekIdx) => (
+        <React.Fragment key={weekIdx}>
+          {week.map((day, dayIdx) => {
+            if (data && data.length > 0) {
+              return (
+                <div
+                  onClick={() => {
+                    // console.log(day);
+                    setDailyDiet(undefined);
+                    setSelectedDay(new Date(day));
+                    setIsDialogOpen(true);
+                  }}
+                  className="flex flex-col border border-[#dadce0]"
+                  key={`${dayIdx}-${day.toString()}`}
                 >
-                  {format(day, "dd")}
-                </p>
-              </div>
-            </div>
-          ))}
+                  <div className="flex flex-col items-center">
+                    {weekIdx === 0 && (
+                      <>
+                        <p className="mt-1 hidden text-base sm:block">
+                          {format(day, "EEEE")}
+                        </p>
+                        <p className="mt-1 block text-base sm:hidden">
+                          {format(day, "EE")}
+                        </p>
+                      </>
+                    )}
+                    <p
+                      className={`my-1 p-1 text-center text-base ${currentDay(
+                        day
+                      )}`}
+                    >
+                      {format(day, "dd")}
+                    </p>
+                  </div>
+                  <div className="flex-1 cursor-pointer">
+                    {data.map((dailyDietInfo, idx) => {
+                      let returnBody;
+                      const columnDate = removeTimezoneOffset(new Date(day));
+
+                      if (
+                        dailyDietInfo.date.toDateString() ==
+                        columnDate.toDateString()
+                      ) {
+                        returnBody = (
+                          <div
+                            key={`${idx}-${day.toString()}`}
+                            onClick={() => setDailyDiet(dailyDietInfo)}
+                            className={`event mx-1  mb-1 truncate rounded p-1 text-sm text-gray-600`}
+                            style={{
+                              backgroundColor: labelColor(
+                                dailyDietInfo.meal_type
+                              ),
+                            }}
+                          >
+                            {dailyDietInfo.recipe.name} -{" "}
+                            {dailyDietInfo.meal_type}
+                          </div>
+                        );
+                      }
+                      return returnBody;
+                    })}
+                  </div>
+                </div>
+              );
+            } else {
+              return (
+                <div
+                  onClick={() => {
+                    setDailyDiet(undefined);
+                    setSelectedDay(new Date(day));
+                    setIsDialogOpen(true);
+                  }}
+                  className="flex flex-col border border-slate-400"
+                  key={`${dayIdx}-${day.toString()}`}
+                >
+                  <div className="flex flex-col items-center">
+                    {weekIdx === 0 && (
+                      <>
+                        <p className="mt-1 hidden text-base sm:block">
+                          {format(day, "EEEE")}
+                        </p>
+                        <p className="blocktext-base mt-1 sm:hidden">
+                          {format(day, "EE")}
+                        </p>
+                      </>
+                    )}
+                    <p
+                      className={`my-1 p-1 text-center text-base ${currentDay(
+                        day
+                      )}`}
+                    >
+                      {format(day, "dd")}
+                    </p>
+                  </div>
+                </div>
+              );
+            }
+          })}
         </React.Fragment>
       ))}
     </div>
@@ -358,6 +427,8 @@ const NewCalendarDialog: React.FC = () => {
   const saveDiet = api.user.saveUserDailyDiet.useMutation();
   const updateDiet = api.user.updateUserDailyDiet.useMutation();
   const deleteMutation = api.user.deleteDiet.useMutation();
+
+  const router = useRouter();
 
   const form = useZodForm({
     schema: z.object({
@@ -395,22 +466,40 @@ const NewCalendarDialog: React.FC = () => {
       dailyDietInfo.recipe_id &&
       dailyDietInfo.date
     ) {
-      await updateDiet.mutateAsync({
-        date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
-        meal_type: data.meal_type,
-        previous_recipe_id: dailyDietInfo.recipe_id,
-        new_recipe_id: "clhen81uk0007uyksrz8k5u38",
-      });
+      await updateDiet.mutateAsync(
+        {
+          date: removeTimezoneOffset(
+            new Date(dailyDietInfo.date.toDateString())
+          ),
+          meal_type: data.meal_type,
+          previous_recipe_id: dailyDietInfo.recipe_id,
+          new_recipe_id: "clhen81uk0007uyksrz8k5u38",
+        },
+        {
+          onSuccess: () => {
+            router.refresh();
+          },
+        }
+      );
     } else {
-      await saveDiet.mutateAsync({
-        date: removeTimezoneOffset(new Date(selectedDay.toDateString())),
-        meal_type: data.meal_type,
-        recipe_id: "clhen81uk0007uyksrz8k5u38",
-      });
+      await saveDiet.mutateAsync(
+        {
+          date: removeTimezoneOffset(new Date(selectedDay.toDateString())),
+          meal_type: data.meal_type,
+          recipe_id: "clhen81uk0007uyksrz8k5u38",
+        },
+        {
+          onSuccess: () => {
+            router.refresh();
+            // router.push(`/recipe/${recipe_id}#comment`);
+          },
+        }
+      );
     }
     setDailyDiet(undefined);
     onDietUpdate();
     setIsDialogOpen(false);
+    router.refresh();
   };
 
   const onDeleteClick = async () => {
@@ -429,6 +518,7 @@ const NewCalendarDialog: React.FC = () => {
     setDailyDiet(undefined);
     onDietUpdate();
     setIsDialogOpen(false);
+    router.refresh();
   };
 
   return (
@@ -443,7 +533,7 @@ const NewCalendarDialog: React.FC = () => {
         <Form form={form} onSubmit={onFormSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              {/* <>{dailyDietInfo ? dailyDietInfo.recipe.name : "no name"}</> */}
+              <>{dailyDietInfo ? dailyDietInfo.recipe.name : "no name"}</>
               <Input
                 type="text"
                 label="Recipe"
@@ -453,7 +543,7 @@ const NewCalendarDialog: React.FC = () => {
               ></Input>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              {/* <>{dailyDietInfo ? dailyDietInfo.meal_type : "no meal_typx"}</> */}
+              <>{dailyDietInfo ? dailyDietInfo.meal_type : "no meal_typx"}</>
               <FormSelect
                 className="col-span-3"
                 label="For"
@@ -472,10 +562,50 @@ const NewCalendarDialog: React.FC = () => {
         </Form>
       </DialogHeader>
       <DialogFooter>
-        {/* {dailyDietInfo !== undefined && ( */}
-        <Button onClick={() => void onDeleteClick()}>Delete</Button>
-        {/* )} */}
+        {dailyDietInfo !== undefined && (
+          <Button onClick={() => void onDeleteClick()}>Delete</Button>
+        )}
       </DialogFooter>
     </DialogContent>
+  );
+};
+
+const Filters: React.FC = () => {
+  const { filters, setFilters } = useContext(GlobalContext);
+
+  useEffect(() => {
+    console.log("qqqqqqqqqqqqqqqqqqqqqqqq");
+    console.log(filters);
+    console.log("qqqqqqqqqqqqqqqqqqqqqqqq");
+  }, [filters]);
+
+  return (
+    <React.Fragment>
+      <p className="mt-10 font-bold text-gray-500">Filters</p>
+      {filters.map(({ key, checked, name }, idx) => (
+        <label key={`${idx}${key}`} className="mt-3 flex items-center">
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={() => {
+              setFilters((prev) => {
+                return prev.map((prevFilter) => {
+                  if (prevFilter.name === name) {
+                    return { key, name, checked: !checked };
+                  }
+                  return prevFilter;
+                });
+              });
+              // updateLabel({ label: lbl, checked: !checked })
+              // setLabelState((prev) => {...prev,  SNACK: !prev["name"]})
+              console.log("toggle");
+            }}
+            className={`form-checkbox h-5 w-5 cursor-pointer rounded focus:ring-0`}
+            style={{ accentColor: labelColor(name), color: labelColor(name) }}
+          />
+          <span className="ml-2 capitalize text-gray-700">{name}</span>
+        </label>
+      ))}
+    </React.Fragment>
   );
 };
