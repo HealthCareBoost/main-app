@@ -13,7 +13,7 @@ export const CalendarHeader: React.FC = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
 
   return (
-    <header className="mb-4 flex items-center justify-end border border-red-500 px-4 py-2 sm:mb-0">
+    <header className="mb-4 flex items-center justify-end px-4 py-2 sm:mb-0">
       <Button
         onClick={() => {
           setCurrentDate(new Date());

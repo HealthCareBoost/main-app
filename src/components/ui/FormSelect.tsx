@@ -3,38 +3,36 @@ import { forwardRef } from "react";
 import { useFormContext } from "react-hook-form";
 import { Label } from "./Label";
 import { cn } from "../../utils/cn";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./Select";
 
 interface Props extends ComponentProps<"select"> {
   name: string;
   label: string;
   className?: string;
+  hiddenLabel?: boolean;
 }
 
 export const FormSelect = forwardRef<HTMLInputElement, Props>((props, ref) => {
   const form = useFormContext();
   const state = form.getFieldState(props.name);
+  const { hiddenLabel, label, name, className, ...rest } = props;
 
   return (
-    <div>
-      <Label className="py-1.5 pr-2 text-sm font-semibold" htmlFor={props.name}>
-        {props.label}
-      </Label>
+    <>
+      {hiddenLabel ? null : (
+        <Label className="py-1.5 pr-2 text-sm font-semibold" htmlFor={name}>
+          {label}
+        </Label>
+      )}
       <select
-        {...props}
+        {...rest}
         // bg-transparent
         className={cn(
           // "h-20",
           "mt-2 h-10 w-[180px] rounded-md border border-slate-300 bg-white py-2 px-3 text-sm capitalize placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-bgDark dark:text-slate-50 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900",
-          props.className
+          className
         )}
-        id={props.name}
+        id={name}
+        name={name}
         ref={ref as LegacyRef<HTMLSelectElement>}
       />
       {state.error && (
@@ -42,7 +40,7 @@ export const FormSelect = forwardRef<HTMLInputElement, Props>((props, ref) => {
           {state.error.message}
         </p>
       )}
-    </div>
+    </>
   );
 });
 FormSelect.displayName = "FormSelect";

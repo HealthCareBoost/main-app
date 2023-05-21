@@ -1,3 +1,5 @@
+import { RouterOutputs } from "@/src/utils/api";
+import type { UserDailyDiet } from "@prisma/client";
 import { type MealTypes } from "@prisma/client";
 import { createContext } from "react";
 
@@ -31,6 +33,15 @@ export const WeeklyCalendarContext = createContext<WeeklyCalendarContextType>(
   {} as WeeklyCalendarContextType
 );
 
+export type DietResult = RouterOutputs["user"]["getUserWeeklyDiet"];
+export type DietQueryReturnType =
+  | (UserDailyDiet & {
+      recipe: {
+        name: string;
+      };
+    })[]
+  | undefined;
+
 type CalendarContextType = {
   currentDate: Date;
   setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
@@ -48,6 +59,9 @@ type CalendarContextType = {
 
   filters: MealTypeFilter[];
   setFilters: React.Dispatch<React.SetStateAction<MealTypeFilter[]>>;
+
+  monthlyDiet: DietResult | undefined;
+  setMonthlyDiet: React.Dispatch<React.SetStateAction<DietResult | undefined>>;
 
   // showEventModal: boolean;
   // setShowEventModal: React.Dispatch<React.SetStateAction<string | null>>;

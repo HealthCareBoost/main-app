@@ -1,19 +1,24 @@
 import { MealTypes } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import { Dialog } from "../ui/Dialog";
-import type { DietInfo, MealTypeFilter } from "./CalendarContext";
+import type { DietInfo, DietResult, MealTypeFilter } from "./CalendarContext";
 import { CalendarContext } from "./CalendarContext";
 import { CalendarHeader } from "./CalendarHeader";
-import { GetMonthDays } from "@/src/utils/calendarUtils";
+import { GetMonthDays, removeTimezoneOffset } from "@/src/utils/calendarUtils";
 import { CalendarMonth } from "./Month";
 import { CalendarDialog } from "./CalendarDialog";
 import { CalendarSidebar } from "./CalendarSidebar";
+import { api } from "@/src/utils/api";
+import { endOfMonth, startOfMonth } from "date-fns";
 
 export const Calendar: React.FC = () => {
   const [currenMonth, setCurrentMonth] = useState(GetMonthDays(new Date()));
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDay, setSelectedDay] = useState<Date>(currentDate);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [monthlyDiet, setMonthlyDiet] = useState<DietResult | undefined>(
+    undefined
+  );
   const [dailyDietInfo, setDailyDiet] = useState<DietInfo | undefined>(
     undefined
   );
@@ -26,6 +31,23 @@ export const Calendar: React.FC = () => {
     })
   );
   const [filters, setFilters] = useState<MealTypeFilter[]>(initial_filters);
+
+  const {
+    data: dietData,
+    isLoading,
+    refetch,
+  } = api.user.getUserWeeklyDiet.useQuery({
+    from: removeTimezoneOffset(startOfMonth(currentDate)),
+    to: removeTimezoneOffset(endOfMonth(currentDate)),
+    filters: filters,
+  });
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (dietData) {
+      setMonthlyDiet(dietData);
+    }
+  }, [dietData, isLoading]);
 
   useEffect(() => {
     setCurrentMonth(GetMonthDays(currentDate));
@@ -42,9 +64,12 @@ export const Calendar: React.FC = () => {
         setIsDialogOpen,
         dailyDietInfo,
         setDailyDiet,
-        onDietUpdate: () => {
+        onDietUpdate: async () => {
           console.log("diet update");
+          await refetch();
         },
+        monthlyDiet,
+        setMonthlyDiet,
         filters,
         setFilters,
       }}

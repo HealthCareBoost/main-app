@@ -7,8 +7,7 @@ import { CalendarContext } from "./CalendarContext";
 import { CalendarDialog } from "./CalendarDialog";
 
 export const CalendarSidebar: React.FC = () => {
-  const { currentDate, setCurrentDate, setSelectedDay } =
-    useContext(CalendarContext);
+  const { setCurrentDate, setSelectedDay } = useContext(CalendarContext);
   const [date, setDate] = React.useState<Date | undefined>(new Date());
 
   return (

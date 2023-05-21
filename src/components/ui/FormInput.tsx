@@ -22,7 +22,7 @@ export const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
   const { hiddenLabel, name, label, className, ...inputProps } = props;
 
   return (
-    <div>
+    <>
       {props.hidden || hiddenLabel ? null : (
         <Label htmlFor={name}>{label}</Label>
       )}
@@ -40,7 +40,7 @@ export const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
           {state.error.message}
         </p>
       )}
-    </div>
+    </>
   );
 });
 Input.displayName = "FormInput";

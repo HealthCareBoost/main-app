@@ -18,6 +18,7 @@ import { api } from "../../utils/api";
 import { WeeklyCalendarContext, CalendarContext } from "./CalendarContext";
 import { useRouter } from "next/navigation";
 import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
+import { Label } from "../ui/Label";
 
 export const CalendarDialog: React.FC = () => {
   const {
@@ -27,6 +28,8 @@ export const CalendarDialog: React.FC = () => {
     setIsDialogOpen,
     dailyDietInfo,
   } = useContext(CalendarContext);
+
+  // console.log(dailyDietInfo);
 
   const saveDiet = api.user.saveUserDailyDiet.useMutation();
   const updateDiet = api.user.updateUserDailyDiet.useMutation();
@@ -81,7 +84,8 @@ export const CalendarDialog: React.FC = () => {
         },
         {
           onSuccess: () => {
-            router.refresh();
+            // router.refresh();
+            onDietUpdate();
           },
         }
       );
@@ -94,8 +98,8 @@ export const CalendarDialog: React.FC = () => {
         },
         {
           onSuccess: () => {
-            router.refresh();
-            // router.push(`/recipe/${recipe_id}#comment`);
+            // router.refresh();
+            onDietUpdate();
           },
         }
       );
@@ -103,7 +107,7 @@ export const CalendarDialog: React.FC = () => {
     setDailyDiet(undefined);
     onDietUpdate();
     setIsDialogOpen(false);
-    router.refresh();
+    // router.refresh();
   };
 
   const onDeleteClick = async () => {
@@ -122,7 +126,7 @@ export const CalendarDialog: React.FC = () => {
     setDailyDiet(undefined);
     onDietUpdate();
     setIsDialogOpen(false);
-    router.refresh();
+    // router.refresh();
   };
 
   return (
@@ -137,21 +141,29 @@ export const CalendarDialog: React.FC = () => {
         <Form form={form} onSubmit={onFormSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <>{dailyDietInfo ? dailyDietInfo.recipe.name : "no name"}</>
+              {/* <>{dailyDietInfo ? dailyDietInfo.recipe.name : "no name"}</> */}
+              <Label htmlFor="name" className="text-right">
+                Recipe
+              </Label>
               <Input
                 type="text"
                 label="Recipe"
+                hiddenLabel
                 className="col-span-3"
                 required
                 {...form.register("recipe_name")}
-              ></Input>
+              />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <>{dailyDietInfo ? dailyDietInfo.meal_type : "no meal_typx"}</>
+              {/* <>{dailyDietInfo ? dailyDietInfo.meal_type : "no meal_typx"}</> */}
+              <Label htmlFor="meal_type" className="text-right">
+                For
+              </Label>
               <FormSelect
-                className="col-span-3"
+                className="col-span-3 w-full"
                 label="For"
                 required
+                hiddenLabel
                 {...form.register("meal_type")}
               >
                 {Object.entries(MealTypes).map(([key, value]) => (
@@ -161,15 +173,24 @@ export const CalendarDialog: React.FC = () => {
                 ))}
               </FormSelect>
             </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              {dailyDietInfo !== undefined && (
+                <Button
+                  variant={"destructive"}
+                  className="col-span-1"
+                  onClick={() => void onDeleteClick()}
+                >
+                  {/* <Trash2 className="h-4 w-4" />  */}
+                  Delete
+                </Button>
+              )}
+              <Button className="col-span-2 col-start-3" type="submit">
+                Save
+              </Button>
+            </div>
           </div>
-          <Button type="submit">Save</Button>
         </Form>
       </DialogHeader>
-      <DialogFooter>
-        {dailyDietInfo !== undefined && (
-          <Button onClick={() => void onDeleteClick()}>Delete</Button>
-        )}
-      </DialogFooter>
     </DialogContent>
   );
 };
