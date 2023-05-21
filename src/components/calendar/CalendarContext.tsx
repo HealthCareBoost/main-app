@@ -1,4 +1,4 @@
-import { RouterOutputs } from "@/src/utils/api";
+import type { RouterOutputs } from "@/src/utils/api";
 import type { UserDailyDiet } from "@prisma/client";
 import { type MealTypes } from "@prisma/client";
 import { createContext } from "react";
@@ -55,7 +55,7 @@ type CalendarContextType = {
 
   dailyDietInfo: DietInfo | undefined;
   setDailyDiet: React.Dispatch<React.SetStateAction<DietInfo | undefined>>;
-  onDietUpdate: () => void;
+  onDietUpdate: () => Promise<void>;
 
   filters: MealTypeFilter[];
   setFilters: React.Dispatch<React.SetStateAction<MealTypeFilter[]>>;

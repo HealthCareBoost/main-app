@@ -65,7 +65,7 @@ export const Calendar: React.FC = () => {
         dailyDietInfo,
         setDailyDiet,
         onDietUpdate: async () => {
-          console.log("diet update");
+          // console.log("diet update");
           await refetch();
         },
         monthlyDiet,
