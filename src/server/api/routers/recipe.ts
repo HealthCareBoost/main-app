@@ -5,10 +5,8 @@ import { Constants } from "../../../utils/constants";
 import { RecipeSchema } from "../../../utils/validations/createRecipeSchema";
 import { ImageInfoSchema } from "../../../utils/validations/imageSchema";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
-import {
-  WhereConditionsType,
-  getFiltersForQuery,
-} from "../../../utils/mapFilters";
+import type { WhereConditionsType } from "../../../utils/mapFilters";
+import { getFiltersForQuery } from "../../../utils/mapFilters";
 import { timeToMinutes } from "../../../utils/timeConverter";
 import { getIngredientNutritionsCollection } from "./ingredients";
 import type {
@@ -788,6 +786,23 @@ export const recipeRouter = createTRPCRouter({
             },
           },
         },
+      });
+    }),
+
+  searchRecipeByName: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.recipe.findMany({
+        where: {
+          name: {
+            contains: input.name,
+          },
+        },
+        take: Constants.MAX_SELECT_NUMBER,
       });
     }),
 });
