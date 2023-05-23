@@ -802,7 +802,7 @@ export const recipeRouter = createTRPCRouter({
             contains: input.name,
           },
         },
-        take: Constants.MAX_SELECT_NUMBER,
+        take: Constants.MAX_SEARCH,
       });
     }),
 });

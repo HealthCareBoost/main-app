@@ -1,6 +1,7 @@
 export const Constants = {
   DEFAULT_SELECT_NUMBER: 12,
   MAX_SELECT_NUMBER: 90,
+  MAX_SEARCH: 5,
   MONTH_WEEKS: 5,
   DAYS_WEEK: 7,
 } as const;
