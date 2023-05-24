@@ -144,25 +144,6 @@ export const CalendarDialog: React.FC = () => {
         <Form form={form} onSubmit={onFormSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              {/* <>{dailyDietInfo ? dailyDietInfo.meal_type : "no meal_typx"}</> */}
-              <Label htmlFor="meal_type" className="text-right">
-                For
-              </Label>
-              <FormSelect
-                className="col-span-3 w-full"
-                label="For"
-                required
-                hiddenLabel
-                {...form.register("meal_type")}
-              >
-                {Object.entries(MealTypes).map(([key, value]) => (
-                  <option key={key} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </FormSelect>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
               {/* <>{dailyDietInfo ? dailyDietInfo.recipe.name : "no name"}</> */}
               <Label htmlFor="name" className="text-right">
                 Recipe
@@ -188,7 +169,25 @@ export const CalendarDialog: React.FC = () => {
                 />
               </div>
             </div>
-
+            <div className="grid grid-cols-4 items-center gap-4">
+              {/* <>{dailyDietInfo ? dailyDietInfo.meal_type : "no meal_typx"}</> */}
+              <Label htmlFor="meal_type" className="text-right">
+                For
+              </Label>
+              <FormSelect
+                className="col-span-3 w-full"
+                label="For"
+                required
+                hiddenLabel
+                {...form.register("meal_type")}
+              >
+                {Object.entries(MealTypes).map(([key, value]) => (
+                  <option key={key} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </FormSelect>
+            </div>
             <div className="grid grid-cols-4 items-center gap-4">
               {dailyDietInfo !== undefined && (
                 <Button
