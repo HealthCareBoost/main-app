@@ -70,20 +70,24 @@ export const userRouter = createTRPCRouter({
           invalid_type_error: "That's not a date!",
         }),
         // date: z.string(),
-        recipe_id: z.string(),
+        recipe_name: z.string(),
         meal_type: z.nativeEnum(MealTypes),
       })
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        console.log("server d");
-        console.log(input);
+        // console.log("server d");
+        // console.log(input);
+        const recipe = await ctx.prisma.recipe.findFirstOrThrow({
+          where: { name: input.recipe_name },
+        });
+
         const res = await ctx.prisma.userDailyDiet.create({
           data: {
             date: input.date,
             meal_type: input.meal_type,
             user_id: ctx.session.user.id,
-            recipe_id: input.recipe_id,
+            recipe_id: recipe.id,
           },
         });
         console.log(res);
@@ -202,12 +206,16 @@ export const userRouter = createTRPCRouter({
           invalid_type_error: "That's not a date!",
         }),
         previous_recipe_id: z.string(),
-        new_recipe_id: z.string().optional(),
+        new_recipe_name: z.string().optional(),
         meal_type: z.nativeEnum(MealTypes),
       })
     )
     .mutation(async ({ ctx, input }) => {
       try {
+        const recipe = await ctx.prisma.recipe.findFirst({
+          where: { name: input.new_recipe_name },
+        });
+
         const res = await ctx.prisma.userDailyDiet.updateMany({
           where: {
             // user_id_date_recipe_id: {
@@ -220,9 +228,10 @@ export const userRouter = createTRPCRouter({
             date: input.date,
             meal_type: input.meal_type,
             user_id: ctx.session.user.id,
-            recipe_id: input.new_recipe_id
-              ? input.new_recipe_id
-              : input.previous_recipe_id,
+            recipe_id:
+              input.new_recipe_name && recipe
+                ? recipe.id
+                : input.previous_recipe_id,
           },
         });
         console.log(res);

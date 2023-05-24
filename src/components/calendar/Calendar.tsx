@@ -53,6 +53,10 @@ export const Calendar: React.FC = () => {
     setCurrentMonth(GetMonthDays(currentDate));
   }, [currentDate]);
 
+  const onUpdate = async () => {
+    await refetch();
+  };
+
   return (
     <CalendarContext.Provider
       value={{
@@ -64,9 +68,8 @@ export const Calendar: React.FC = () => {
         setIsDialogOpen,
         dailyDietInfo,
         setDailyDiet,
-        onDietUpdate: async () => {
-          // console.log("diet update");
-          await refetch();
+        onDietUpdate: () => {
+          void onUpdate();
         },
         monthlyDiet,
         setMonthlyDiet,

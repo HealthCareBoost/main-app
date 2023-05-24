@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button } from "../ui/Button";
 import {
   DialogContent,
@@ -19,6 +19,7 @@ import { WeeklyCalendarContext, CalendarContext } from "./CalendarContext";
 import { useRouter } from "next/navigation";
 import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
 import { Label } from "../ui/Label";
+import { FormSearchBar } from "../recipe/Search";
 
 export const CalendarDialog: React.FC = () => {
   const {
@@ -30,6 +31,7 @@ export const CalendarDialog: React.FC = () => {
   } = useContext(CalendarContext);
 
   // console.log(dailyDietInfo);
+  const [searchedValue, setSearchedValue] = useState<string>("");
 
   const saveDiet = api.user.saveUserDailyDiet.useMutation();
   const updateDiet = api.user.updateUserDailyDiet.useMutation();
@@ -80,7 +82,8 @@ export const CalendarDialog: React.FC = () => {
           ),
           meal_type: data.meal_type,
           previous_recipe_id: dailyDietInfo.recipe_id,
-          new_recipe_id: "clhen81uk0007uyksrz8k5u38",
+          // new_recipe_id: "clhen81uk0007uyksrz8k5u38",
+          new_recipe_name: data.recipe_name,
         },
         {
           onSuccess: () => {
@@ -94,7 +97,7 @@ export const CalendarDialog: React.FC = () => {
         {
           date: removeTimezoneOffset(new Date(selectedDay.toDateString())),
           meal_type: data.meal_type,
-          recipe_id: "clhen81uk0007uyksrz8k5u38",
+          recipe_name: data.recipe_name,
         },
         {
           onSuccess: () => {
@@ -141,20 +144,6 @@ export const CalendarDialog: React.FC = () => {
         <Form form={form} onSubmit={onFormSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              {/* <>{dailyDietInfo ? dailyDietInfo.recipe.name : "no name"}</> */}
-              <Label htmlFor="name" className="text-right">
-                Recipe
-              </Label>
-              <Input
-                type="text"
-                label="Recipe"
-                hiddenLabel
-                className="col-span-3"
-                required
-                {...form.register("recipe_name")}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
               {/* <>{dailyDietInfo ? dailyDietInfo.meal_type : "no meal_typx"}</> */}
               <Label htmlFor="meal_type" className="text-right">
                 For
@@ -173,6 +162,33 @@ export const CalendarDialog: React.FC = () => {
                 ))}
               </FormSelect>
             </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              {/* <>{dailyDietInfo ? dailyDietInfo.recipe.name : "no name"}</> */}
+              <Label htmlFor="name" className="text-right">
+                Recipe
+              </Label>
+              {/* <Input
+                type="text"
+                label="Recipe"
+                hiddenLabel
+                className="col-span-3"
+                required
+                {...form.register("recipe_name")}
+              /> */}
+              <div className="col-span-3">
+                <FormSearchBar
+                  searchedValue={searchedValue}
+                  setSearchedValue={setSearchedValue}
+                  {...form.register("recipe_name", {
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                      setSearchedValue(e.target.value);
+                      form.setValue("recipe_name", e.target.value);
+                    },
+                  })}
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
               {dailyDietInfo !== undefined && (
                 <Button
@@ -248,13 +264,15 @@ export const WeeklyCalendarDialog: React.FC = () => {
         date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
         meal_type: data.meal_type,
         previous_recipe_id: dailyDietInfo.recipe_id,
-        new_recipe_id: "clhf0xx3y0001uy8kc1ekbvdd",
+        new_recipe_name: data.recipe_name,
+        // new_recipe_id: "clhf0xx3y0001uy8kc1ekbvdd",
       });
     } else {
       await saveDiet.mutateAsync({
         date: removeTimezoneOffset(new Date(selectedDay.toDateString())),
         meal_type: data.meal_type,
-        recipe_id: "clhf0xx3y0001uy8kc1ekbvdd",
+        recipe_name: data.recipe_name,
+        // recipe_id: "clhf0xx3y0001uy8kc1ekbvdd",
       });
     }
     setDailyDiet(undefined);

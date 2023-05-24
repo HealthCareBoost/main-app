@@ -1,7 +1,7 @@
 import { useDebounce } from "@/src/hooks/useDebounce";
 import { api } from "@/src/utils/api";
 import { Check, Search } from "lucide-react";
-import React, { useState } from "react";
+import React, { ComponentProps, forwardRef, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -16,6 +16,8 @@ import {
   CommandInput,
 } from "../ui/Command";
 import { cn } from "@/src/utils/cn";
+import { useFormContext } from "react-hook-form";
+import { Recipe } from "@prisma/client";
 
 export const SearchBar: React.FC = () => {
   const [searchedValue, setSearchedValue] = useState<string>("");
@@ -104,3 +106,103 @@ export const SearchBar: React.FC = () => {
     </Popover>
   );
 };
+
+interface Props extends ComponentProps<"input"> {
+  name: string;
+  className?: string;
+  searchedValue: string;
+  setSearchedValue: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
+  (props, ref) => {
+    const { searchedValue, setSearchedValue } = props;
+    const [selectedValue, setSelected] = useState<Recipe | undefined>(
+      undefined
+    );
+
+    const deb = useDebounce(searchedValue, 500);
+    const { data, isLoading } = api.recipe.searchRecipeByName.useQuery({
+      name: deb,
+    });
+
+    const form = useFormContext();
+    const state = form.getFieldState(props.name);
+
+    return (
+      <div className="w-[200px] p-0">
+        <div className="flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground">
+          <div
+            className="flex items-center border-b px-3"
+            cmdk-input-wrapper=""
+          >
+            <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+            <input
+              className={
+                "placeholder:text-foreground-muted flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              }
+              placeholder={"Search Recipes..."}
+              type="text"
+              ref={ref}
+              // onChange={(e) => {
+              //   setSearchedValue(e.target.value);
+              // }}
+              {...props}
+            />
+          </div>
+
+          {/* Empty  */}
+          {!isLoading && (!data || data.length === 0) && (
+            <div className="py-6 text-center text-sm">Not found.</div>
+          )}
+
+          {state.error && (
+            <p className="text-sm font-medium text-red-600">
+              {state.error.message}
+            </p>
+          )}
+
+          {/* Group */}
+          <div className="overflow-hidden p-1 text-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground">
+            {data &&
+              data.map((recipe) => (
+                <div
+                  onClick={() => {
+                    console.log("click");
+                    setSelected((prev) => {
+                      if (!prev) {
+                        form.setValue("recipe_name", recipe.name);
+                        return recipe;
+                      }
+                      if (prev.name === recipe.name) {
+                        form.setValue("recipe_name", "");
+                        return undefined;
+                      }
+                      form.setValue("recipe_name", recipe.name);
+                      return recipe;
+                    });
+                  }}
+                  aria-selected={
+                    selectedValue && selectedValue.name === recipe.name
+                  }
+                  className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                  key={recipe.id}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      selectedValue && selectedValue.name === recipe.name
+                        ? "opacity-100"
+                        : "opacity-0"
+                    )}
+                  />
+                  {recipe.name}
+                </div>
+              ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+);
+FormSearchBar.displayName = "FormRecipeSearchBar";

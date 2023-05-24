@@ -55,7 +55,7 @@ type CalendarContextType = {
 
   dailyDietInfo: DietInfo | undefined;
   setDailyDiet: React.Dispatch<React.SetStateAction<DietInfo | undefined>>;
-  onDietUpdate: () => Promise<void>;
+  onDietUpdate: () => void;
 
   filters: MealTypeFilter[];
   setFilters: React.Dispatch<React.SetStateAction<MealTypeFilter[]>>;
