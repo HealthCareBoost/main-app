@@ -268,7 +268,7 @@ export const userRouter = createTRPCRouter({
         return { success: true };
       } catch (error) {
         console.error(error);
-        return { success: false };
+        return { success: false, error };
       }
     }),
 

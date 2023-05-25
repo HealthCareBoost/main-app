@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
 import { Label } from "../ui/Label";
 import { FormSearchBar } from "../recipe/Search";
+import { toast } from "@/src/hooks/use-toast";
 
 export const CalendarDialog: React.FC = () => {
   const {
@@ -89,6 +90,17 @@ export const CalendarDialog: React.FC = () => {
           onSuccess: () => {
             // router.refresh();
             onDietUpdate();
+            return toast({
+              title: "Diet Updated.",
+              description: `${data.recipe_name} was added to the diet.`,
+            });
+          },
+          onError: () => {
+            return toast({
+              title: "Something went wrong.",
+              description: `${data.recipe_name} was NOT added to the diet. Please try again.`,
+              variant: "destructive",
+            });
           },
         }
       );
@@ -103,6 +115,17 @@ export const CalendarDialog: React.FC = () => {
           onSuccess: () => {
             // router.refresh();
             onDietUpdate();
+            return toast({
+              title: "Diet Updated.",
+              description: `${data.recipe_name} was added to the diet.`,
+            });
+          },
+          onError: () => {
+            return toast({
+              title: "Something went wrong.",
+              description: `${data.recipe_name} was NOT added to the diet. Please try again.`,
+              variant: "destructive",
+            });
           },
         }
       );
@@ -120,16 +143,28 @@ export const CalendarDialog: React.FC = () => {
       dailyDietInfo.recipe_id &&
       dailyDietInfo.date
     ) {
-      await deleteMutation.mutateAsync({
+      const { success } = await deleteMutation.mutateAsync({
         date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
         meal_type: dailyDietInfo.meal_type,
         recipe_id: dailyDietInfo.recipe_id,
       });
+      if (!success) {
+        return toast({
+          title: "Something went wrong.",
+          description: "Meal was not removed. Please try again.",
+          variant: "destructive",
+        });
+      }
+
+      setDailyDiet(undefined);
+      onDietUpdate();
+      setIsDialogOpen(false);
+      return toast({
+        title: "Success",
+        description: `${dailyDietInfo.recipe.name} was removed from the diet.`,
+      });
+      // router.refresh();
     }
-    setDailyDiet(undefined);
-    onDietUpdate();
-    setIsDialogOpen(false);
-    // router.refresh();
   };
 
   return (
