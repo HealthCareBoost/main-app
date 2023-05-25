@@ -1,11 +1,9 @@
-import { useTheme } from "next-themes";
 import React from "react";
 
 //   "instagram" | "facebook" | "twitter" | "linkedin";
 export const SocialIcons: React.FC<
   { name: string } & React.SVGProps<SVGSVGElement>
 > = (props) => {
-  const { theme } = useTheme();
   if (props.name === "facebook") {
     return (
       <>

@@ -2,10 +2,8 @@ import Image from "next/image";
 import React from "react";
 import { styles } from "../../styles/style";
 import { robot } from "../../../public/assets";
-import { useTheme } from "next-themes";
 
 export const LandingHeroSection: React.FC = () => {
-  const { theme } = useTheme();
   return (
     <section
       id="home"
@@ -16,11 +14,7 @@ export const LandingHeroSection: React.FC = () => {
       >
         <div
           //
-          className={`${
-            theme === "dark"
-              ? "bg-black-gradient"
-              : "bg-gradient-to-r from-slate-200 via-zinc-300 to-neutral-400"
-          } mb-2 flex flex-row items-center rounded-[10px] py-[6px] px-4`}
+          className={`mb-2 flex flex-row items-center rounded-[10px] bg-gradient-to-r from-slate-200 via-zinc-300 to-neutral-400 py-[6px] px-4 dark:bg-blackGradient`}
         >
           <Image
             src="assets/Discount.svg"
@@ -55,11 +49,7 @@ export const LandingHeroSection: React.FC = () => {
               >
                 <div className={`${styles.flexStart} flex-row`}>
                   <p className="mr-2 font-poppins text-[18px] font-medium leading-[23px]">
-                    <span
-                      className={`${
-                        theme === "dark" ? "text-gradient" : "text-primaryDark"
-                      }`}
-                    >
+                    <span className={`text-primaryDark dark:text-orange-400`}>
                       Get
                     </span>
                   </p>
@@ -72,11 +62,7 @@ export const LandingHeroSection: React.FC = () => {
                   />
                 </div>
                 <p className="font-poppins text-[18px] font-medium leading-[23px]">
-                  <span
-                    className={`${
-                      theme === "dark" ? "text-gradient" : "text-primaryDark"
-                    }`}
-                  >
+                  <span className={`text-primaryDark dark:text-orange-400`}>
                     Started
                   </span>
                 </p>
@@ -123,11 +109,7 @@ export const LandingHeroSection: React.FC = () => {
           >
             <div className={`${styles.flexStart} flex-row`}>
               <p className="mr-2 font-poppins text-[18px] font-medium leading-[23px]">
-                <span
-                  className={`${
-                    theme === "dark" ? "text-gradient" : "text-primaryDark"
-                  }`}
-                >
+                <span className={`text-primaryDark dark:text-orange-400`}>
                   Get
                 </span>
               </p>
@@ -140,11 +122,7 @@ export const LandingHeroSection: React.FC = () => {
               />
             </div>
             <p className="font-poppins text-[18px] font-medium leading-[23px]">
-              <span
-                className={`${
-                  theme === "dark" ? "text-gradient" : "text-primaryDark"
-                }`}
-              >
+              <span className={`text-primaryDark dark:text-orange-400`}>
                 Started
               </span>
             </p>

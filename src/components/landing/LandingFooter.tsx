@@ -2,6 +2,12 @@ import Image from "next/image";
 import React from "react";
 import { styles } from "../../styles/style";
 import { SocialIcons } from "./SocialIcons";
+import dynamic from "next/dynamic";
+
+export const DynamicLogo = dynamic(
+  () => import("@/src/components/Logo").then((mod) => mod.Logo),
+  { ssr: false }
+);
 
 export const FooterSmall = () => {
   const socialMedia = [
@@ -135,13 +141,7 @@ export const LandingFooter: React.FC = () => {
     <section className={`${styles.flexCenter} ${styles.paddingY} flex-col`}>
       <div className={`${styles.flexStart} mb-8 w-full flex-col md:flex-row`}>
         <div className="mr-10 flex flex-[1] flex-col justify-start">
-          <Image
-            height={72.14}
-            width={266}
-            src={"assets/logo.svg"}
-            alt="hoobank"
-            className="h-[72.14px] w-[266px] object-contain"
-          />
+          <DynamicLogo />
           <p className={`${styles.paragraph} mt-4 max-w-[312px]`}>
             A new way to make the payments easy, reliable and secure.
           </p>

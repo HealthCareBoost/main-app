@@ -1,15 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
-import Link from "next/link";
 import { styles } from "../styles/style";
 import { LandingNavbar } from "../components/landing/LandingNavbar";
-import { LandingHeroSection } from "../components/landing/LandingHero";
 import { LandingStatsSection } from "../components/landing/LandingStats";
 import { LandingBusinessSection } from "../components/landing/LandingBussinessSection";
 import { LandingCTA } from "../components/landing/LandingCTA";
 import { LandingFooter } from "../components/landing/LandingFooter";
 import { LandingFeedback } from "../components/landing/LandingFeedback";
 import { LandingBilling } from "../components/landing/LandingBlling";
+import dynamic from "next/dynamic";
+
+export const DynamicLandingHeroSection = dynamic(
+  () =>
+    import("@/src/components/landing/LandingHero").then(
+      (mod) => mod.LandingHeroSection
+    ),
+  { ssr: false }
+);
 
 const Landing: React.FC = () => {
   return (
@@ -23,7 +30,7 @@ const Landing: React.FC = () => {
 
         <div className={`dark:bg-primaryDark ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
-            <LandingHeroSection />
+            <DynamicLandingHeroSection />
           </div>
         </div>
 

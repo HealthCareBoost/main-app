@@ -39,6 +39,17 @@ module.exports = {
       },
     },
     extend: {
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--gradient-color-stops))",
+        blackGradient:
+          "linear-gradient(144.39deg,#ffffff -278.56%,#6d6d6d -78.47%,#11101d 91.61%)",
+        blackGradient2:
+          "linear-gradient(-168.39deg,#ffffff -278.56%,#6d6d6d -78.47%,#11101d 91.61%)",
+      },
+      textColor: {
+        gradientOrange:
+          "radial-gradient(64.18% 64.18% at 71.16% 35.69%,#fde68a 0.89%,#fdba74 17.23%,#fbbf24 42.04%,55.12%,#fb923c 71.54%,#f97316 100%)",
+      },
       colors: {
         primaryDark: "#00040f",
         bgDark: "#121212",
@@ -121,6 +132,7 @@ module.exports = {
   safelist: ["bg-white-gradient"],
   plugins: [
     require("@tailwindcss/aspect-ratio"),
+    require("tailwindcss/plugin"),
     // require("tailwindcss-animate"),
     require("@tailwindcss/typography"),
     require("@tailwindcss/line-clamp"),

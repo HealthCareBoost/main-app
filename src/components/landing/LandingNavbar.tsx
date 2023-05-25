@@ -1,30 +1,19 @@
-import { useTheme } from "next-themes";
-import Image from "next/image";
 import React from "react";
 import { LandingNavLinks } from "../../utils/NavlinksTypes";
 import { MobileNav } from "../MobileNav";
 import ThemeButton from "../ui/ChangeThemeButton";
 import { LandingLoginButton } from "./LandingButton";
+import dynamic from "next/dynamic";
+
+export const DynamicLogo = dynamic(
+  () => import("@/src/components/Logo").then((mod) => mod.Logo),
+  { ssr: false }
+);
 
 export const LandingNavbar: React.FC = () => {
-  const { theme } = useTheme();
-
   return (
     <nav className="navbar flex w-full items-center justify-between py-6">
-      <Image
-        alt="logo"
-        src={theme === "dark" ? "/assets/cook-dark.png" : "/assets/cook.png"}
-        className="h-auto w-[172px]"
-        height={172}
-        width={172}
-        style={{
-          height: "auto",
-          width: "172px",
-        }}
-        placeholder="blur"
-        blurDataURL={"assets/cook.png"}
-      />
-
+      <DynamicLogo />
       <ul className="hidden flex-1 list-none items-center justify-start sm:flex">
         {LandingNavLinks.map((nav) => (
           <li
@@ -36,11 +25,11 @@ export const LandingNavbar: React.FC = () => {
             <a href={`${nav.href}`}>{nav.title}</a>
           </li>
         ))}
-        <div className="ml-auto flex flex-row items-center justify-evenly">
-          <LandingLoginButton />
-          <ThemeButton />
-        </div>
       </ul>
+      <div className="ml-auto hidden flex-row items-center justify-evenly sm:flex">
+        <LandingLoginButton />
+        <ThemeButton />
+      </div>
 
       <MobileNav items={LandingNavLinks} />
     </nav>

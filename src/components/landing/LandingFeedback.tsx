@@ -1,4 +1,3 @@
-import { useTheme } from "next-themes";
 import Image from "next/image";
 import React from "react";
 import { styles } from "../../styles/style";
@@ -9,15 +8,11 @@ const FeedbackCard: React.FC<{
   title: string;
   img: string;
 }> = ({ content, name, title, img }) => {
-  const { theme } = useTheme();
   return (
     <div
       // hover:bg-black-gradient bg-transparent
-      className={` ${
-        theme === "dark"
-          ? "feedback-card "
-          : "border border-orange-400 bg-dimWhite hover:bg-slate-200"
-      } md:mr-10" my-5 mr-0 flex max-w-[370px] flex-col justify-between rounded-[20px] px-10 py-12 sm:mr-5`}
+      className={`
+          md:mr-10" my-5 mr-0 flex max-w-[370px] flex-col justify-between rounded-[20px] border border-orange-400 bg-dimWhite px-10 py-12 hover:bg-slate-200 dark:bg-transparent dark:hover:bg-blackGradient sm:mr-5`}
     >
       <Image
         width={42.6}

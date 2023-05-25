@@ -19,8 +19,6 @@ export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
   recipe_id,
   user,
 }) => {
-  // const { theme } = useTheme();
-
   const router = useRouter();
   const { data, isLoading } = api.recipe.getUserPreferences.useQuery({
     recipe_id,

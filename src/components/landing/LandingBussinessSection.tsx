@@ -1,4 +1,3 @@
-import { useTheme } from "next-themes";
 import Image from "next/image";
 import React from "react";
 import { layout, styles } from "../../styles/style";
@@ -11,14 +10,11 @@ const FeatureCard: React.FC<{
   content: string;
   isLastElement: boolean;
 }> = ({ id, icon, content, title, isLastElement }) => {
-  const { theme } = useTheme();
   return (
     <div
       className={`flex flex-row rounded-[20px] p-6 ${
         isLastElement ? "mb-0" : "mb-6"
-      } ${
-        theme === "dark" ? "feature-card" : "bg-dimWhite hover:bg-slate-200"
-      }`}
+      } bg-dimWhite hover:bg-slate-200 dark:bg-blackGradient2 dark:shadow-md`}
       style={{ boxShadow: "0px 20px 100px -10px rgba(66, 71, 91, 0.1)" }}
     >
       <div
