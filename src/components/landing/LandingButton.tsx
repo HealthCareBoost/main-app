@@ -6,14 +6,15 @@ export const LandingButton: React.FC<{
   text: string;
 }> = ({ styles, text }) => {
   return (
-    <button
+    <Link
+      href={"/recipe"}
       type="button"
       className={`bg-orange-gradient rounded-md py-4 px-6 text-center align-middle text-[18px] font-medium text-primaryDark outline-none ${
         styles ? styles : ""
       }`}
     >
       {text}
-    </button>
+    </Link>
   );
 };
 

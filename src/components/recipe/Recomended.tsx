@@ -43,7 +43,7 @@ const slidesPerWindowWidth: (width: number | undefined) => number = (width) => {
   if (width >= WindowSizes.lg) {
     console.log("width >= xl");
     console.log(width >= WindowSizes.xl);
-    return 3;
+    return 4;
   }
   return 1;
 };

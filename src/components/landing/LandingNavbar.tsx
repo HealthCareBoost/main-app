@@ -4,6 +4,8 @@ import { MobileNav } from "../MobileNav";
 import ThemeButton from "../ui/ChangeThemeButton";
 import { LandingLoginButton } from "./LandingButton";
 import dynamic from "next/dynamic";
+import { useSession } from "next-auth/react";
+import { UserAccountNav } from "../UserProfileNav";
 
 export const DynamicLogo = dynamic(
   () => import("@/src/components/Logo").then((mod) => mod.Logo),
@@ -11,6 +13,8 @@ export const DynamicLogo = dynamic(
 );
 
 export const LandingNavbar: React.FC = () => {
+  const { data: sessionData } = useSession();
+
   return (
     <nav className="navbar flex w-full items-center justify-between py-6">
       <DynamicLogo />
@@ -27,7 +31,14 @@ export const LandingNavbar: React.FC = () => {
         ))}
       </ul>
       <div className="ml-auto hidden flex-row items-center justify-evenly sm:flex">
-        <LandingLoginButton />
+        {sessionData && sessionData.user ? (
+          <UserAccountNav
+            className="mx-2 h-8 w-8"
+            user={{ ...sessionData.user }}
+          />
+        ) : (
+          <LandingLoginButton />
+        )}
         <ThemeButton />
       </div>
 

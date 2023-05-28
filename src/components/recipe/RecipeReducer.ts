@@ -45,7 +45,7 @@ export const initialState = {
   selectedCategoryId: undefined,
   selectedDifficulty: undefined,
   selectedTimeToCook: undefined,
-  orderBy: undefined,
+  orderBy: "createdAt" as OrderByValues,
   recipes: [] as RecipesQueryResult[],
 };
 

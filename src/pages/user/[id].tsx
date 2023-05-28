@@ -119,7 +119,7 @@ const UserProfile: NextPage<{ user_id: string }> = (
                   >
                     {userData.user && userData.user.email}
                   </div>
-                  <Separator orientation="horizontal" />
+                  {/* <Separator orientation="horizontal" /> */}
                 </div>
 
                 {ownProfile ? (
@@ -263,9 +263,9 @@ const UserProfile: NextPage<{ user_id: string }> = (
               </div>
             </main>
           </div>
-          <Separator className="h-1" />
-          <section className="grid h-full grid-cols-1 gap-4 sm:grid-cols-4">
-            <div className="my-4 sm:col-span-full sm:col-start-2">
+          <Separator className="my-16 h-1" />
+          <section className="mt-6 grid h-full grid-cols-1 gap-4 sm:grid-cols-4">
+            <div className="my-4 sm:col-span-full">
               <h1 className={`${styles.heading2} text-center sm:col-span-3`}>
                 Recomended For You
               </h1>
@@ -274,7 +274,7 @@ const UserProfile: NextPage<{ user_id: string }> = (
               dicta adipisci! Reiciendis quam ratione aliquid architecto rem
               culpa accusamus omnis cupiditate officia?
             </div>
-            <div className="sm:col-span-full sm:col-start-2">
+            <div className="sm:col-span-full">
               {recomendedRecipes && recomendedRecipes.length > 0 && (
                 <RecomendedRecipes recipes={recomendedRecipes} />
               )}
