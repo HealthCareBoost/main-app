@@ -23,7 +23,7 @@ const RecipePreviewPage: NextPage = () => {
   // }, []);
 
   const { fetchNextPage, isFetching, hasNextPage, isLoading, data } =
-    api.recipe.getPaginatedRecipies.useInfiniteQuery(
+    api.recipe.getPaginatedRecipes.useInfiniteQuery(
       {
         // cursor: recipeState.cursor,
         take: recipeState.take,

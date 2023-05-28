@@ -441,7 +441,7 @@ export const recipeRouter = createTRPCRouter({
       });
     }),
 
-  getPaginatedRecipies: publicProcedure
+  getPaginatedRecipes: publicProcedure
     .input(
       z.object({
         cursor: z.string().nullish(),

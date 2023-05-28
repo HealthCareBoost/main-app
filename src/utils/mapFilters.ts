@@ -62,7 +62,7 @@ export const getFiltersForQuery: (
 
   if (filters === undefined)
     return {
-      orderBy: { ...orderBy, id: "asc" },
+      orderBy: { ...orderBy, createdAt: "asc" },
       whereConditions: [],
     };
 
@@ -89,7 +89,7 @@ export const getFiltersForQuery: (
         break;
       }
       default: {
-        orderBy.id = "asc";
+        orderBy.createdAt = "desc";
         break;
       }
     }
