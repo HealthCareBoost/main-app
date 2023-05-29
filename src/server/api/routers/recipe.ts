@@ -805,4 +805,131 @@ export const recipeRouter = createTRPCRouter({
         take: Constants.MAX_SEARCH,
       });
     }),
+
+  getInteractedRecipes: publicProcedure
+    .input(
+      z.object({
+        user_id: z.string().min(1),
+        cursor: z.string().nullish(),
+        take: z
+          .number()
+          .positive()
+          .min(1)
+          .max(Constants.MAX_SELECT_NUMBER)
+          .default(Constants.DEFAULT_SELECT_NUMBER),
+        filters: z
+          .object({
+            saved: z.boolean().default(false).optional(),
+            liked: z.boolean().default(false).optional(),
+            made: z.boolean().default(false).optional(),
+            // categoryId: z.number().positive().optional(),
+            // difficulty: z.nativeEnum(DifficultyLevel).optional(),
+            // timeToCook: z
+            //   .object({
+            //     lower: z.number().min(0),
+            //     higher: z
+            //       .number()
+            //       .positive()
+            //       .max(3 * 24 * 60),
+            //   })
+            //   .optional(),
+            // orderBy: z
+            //   .enum([
+            //     "cooking_time",
+            //     "total_likes",
+            //     "difficulty_level",
+            //     "createdAt",
+            //     "name",
+            //   ])
+            //   .optional(),
+          })
+          .optional(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const preferences: (
+        | {
+            liked: boolean;
+          }
+        | {
+            made: boolean;
+          }
+        | {
+            saved: boolean;
+          }
+      )[] = [];
+      if (input.filters) {
+        if (input.filters.liked) {
+          preferences.push({ liked: true });
+        }
+        if (input.filters.made) {
+          preferences.push({ made: true });
+        }
+        if (input.filters.saved) {
+          preferences.push({ saved: true });
+        }
+      }
+
+      const recipe_ids = await ctx.prisma.userPreferences.findMany({
+        take: input.take + 1,
+        cursor: input.cursor
+          ? {
+              user_id_recipe_id: {
+                recipe_id: input.cursor,
+                user_id: input.user_id,
+              },
+            }
+          : undefined,
+        select: {
+          recipe_id: true,
+        },
+        where: {
+          AND: [
+            {
+              user_id: input.user_id,
+            },
+            { OR: [...preferences] },
+          ],
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      const arr = recipe_ids.map((el) => el.recipe_id);
+
+      const recipes = await ctx.prisma.recipe.findMany({
+        take: Constants.DEFAULT_SELECT_NUMBER,
+        where: {
+          id: {
+            in: arr,
+          },
+        },
+        include: {
+          user: {
+            select: { name: true, id: true },
+          },
+          images: true,
+          categories: {
+            select: {
+              category: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      let nextCursor: string | undefined = undefined;
+      if (recipes.length > input.take) {
+        // return the last item from the array
+        const nextItem = recipes.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return { recipes, nextCursor };
+    }),
 });

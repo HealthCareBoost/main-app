@@ -42,37 +42,42 @@ const UserRecipePage: NextPage<{ user_id: string }> = ({ user_id }) => {
           return { ...prev, liked: !prev.liked };
         });
       },
+      selected: pref.liked,
     },
     {
       title: "Saved",
       onClick: () => {
         setPref((prev) => {
-          return { ...prev, liked: !prev.liked };
+          return { ...prev, saved: !prev.saved };
         });
       },
+      selected: pref.saved,
     },
     {
       title: "Made",
       onClick: () => {
         setPref((prev) => {
-          return { ...prev, liked: !prev.liked };
+          return { ...prev, made: !prev.made };
         });
       },
+      selected: pref.made,
     },
-    {
-      title: "Owned",
-      onClick: () => {
-        setPref((prev) => {
-          return { ...prev, liked: !prev.liked };
-        });
-      },
-    },
+    // {
+    //   title: "Owned",
+    //   onClick: () => {
+    //     setPref((prev) => {
+    //       return { ...prev, owned: !prev.owned };
+    //     });
+    //   },
+    //   selected: pref.owned,
+    // },
   ];
 
   const { fetchNextPage, isFetching, hasNextPage, isLoading, data } =
     api.recipe.getInteractedRecipes.useInfiniteQuery(
       {
-        user_id: sessionData ? sessionData.user.id : "",
+        user_id,
+        // user_id: sessionData ? sessionData.user.id : "",
         take: 12,
         filters: {
           ...pref,
@@ -104,6 +109,10 @@ const UserRecipePage: NextPage<{ user_id: string }> = ({ user_id }) => {
     fetchRecipes();
   }, [data, isLoading, currentPage, sessionData]);
 
+  useEffect(() => {
+    console.log(pref);
+  }, [pref]);
+
   const handleFetchNextPage = async () => {
     await fetchNextPage();
     setCurrentPage((prev) => prev + 1);
@@ -117,14 +126,24 @@ const UserRecipePage: NextPage<{ user_id: string }> = ({ user_id }) => {
     setCurrentPage(0);
   };
 
+  if (isLoading) {
+    return (
+      <div className="mt-[20%] flex min-h-[300px] w-full items-center justify-center">
+        <LoadingSpinner size={128} />
+      </div>
+    );
+  }
+
   return (
     <Layout>
       <>
         <div className="container h-full space-y-6 p-10 pb-16">
           <div className="space-y-0.5">
-            <h2 className="text-2xl font-bold tracking-tight"></h2>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Favourite Recipes
+            </h2>
             <p className="text-muted-foreground">
-              Manage your account settings and set e-mail preferences.
+              Take a look at your favourite recipes and cooking preferences.
             </p>
           </div>
           <Separator className="my-6" />
@@ -134,7 +153,7 @@ const UserRecipePage: NextPage<{ user_id: string }> = ({ user_id }) => {
             </aside>
             <div className="flex-1">
               {recipes !== undefined && recipes.length > 0 ? (
-                <div className="p-6">
+                <div className="xs:p-6">
                   <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
                     {recipes.map((recipe) => (
                       <RecipePreview key={recipe.id} recipe={recipe} />
@@ -159,8 +178,8 @@ const UserRecipePage: NextPage<{ user_id: string }> = ({ user_id }) => {
                   </div>
                 </div>
               ) : (
-                <div className="mt-[20%] flex h-full min-h-[300px] w-full items-center justify-center">
-                  <LoadingSpinner size={128} />
+                <div className="mt-[20%] flex min-h-[300px] w-full justify-center">
+                  No Recepies Found.
                 </div>
               )}
             </div>
@@ -206,16 +225,15 @@ interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   items: {
     onClick: () => void;
     title: string;
+    selected: boolean;
   }[];
 }
 
 export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
-  const pathname = usePathname();
-
   return (
     <nav
       className={cn(
-        "flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1",
+        "flex space-x-2 text-primaryDark dark:text-white lg:flex-col lg:space-x-0 lg:space-y-1",
         className
       )}
       {...props}
@@ -227,6 +245,9 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
           onClick={item.onClick}
           className={cn(
             buttonVariants({ variant: "ghost" }),
+            item.selected
+              ? "inline-flex h-9 w-full items-center justify-start rounded-md bg-slate-200 px-2 text-sm font-medium text-primaryDark transition-colors hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-slate-100 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-slate-800"
+              : "inline-flex h-9 w-full items-center justify-start rounded-md bg-transparent px-2 text-sm font-medium text-primaryDark transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 active:scale-95 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-transparent dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-transparent",
             // pathname === item.href
             // ? "bg-muted hover:bg-muted"
             // : "hover:bg-transparent hover:underline",
@@ -247,25 +268,25 @@ import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import type { GetStaticProps } from "next";
 import superjson from "superjson";
 
-// export const getStaticProps: GetStaticProps = async (context) => {
-//   const ssg = createProxySSGHelpers({
-//     router: appRouter,
-//     ctx: { session: null, prisma },
-//     transformer: superjson,
-//   });
-//   const id = context.params?.id as string;
+export const getStaticProps: GetStaticProps = async (context) => {
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: { session: null, prisma },
+    transformer: superjson,
+  });
+  const id = context.params?.id as string;
 
-//   await ssg.user.getUserProfile.prefetch({ user_id: id });
+  await ssg.recipe.getInteractedRecipes.prefetch({ user_id: id });
 
-//   // Make sure to return { props: { trpcState: ssg.dehydrate() } }
-//   return {
-//     props: {
-//       trpcState: ssg.dehydrate(),
-//       user_id: id,
-//     },
-//   };
-// };
+  // Make sure to return { props: { trpcState: ssg.dehydrate() } }
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      user_id: id,
+    },
+  };
+};
 
-// export function getStaticPaths() {
-//   return { paths: [], fallback: "blocking" };
-// }
+export function getStaticPaths() {
+  return { paths: [], fallback: "blocking" };
+}

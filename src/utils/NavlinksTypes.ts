@@ -42,6 +42,6 @@ export const MainNavLinks: NavItem[] = [
   {
     id: "diet",
     title: "Diet",
-    href: "/diet",
+    href: "/user/diet",
   },
 ];

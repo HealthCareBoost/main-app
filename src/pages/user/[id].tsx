@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import type { z } from "zod";
 import Layout from "../../components/Layout";
 import { LoadingSpinner } from "../../components/Loading";
-import { UserAvatar } from "../../components/UserAvatar";
+import { UserAvatar } from "@/src/components/user/UserAvatar";
 import { Button, buttonVariants } from "../../components/ui/Button";
 import {
   Dialog,

@@ -82,7 +82,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
             alt="meal"
             priority
             // loading="lazy"
-            className="h-auto w-full"
+            className="h-auto w-full object-cover"
             // v1683539800/let-me-cook/lmfvef1ml3maubbwilqu.webp
             // src="https://res.cloudinary.com/ddm9sjjq5/image/upload/v1683539800/let-me-cook/lmfvef1ml3maubbwilqu.webp"
             src={`https://res.cloudinary.com/ddm9sjjq5/image/upload/${recipe.images[0].path}`}
@@ -152,27 +152,28 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
         />
 
         <div className="flex w-full flex-wrap justify-between">
-          <p className="inline-flex items-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 stroke-orange-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+          <div className="mx-auto flex flex-col items-center sm:inline-flex sm:flex-row">
+            <div className="flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 stroke-orange-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
 
-            <span className="ml-2 text-center text-gray-600 dark:text-dimWhite">
-              {/* 10 - 15 Mins */}
-              {time ? time : "Instant"}
-            </span>
-
+              <span className="ml-2 text-center text-gray-600 dark:text-dimWhite">
+                {/* 10 - 15 Mins */}
+                {time ? time : "Instant"}
+              </span>
+            </div>
             {/* <Separator
                     orientation="vertical"
                     style={{
@@ -189,7 +190,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
                 recipe.difficulty_level.slice(1)}{" "}
               Difficulty
             </span>
-          </p>
+          </div>
         </div>
       </div>
     </div>
