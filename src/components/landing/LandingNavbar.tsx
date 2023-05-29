@@ -5,7 +5,7 @@ import ThemeButton from "../ui/ChangeThemeButton";
 import { LandingLoginButton } from "./LandingButton";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
-import { UserAccountNav } from "../UserProfileNav";
+import { UserAccountNav } from "@/src/components/user/UserProfileNav";
 
 export const DynamicLogo = dynamic(
   () => import("@/src/components/Logo").then((mod) => mod.Logo),

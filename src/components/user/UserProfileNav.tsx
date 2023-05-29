@@ -40,10 +40,10 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
           <Link href={`/user/${user.id}`}>Profile</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/dashboard">Dashboard</Link>
+          <Link href={`/user/${user.id}/recipes`}>Favourite Recipes</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/settings">Settings</Link>
+          <Link href="/user/settings">Settings</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -52,7 +52,7 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
             event.preventDefault();
             void signOut({
               redirect: true,
-              callbackUrl: `${window.location.origin}/landing`,
+              callbackUrl: `${window.location.origin}`,
             });
           }}
         >

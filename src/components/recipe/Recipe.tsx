@@ -5,7 +5,7 @@ import React from "react";
 import { styles } from "../../styles/style";
 import type { RecipeComponentProps } from "../../utils/recipe/recipeTypes";
 import { minutesToReadableTime } from "../../utils/timeConverter";
-import { UserAvatar } from "../UserAvatar";
+import { UserAvatar } from "@/src/components/user/UserAvatar";
 import {
   Card,
   CardContent,

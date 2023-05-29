@@ -32,7 +32,7 @@ export const dashboardConfig = {
 };
 
 // import { DashboardNav } from "@/components/nav";
-import { UserAccountNav } from "../components/UserProfileNav";
+import { UserAccountNav } from "@/src/components/user/UserProfileNav";
 import { MainNav } from "../components/MainNav";
 import { DashboardNav } from "../components/DashboardNav";
 import { api } from "../utils/api";
@@ -62,6 +62,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <MainNav />
           <UserAccountNav
             user={{
+              id: "12345y",
               name: user.name,
               image: user.image,
               email: user.email,

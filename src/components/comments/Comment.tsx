@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { CommentOperations } from "./CommentOperations";
-import { UserAvatar } from "../UserAvatar";
+import { UserAvatar } from "@/src/components/user/UserAvatar";
 import type { Comment as CommentType } from "@prisma/client";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
