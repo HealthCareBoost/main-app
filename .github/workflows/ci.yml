@@ -4,6 +4,12 @@ on: [push, pull_request]
 
 env:
   DATABASE_URL: "https://fake.com"
+  DISCORD_CLIENT_ID: "https://fake.com"
+  DISCORD_CLIENT_SECRET: "https://fake.com"
+  GOOGLE_CLIENT_ID: "https://fake.com"
+  GOOGLE_CLIENT_SECRET: "https://fake.com"
+  EMAIL_USER: "https://fake.com"
+  EMAIL_SERVER: "https://fake.com"
 
 jobs:
   build:
