@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { DifficultyLevel, Categories } from "../enumsMap";
 import { ImageInfoSchema } from "./imageSchema";
+import { Constants } from "../constants";
 
 export const RecipeSchema = z.object({
-  name: z.string().min(3).max(50),
+  name: z.string().min(Constants.MIN_NAME).max(Constants.MAX_NAME),
   preparationMinutes: z.coerce
     .number({
       required_error: "Please select a number",
@@ -30,15 +31,18 @@ export const RecipeSchema = z.object({
     .min(0),
   // preparationTimeUnit: z.nativeEnum(TimeUnits),
   difficultyLevel: z.nativeEnum(DifficultyLevel),
-  description: z.string().min(20),
+  description: z.string().min(Constants.MIN_DESCRIPTION),
   images: ImageInfoSchema.optional(), // doesn't work if its not optional
   category: z.nativeEnum(Categories).optional(),
   recipe_steps: z.string(),
   video_url: z.string().optional(),
   ingredients: z
     .object({
-      ingredient_name: z.string().min(3).max(50),
-      quantity: z.coerce.number().min(0.1),
+      ingredient_name: z
+        .string()
+        .min(Constants.MIN_NAME)
+        .max(Constants.MAX_NAME),
+      quantity: z.coerce.number().min(Constants.MIN_QUANTITY),
       measurement_unit: z.string(),
       // measurement_unit: z.nativeEnum(MeasurementUnits),
     })

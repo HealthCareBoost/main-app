@@ -4,6 +4,10 @@ export const Constants = {
   MAX_SEARCH: 5,
   MONTH_WEEKS: 5,
   DAYS_WEEK: 7,
+  MIN_NAME: 3,
+  MAX_NAME: 50,
+  MIN_QUANTITY: 0.01,
+  MIN_DESCRIPTION: 15,
 } as const;
 
 export const WindowSizes = {
