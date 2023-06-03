@@ -1,6 +1,7 @@
 import { z } from "zod";
 // import { Prisma } from "@prisma/client";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import type { AxiosResponse } from "axios";
 import axios from "axios";
 import { env } from "../../../env/server.mjs";
 // import { MeasurementUnits } from "@prisma/client";
@@ -132,28 +133,34 @@ export const getIngredientNutritions: (
   };
 
   try {
-    const responce = await axios.request(options);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const fetchedIngredients = responce.data.results as IngredientResponce[];
+    const responce: AxiosResponse<{
+      results: IngredientResponce[];
+      offset: number;
+      number: number;
+      totalResults: number;
+    }> = await axios.request(options);
+    const fetchedIngredients = responce.data.results;
     // console.log(fetchedIngredients);
     const ingredient = fetchedIngredients.find(
       (item) => item.name === ingredientName
     );
 
     if (ingredient && ingredient !== undefined) {
-      const res = await axios.request({
-        method: "GET",
-        url: `${env.FOOD_API_URL}${ingredient.id}/information`,
-        params: { amount: "100", unit: "grams" },
-        headers: {
-          "X-RapidAPI-Key": env.FOOD_API_KEY,
-          "X-RapidAPI-Host": env.FOOD_API_HOST,
-        },
-      });
+      const res: AxiosResponse<IngridientDetailsResponce> = await axios.request(
+        {
+          method: "GET",
+          url: `${env.FOOD_API_URL}${ingredient.id}/information`,
+          params: { amount: "100", unit: "grams" },
+          headers: {
+            "X-RapidAPI-Key": env.FOOD_API_KEY,
+            "X-RapidAPI-Host": env.FOOD_API_HOST,
+          },
+        }
+      );
       // console.log("2222222222222222222222");
       // console.log(res.data);
 
-      const ingridientDetails = res.data as IngridientDetailsResponce;
+      const ingridientDetails = res.data;
       // console.log(ingridientDetails);
 
       const nutrientsMap = new Map<string, { amount: number; unit: string }>();
@@ -193,28 +200,34 @@ export const getIngredientNutritionsCollection: (
   };
 
   try {
-    const responce = await axios.request(options);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const fetchedIngredients = responce.data.results as IngredientResponce[];
+    const responce: AxiosResponse<{
+      results: IngredientResponce[];
+      offset: number;
+      number: number;
+      totalResults: number;
+    }> = await axios.request(options);
+    const fetchedIngredients = responce.data.results;
     // console.log(fetchedIngredients);
     const ingredient = fetchedIngredients.find(
       (item) => item.name === ingredientName
     );
 
     if (ingredient && ingredient !== undefined) {
-      const res = await axios.request({
-        method: "GET",
-        url: `${env.FOOD_API_URL}${ingredient.id}/information`,
-        params: { amount: "100", unit: "grams" },
-        headers: {
-          "X-RapidAPI-Key": env.FOOD_API_KEY,
-          "X-RapidAPI-Host": env.FOOD_API_HOST,
-        },
-      });
+      const res: AxiosResponse<IngridientDetailsResponce> = await axios.request(
+        {
+          method: "GET",
+          url: `${env.FOOD_API_URL}${ingredient.id}/information`,
+          params: { amount: "100", unit: "grams" },
+          headers: {
+            "X-RapidAPI-Key": env.FOOD_API_KEY,
+            "X-RapidAPI-Host": env.FOOD_API_HOST,
+          },
+        }
+      );
       // console.log("2222222222222222222222");
       // console.log(res.data);
 
-      const ingridientDetails = res.data as IngridientDetailsResponce;
+      const ingridientDetails = res.data;
       // console.log(ingridientDetails);
 
       const nutrientsMap: NutrientData[] = [];
