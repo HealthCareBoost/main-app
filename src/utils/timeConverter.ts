@@ -27,10 +27,8 @@ export const minutesToFormTime: (
   };
 };
 
-export const minutesToReadableTime: (minutes: number) => string | undefined = (
-  minutes
-) => {
-  if (minutes <= 0) return;
+export const minutesToReadableTime: (minutes: number) => string = (minutes) => {
+  if (minutes <= 0) return "0 minutes";
   const hours = Math.floor(minutes / 60);
   const minutesLeft = minutes % 60;
   let str = ``;

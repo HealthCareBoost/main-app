@@ -121,10 +121,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                     data-testid="recipe-time-value-2"
                     className="break-words text-center font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite"
                   >
-                    {minutesToReadableTime(
-                      recipe.cooking_time_minutes +
-                        recipe.preparation_time_minutes
-                    )}
+                    {minutesToReadableTime(recipe.total_time_minutes)}
                   </div>
                 </div>
               </div>

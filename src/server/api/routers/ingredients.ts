@@ -122,7 +122,7 @@ export const getIngredientNutritions: (
 ) => {
   const options = {
     method: "GET",
-    url: `${env.FOOD_API_URL}search`,
+    url: `${env.FOOD_API_URL}/food/ingredients/search`,
     params: {
       query: ingredientName,
     },
@@ -149,7 +149,7 @@ export const getIngredientNutritions: (
       const res: AxiosResponse<IngridientDetailsResponce> = await axios.request(
         {
           method: "GET",
-          url: `${env.FOOD_API_URL}${ingredient.id}/information`,
+          url: `${env.FOOD_API_URL}/food/ingredients/${ingredient.id}/information`,
           params: { amount: "100", unit: "grams" },
           headers: {
             "X-RapidAPI-Key": env.FOOD_API_KEY,
@@ -189,7 +189,7 @@ export const getIngredientNutritionsCollection: (
 ) => Promise<NutrientData[] | null> = async (ingredientName) => {
   const options = {
     method: "GET",
-    url: `${env.FOOD_API_URL}search`,
+    url: `${env.FOOD_API_URL}/food/ingredients/search`,
     params: {
       query: ingredientName,
     },
@@ -216,7 +216,7 @@ export const getIngredientNutritionsCollection: (
       const res: AxiosResponse<IngridientDetailsResponce> = await axios.request(
         {
           method: "GET",
-          url: `${env.FOOD_API_URL}${ingredient.id}/information`,
+          url: `${env.FOOD_API_URL}/food/ingredients/${ingredient.id}/information`,
           params: { amount: "100", unit: "grams" },
           headers: {
             "X-RapidAPI-Key": env.FOOD_API_KEY,
