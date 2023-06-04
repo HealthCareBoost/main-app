@@ -9,6 +9,10 @@ export const serverSchema = z.object({
   FOOD_API_HOST: z.string(),
   FOOD_API_KEY: z.string(),
   FOOD_API_URL: z.string(),
+  CLOUDINARY_CLOUD_NAME: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_ENV: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
 });
 
 /**
@@ -21,6 +25,10 @@ export const serverEnv = {
   FOOD_API_HOST: process.env.FOOD_API_HOST,
   FOOD_API_KEY: process.env.FOOD_API_KEY,
   FOOD_API_URL: process.env.FOOD_API_URL,
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_ENV: process.env.CLOUDINARY_API_ENV,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
 };
 
 /**

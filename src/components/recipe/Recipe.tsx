@@ -52,7 +52,8 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                   className="h-auto w-full"
                   // v1683539800/let-me-cook/lmfvef1ml3maubbwilqu.webp
                   // src="https://res.cloudinary.com/ddm9sjjq5/image/upload/v1683539800/let-me-cook/lmfvef1ml3maubbwilqu.webp"
-                  src={`https://res.cloudinary.com/ddm9sjjq5/image/upload/${recipe.images[0].path}`}
+                  // src={`https://res.cloudinary.com/ddm9sjjq5/image/upload/${recipe.images[0].path}`}
+                  src={recipe.images[0].url}
                 ></CldImage>
               ) : (
                 <Image

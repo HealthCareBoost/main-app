@@ -8,6 +8,14 @@ import type {
 import type { AxiosResponse } from "axios";
 import axios from "axios";
 import { env } from "@/src/env/server.mjs";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: env.CLOUDINARY_CLOUD_NAME,
+  api_key: env.CLOUDINARY_API_KEY,
+  api_secret: env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
@@ -25,6 +33,29 @@ export const exampleRouter = createTRPCRouter({
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
+
+  testUpload: publicProcedure
+    .input(
+      z.object({ recipe_id: z.string().min(1), image_url: z.string().min(1) })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const imageInfo = await cloudinary.uploader.upload(input.image_url);
+      console.log(imageInfo);
+      return ctx.prisma.recipeImage.create({
+        data: {
+          recipe_id: input.recipe_id,
+          filename: imageInfo.public_id,
+          format: imageInfo.format,
+          height: imageInfo.height,
+          width: imageInfo.width,
+          original_extension: imageInfo.format,
+          original_filename: imageInfo.original_filename,
+          path: `${imageInfo.public_id}.${imageInfo.format}`,
+          size_in_bytes: imageInfo.bytes,
+          url: imageInfo.secure_url,
+        },
+      });
+    }),
 
   getDiet: protectedProcedure
     .input(
@@ -70,6 +101,7 @@ export const exampleRouter = createTRPCRouter({
           throw Error("blah");
         }
 
+        const recipeIds: string[] = [];
         for (const meal of response.data.meals) {
           const meal_id = meal.id;
           const options = {
@@ -108,7 +140,9 @@ export const exampleRouter = createTRPCRouter({
               });
             }
 
-            await ctx.prisma.recipe.create({
+            // handle images and categories
+
+            const recipe_id = await ctx.prisma.recipe.create({
               data: {
                 creator_id: user_id,
                 description: recipe.summary,
@@ -125,9 +159,26 @@ export const exampleRouter = createTRPCRouter({
                   },
                 },
               },
+              select: {
+                id: true,
+              },
             });
+            recipeIds.push(recipe_id.id);
           }
         }
+
+        //update user daily diet
+        for (const recipe_id of recipeIds) {
+          await ctx.prisma.userDailyDiet.create({
+            data: {
+              recipe_id,
+              user_id,
+              meal_type: "BREAKFAST",
+              date: new Date(),
+            },
+          });
+        }
+
         return { success: true, meal: "" };
       } catch (error) {
         console.error(error);
