@@ -31,6 +31,7 @@ import {
   CollapsibleTrigger,
 } from "@/src/components/ui/Collapsible";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { api } from "@/src/utils/api";
 
 export const CreateDietForm: React.FC = () => {
   const [dietOpen, setDietOpen] = useState<boolean>(false);
@@ -46,11 +47,24 @@ export const CreateDietForm: React.FC = () => {
     },
   });
 
+  const a = api.example.getDiet.useMutation();
+
+  // useEffect(() => {
+  //   a.mutate({
+  //     targetCalories: 2000,
+  //     timeFrame: "day",
+  //   });
+  // }, []);
+
   return (
     <Form
       form={form}
       onSubmit={(data) => {
         console.log(data);
+        a.mutate({
+          targetCalories: 2000,
+          timeFrame: "day",
+        });
         // console.log(form.formState.errors);
       }}
     >
