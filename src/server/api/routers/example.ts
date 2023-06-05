@@ -37,7 +37,10 @@ export const exampleRouter = createTRPCRouter({
 
   testUpload: publicProcedure
     .input(
-      z.object({ recipe_id: z.string().min(1), image_url: z.string().min(1) })
+      z.object({
+        recipe_id: z.string().min(1),
+        image_url: z.string().min(1),
+      })
     )
     .mutation(async ({ ctx, input }) => {
       const imageInfo = await cloudinary.uploader.upload(input.image_url);
@@ -62,6 +65,7 @@ export const exampleRouter = createTRPCRouter({
     .input(
       z.object({
         timeFrame: z.enum(["day", "week"]),
+        date: z.date(),
         targetCalories: z.number().min(0),
         diet: z.string().optional(),
         exclude: z.string().array().optional(),
@@ -201,7 +205,7 @@ export const exampleRouter = createTRPCRouter({
                   : count === 3
                   ? "DINNER"
                   : "SNACK",
-              date: addDays(new Date(), 1),
+              date: input.date,
             },
           });
           count++;

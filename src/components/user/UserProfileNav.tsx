@@ -40,6 +40,9 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
           <Link href={`/user/${user.id}`}>Profile</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
+          <Link href={`/user/diet`}>Plan Meals</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link href={`/user/${user.id}/recipes`}>Favourite Recipes</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

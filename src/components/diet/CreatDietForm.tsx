@@ -33,6 +33,8 @@ import {
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { api } from "@/src/utils/api";
 import { LoadingSpinner } from "../Loading";
+import { calculateCalories } from "@/src/utils/dietHelpers";
+import { addDays } from "date-fns";
 
 export const CreateDietForm: React.FC = () => {
   const [dietOpen, setDietOpen] = useState<boolean>(false);
@@ -49,28 +51,31 @@ export const CreateDietForm: React.FC = () => {
   });
 
   const { mutate, isLoading } = api.example.getDiet.useMutation();
-
-  // useEffect(() => {
-  //   a.mutate({
-  //     targetCalories: 2000,
-  //     timeFrame: "day",
-  //   });
-  // }, []);
-
   return (
     <Form
       form={form}
       onSubmit={(data) => {
         console.log(data);
+        // console.log(form.formState.errors);
+        const calorieIntake = calculateCalories({
+          age: data.age,
+          activityLevel: data.activityLevel,
+          biological_gender: "M",
+          height: data.height,
+          weight: data.weight,
+        });
+
         mutate({
-          targetCalories: 2000,
+          date: addDays(new Date(), 4),
+          targetCalories: calorieIntake !== 0 ? calorieIntake : 2000,
           timeFrame: "day",
         });
-        // console.log(form.formState.errors);
       }}
     >
       {isLoading ? (
-        <LoadingSpinner size={128} />
+        <div className="mt-[20%] flex h-full min-h-[300px] w-full items-center justify-center">
+          <LoadingSpinner size={128} />
+        </div>
       ) : (
         <Tabs value={tab} className="w-[400px]">
           <TabsList>
