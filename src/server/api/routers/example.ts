@@ -9,6 +9,7 @@ import type { AxiosResponse } from "axios";
 import axios from "axios";
 import { env } from "@/src/env/server.mjs";
 import { v2 as cloudinary } from "cloudinary";
+import { addDays } from "date-fns";
 
 cloudinary.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
@@ -68,18 +69,9 @@ export const exampleRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const user_id = ctx.session.user.id;
-      // {
-      //   method: "GET",
-      //   url: `${env.FOOD_API_URL}/food/ingredients/${ingredient.id}/information`,
-      //   params: { amount: "100", unit: "grams" },
-      //   headers: {
-      //     "X-RapidAPI-Key": env.FOOD_API_KEY,
-      //     "X-RapidAPI-Host": env.FOOD_API_HOST,
-      //   },
-      // }
-      const options = {
+      const mealplanOptions = {
         method: "GET",
-        url: `${env.FOOD_API_URL}recipes/mealplans/generate`,
+        url: `${env.FOOD_API_URL}/recipes/mealplans/generate`,
         params: {
           timeFrame: input.timeFrame,
           targetCalories: input.targetCalories,
@@ -93,18 +85,25 @@ export const exampleRouter = createTRPCRouter({
       };
 
       try {
-        const response: AxiosResponse<GenarateMealResponce> =
-          await axios.request(options);
-        // console.log(response.data);
+        const dietResponse: AxiosResponse<GenarateMealResponce> =
+          await axios.request(mealplanOptions);
+        console.log("******* dietResponse ********");
 
-        if (response.status !== 200) {
+        console.log(dietResponse.data);
+        console.log("******* dietResponse ********");
+
+        if (dietResponse.status !== 200) {
           throw Error("blah");
         }
 
         const recipeIds: string[] = [];
-        for (const meal of response.data.meals) {
+        for (const meal of dietResponse.data.meals) {
           const meal_id = meal.id;
-          const options = {
+          console.log(`******* ID: ${meal_id} ********`);
+          // https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/479101/information
+          console.log(`${env.FOOD_API_URL}/recipes/${meal_id}/information`);
+
+          const recipeOptions = {
             method: "GET",
             url: `${env.FOOD_API_URL}/recipes/${meal_id}/information`,
             headers: {
@@ -114,15 +113,17 @@ export const exampleRouter = createTRPCRouter({
           };
 
           const response: AxiosResponse<RecipeInfoResponce> =
-            await axios.request(options);
+            await axios.request(recipeOptions);
+
           const recipe = response.data;
-          // console.log(response.data);
+          console.log(`******* ${recipe.title} ********`);
 
           const exists = !!(await ctx.prisma.recipe.findFirst({
             where: {
               name: recipe.title,
             },
           }));
+          console.log(exists);
 
           if (!exists) {
             const ingredintsData: {
@@ -141,12 +142,14 @@ export const exampleRouter = createTRPCRouter({
             }
 
             // handle images and categories
+            const imageInfo = await cloudinary.uploader.upload(recipe.image);
+            // console.log(imageInfo);
 
             const recipe_id = await ctx.prisma.recipe.create({
               data: {
                 creator_id: user_id,
                 description: recipe.summary,
-                difficulty_level: "easy",
+                difficulty_level: "medium",
                 name: recipe.title,
                 recipe_steps: recipe.instructions,
                 // cooking_time_minutes: 0,
@@ -156,6 +159,19 @@ export const exampleRouter = createTRPCRouter({
                 ingredients: {
                   createMany: {
                     data: ingredintsData,
+                  },
+                },
+                images: {
+                  create: {
+                    filename: imageInfo.public_id,
+                    format: imageInfo.format,
+                    height: imageInfo.height,
+                    width: imageInfo.width,
+                    original_extension: imageInfo.format,
+                    original_filename: imageInfo.original_filename,
+                    path: `${imageInfo.public_id}.${imageInfo.format}`,
+                    size_in_bytes: imageInfo.bytes,
+                    url: imageInfo.secure_url,
                   },
                 },
               },
@@ -168,18 +184,29 @@ export const exampleRouter = createTRPCRouter({
         }
 
         //update user daily diet
+        let count = 1;
+        console.log("******* recipeIds ********");
+        console.log(recipeIds);
+        console.log("******* recipeIds ********");
         for (const recipe_id of recipeIds) {
           await ctx.prisma.userDailyDiet.create({
             data: {
               recipe_id,
               user_id,
-              meal_type: "BREAKFAST",
-              date: new Date(),
+              meal_type:
+                count === 1
+                  ? "BREAKFAST"
+                  : count === 2
+                  ? "LUNCH"
+                  : count === 3
+                  ? "DINNER"
+                  : "SNACK",
+              date: addDays(new Date(), 1),
             },
           });
+          count++;
         }
-
-        return { success: true, meal: "" };
+        return { success: true, meal: recipeIds };
       } catch (error) {
         console.error(error);
         return { success: false, error };

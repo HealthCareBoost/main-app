@@ -23,9 +23,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
     recipe_id: recipe.id,
   });
   const [totalLikes, setTotalLikes] = useState<number>(recipe.total_likes);
-  const time = minutesToReadableTime(
-    recipe.preparation_time_minutes + recipe.cooking_time_minutes
-  );
+  const time = minutesToReadableTime(recipe.total_time_minutes);
 
   const [isLiked, setIsLiked] = useState<boolean>(
     userPreferences && userPreferences.preferences
@@ -83,18 +81,12 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
             priority
             // loading="lazy"
             className="h-auto w-full object-cover"
-            // v1683539800/let-me-cook/lmfvef1ml3maubbwilqu.webp
-            // src="https://res.cloudinary.com/ddm9sjjq5/image/upload/v1683539800/let-me-cook/lmfvef1ml3maubbwilqu.webp"
-            // src={`https://res.cloudinary.com/ddm9sjjq5/image/upload/${recipe.images[0].path}`}
             src={recipe.images[0].url}
           ></CldImage>
         ) : (
           <Image
             className="h-auto w-full object-cover"
-            src={
-              "/default-recipe.png"
-              // "https://mysaffronappgc.imgix.net/1676446384966-nFn7yyLwu.jpeg?max-h=800&max-w=1600&fit=crop&auto=compress&ixlib=js-2.3.1&s=953ad10063b1c2d22c5a429aed1fcc89"
-            }
+            src={"/default-recipe.png"}
             alt={"meal"}
             sizes="h-auto w-full"
             priority
