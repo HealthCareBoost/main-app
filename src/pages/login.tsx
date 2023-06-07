@@ -48,7 +48,9 @@ export default function LoginPage({
               src="assets/orange.svg"
               alt="letmecook-logo"
             />
-            <h1 className={`${styles.heading2} lg:text-4xl`}>Welcome back</h1>
+            <h1 className={`${styles.heading2} uppercase lg:text-4xl`}>
+              Welcome back
+            </h1>
             <p className="text-lg text-slate-500 dark:text-dimWhite">
               Enter your email to sign in to your account
             </p>

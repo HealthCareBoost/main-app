@@ -48,7 +48,15 @@ export default function RegisterPage({
         >
           Login
         </Link>
-        <div className="col-span-5 hidden h-full bg-slate-100 lg:block"></div>
+        <div className="relative col-span-5 hidden h-full bg-slate-100 lg:block">
+          <Image
+            fill={true}
+            src="/register-bg.jpg"
+            className="object-cover"
+            sizes="(max-width: 1200px) 42vh"
+            alt="left-filler"
+          />
+        </div>
         <div className="col-span-7 lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
@@ -60,13 +68,13 @@ export default function RegisterPage({
                 alt="letmecook-logo"
               />
               <h1
-                className={`${styles.heading2} lg:text-4xl`}
+                className={`${styles.heading2} uppercase lg:text-4xl`}
                 // className="text-2xl font-semibold tracking-tight"
               >
                 Create an account
               </h1>
               <p className="text-lg text-slate-500 dark:text-slate-400">
-                Enter your email below to create your account
+                Enter your name and email below to create your account
               </p>
             </div>
             <RegisterForm
