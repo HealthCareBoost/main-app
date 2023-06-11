@@ -5,6 +5,8 @@ import type { Comment as CommentType } from "@prisma/client";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { UpdateCommentTextarea } from "./CommentUpdate";
+import { api } from "@/src/utils/api";
+import { toast } from "@/src/hooks/use-toast";
 
 type CommentProps = CommentType & {
   user: {
@@ -12,6 +14,7 @@ type CommentProps = CommentType & {
     name: string | null;
     image: string | null;
   };
+  onCommentChange: () => void;
 };
 
 export const PostItem: React.FC<CommentProps> = ({
@@ -21,11 +24,27 @@ export const PostItem: React.FC<CommentProps> = ({
   createdAt,
   text,
   user,
+  onCommentChange,
 }) => {
   const { data: sessionData } = useSession();
   const isLoggedIn = sessionData && sessionData.user;
   const ownComment = isLoggedIn && sessionData.user.id === user.id;
   const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const deleteMutation = api.user.deleteComment.useMutation();
+
+  const onDelete = async () => {
+    const { success, error } = await deleteMutation.mutateAsync({
+      comment_id: id,
+    });
+    if (!success || error) {
+      toast({
+        title: "Something went wrong.",
+        description: "Your comment was not deleted. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -55,6 +74,7 @@ export const PostItem: React.FC<CommentProps> = ({
             {ownComment ? (
               <div className="my-2 ml-auto">
                 <CommentOperations
+                  onDelete={() => void onDelete()}
                   setIsEditing={setIsEditing}
                   comment={{ id }}
                 />
@@ -65,6 +85,7 @@ export const PostItem: React.FC<CommentProps> = ({
           <div className="text-sm">
             {isEditing ? (
               <UpdateCommentTextarea
+                onUpdate={onCommentChange}
                 setIsEditing={setIsEditing}
                 comment_id={id}
                 recipe_id={recipe_id}
@@ -91,7 +112,20 @@ export const Comment: React.FC<CommentProps> = ({
   const isLoggedIn = sessionData && sessionData.user;
   const ownComment = isLoggedIn && sessionData.user.id === user.id;
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const deleteMutation = api.user.deleteComment.useMutation();
 
+  const onDelete = async () => {
+    const { success, error } = await deleteMutation.mutateAsync({
+      comment_id: id,
+    });
+    if (!success || error) {
+      toast({
+        title: "Something went wrong.",
+        description: "Your comment was not deleted. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
   return (
     <>
       <article className="mb-6 rounded-lg bg-white p-6 text-base dark:border dark:border-slate-200 dark:bg-bgDark">
@@ -115,7 +149,11 @@ export const Comment: React.FC<CommentProps> = ({
             </p>
           </div>
           {ownComment ? (
-            <CommentOperations comment={{ id }} setIsEditing={setIsEditing} />
+            <CommentOperations
+              onDelete={() => void onDelete()}
+              comment={{ id }}
+              setIsEditing={setIsEditing}
+            />
           ) : null}
         </footer>
         <p className="text-gray-500 dark:text-gray-400">

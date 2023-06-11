@@ -7,22 +7,21 @@ import { buttonVariants } from "../ui/Button";
 import { cn } from "../../utils/cn";
 import { api } from "../../utils/api";
 import { toast } from "../../hooks/use-toast";
-import { useRouter } from "next/navigation";
 
 type UpdateCommentProps = {
   recipe_id: string;
   comment_id: string;
   text: string;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  onUpdate: () => void;
 };
 
 export const UpdateCommentTextarea: React.FC<UpdateCommentProps> = ({
-  recipe_id,
   comment_id,
   text,
   setIsEditing,
+  onUpdate,
 }) => {
-  const router = useRouter();
   const updateCommentMutation = api.user.updateComment.useMutation({
     onError: (error: unknown) => {
       console.error(error);
@@ -37,8 +36,9 @@ export const UpdateCommentTextarea: React.FC<UpdateCommentProps> = ({
       // onSuccess(_data, _variables, _context) {
       // This forces a cache invalidation.
       setIsEditing(false);
-      router.refresh();
-      router.push(`/recipe/${recipe_id}#comment`);
+      onUpdate();
+      // router.refresh();
+      // router.push(`/recipe/${recipe_id}#comment`);
     },
   });
   const form = useZodForm({

@@ -19,7 +19,6 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
   // props: InferGetServerSidePropsType<typeof getStaticProps>
   { recipe_id }
 ) => {
-  // const { theme } = useTheme();
   // const router = useRouter();
   // const { id } = router.query;
   // const [resipe, setRecipe] = useState<Recipe | null>(null);
@@ -28,17 +27,21 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
     id: recipe_id,
   });
 
-  const { data: recipeComments, isLoading: isCommentsLoading } =
-    api.recipe.getCommentsForRecipe.useQuery({ recipe_id });
+  const {
+    data: recipeComments,
+    isLoading: isCommentsLoading,
+    refetch: refetchComments,
+  } = api.recipe.getCommentsForRecipe.useQuery({ recipe_id });
+
+  const onCommentsChange = async () => {
+    if (isCommentsLoading) return;
+    await refetchComments();
+  };
 
   if (isLoading || isCommentsLoading) {
     console.log("loading");
     console.log(isCommentsLoading);
   }
-
-  // console.log(isLoading);
-  // console.log(!data);
-  // console.log(data.recipe);
 
   if (isLoading || !data || !data.recipe) {
     return (
@@ -48,26 +51,6 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
     );
   }
 
-  // useEffect(() => {}, [id]);
-
-  // return (
-  //   <div className="min-h-screen w-full overflow-hidden dark:bg-primaryDark">
-  //     <div className={`${styles.paddingX} ${styles.flexCenter}`}>
-  //       <LN />
-  //     </div>
-  //     {/* <section className="h-full w-full overflow-hidden bg-white dark:bg-primaryDark lg:block">
-  //       <div className="min-w-full p-4">
-  //         <div className="flex flex-col items-center justify-center lg:flex-row">
-  //           <aside className="h-[100vh] w-full bg-red-300  lg:w-1/6"></aside>
-  //           <main className="h-[100vh] w-full bg-green-300 lg:w-1/2">
-  //             <Recipe />
-  //           </main>
-  //           <aside className="h-[100vh] w-full bg-blue-300 lg:w-1/3"></aside>
-  //         </div>
-  //       </div>
-  //     </section> */}
-  //   </div>
-  // );
   return (
     <Layout>
       <div className="container">
@@ -114,17 +97,24 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
           <div className="mx-auto w-3/4 max-w-3xl px-4" id="comments">
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-lg font-bold text-primaryDark dark:text-white lg:text-2xl">
-                Comments (21)
+                Comments ({recipeComments && recipeComments.comments?.length})
               </h2>
             </div>
-            <CommentTextarea recipe_id={recipe_id} />
+            <CommentTextarea
+              onCommentCreate={() => void onCommentsChange()}
+              recipe_id={recipe_id}
+            />
           </div>
           {recipeComments &&
             recipeComments.comments &&
             recipeComments.comments.map(
               (comment) => (
                 // idx % 2 === 0 ? (
-                <PostItem key={comment.id} {...comment} />
+                <PostItem
+                  key={comment.id}
+                  {...comment}
+                  onCommentChange={() => void onCommentsChange()}
+                />
                 // ) : (
                 // <Comment key={comment.id} {...comment} />
               )
@@ -143,7 +133,7 @@ import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "../../server/api/root";
 import { prisma } from "../../server/db";
 import { Recipe } from "../../components/recipe/Recipe";
-import { Comment, PostItem } from "../../components/comments/Comment";
+import { PostItem } from "../../components/comments/Comment";
 import { CommentTextarea } from "../../components/comments/CommentsTextarea";
 import { RecipeOptions } from "../../components/recipe/RecipeOptions";
 import { Separator } from "../../components/ui/Separator";

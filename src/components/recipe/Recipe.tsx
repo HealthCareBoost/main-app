@@ -157,7 +157,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                   </div>
                 ))}
               </div>
-              <div className="relative mx-4 mt-1 h-auto first:pt-0 sm:flex sm:flex-col sm:items-center sm:justify-center">
+              <div className="relative mx-4 mt-1 h-auto self-baseline first:pt-0 sm:flex sm:flex-col sm:items-center sm:justify-center">
                 <Card className="w-[350px]">
                   <CardHeader>
                     <CardTitle className="uppercase">

@@ -1,7 +1,5 @@
 "use client";
 import { Loader2, MoreVertical, Trash } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import * as React from "react";
 import {
   AlertDialog,
@@ -20,61 +18,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../components/ui/DropDown";
-import { toast } from "../../hooks/use-toast";
-import { api } from "../../utils/api";
-import { Comment } from "@prisma/client";
-
-// async function deleteComment(commentId: string) {
-//   const response = await fetch(`/api/comments/${commentId}`, {
-//     method: "DELETE",
-//   });
-
-//   if (!response?.ok) {
-//     toast({
-//       title: "Something went wrong.",
-//       description: "Your comment was not deleted. Please try again.",
-//       variant: "destructive",
-//     });
-//   }
-
-//   return true;
-// }
+import type { Comment } from "@prisma/client";
 
 interface CommentOperationsProps {
   comment: Pick<Comment, "id">;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  onDelete: () => void;
 }
 
 export function CommentOperations({
-  comment,
   setIsEditing,
+  onDelete,
 }: CommentOperationsProps) {
-  const router = useRouter();
   const [showDeleteAlert, setShowDeleteAlert] = React.useState<boolean>(false);
   const [isDeleteLoading, setIsDeleteLoading] = React.useState<boolean>(false);
 
-  const deleteMutation = api.user.deleteComment.useMutation();
-
-  const deleteComment = async (
+  const deleteComment = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     event.preventDefault();
     setIsDeleteLoading(true);
-
-    const { success, error } = await deleteMutation.mutateAsync({
-      comment_id: comment.id,
-    });
-
-    if (!success || error) {
-      toast({
-        title: "Something went wrong.",
-        description: "Your comment was not deleted. Please try again.",
-        variant: "destructive",
-      });
-    }
+    onDelete();
     setIsDeleteLoading(false);
     setShowDeleteAlert(false);
-    router.refresh();
   };
 
   return (

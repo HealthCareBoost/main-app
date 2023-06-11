@@ -110,7 +110,7 @@ model Comment {
     recipe_id            String
     user_id              String
     user                 User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-    text                 String
+    text                 String  @db.Text
     recipe               Recipe  @relation(fields: [recipe_id], references: [id], onDelete: Cascade)
     edited               Boolean @default(false)
     createdAt            DateTime  @default(now())
