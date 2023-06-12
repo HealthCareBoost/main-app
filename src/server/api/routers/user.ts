@@ -41,12 +41,38 @@ export const userRouter = createTRPCRouter({
         //   return { success: true, user: { email, ...rest } };
         // }
 
-        const userPrefStats = await ctx.prisma.userPreferences.count({
+        // Not Cool
+        const userPrefStats: { liked: number; saved: number; made: number } = {
+          liked: 0,
+          made: 0,
+          saved: 0,
+        };
+
+        const { liked } = await ctx.prisma.userPreferences.count({
           where: {
             user_id: input.user_id,
+            liked: true,
           },
-          select: { liked: true, saved: true, made: true },
+          select: { liked: true },
         });
+        const { made } = await ctx.prisma.userPreferences.count({
+          where: {
+            user_id: input.user_id,
+            made: true,
+          },
+          select: { made: true },
+        });
+        const { saved } = await ctx.prisma.userPreferences.count({
+          where: {
+            user_id: input.user_id,
+            saved: true,
+          },
+          select: { saved: true },
+        });
+
+        userPrefStats.liked = liked;
+        userPrefStats.made = made;
+        userPrefStats.saved = saved;
 
         return {
           success: true,

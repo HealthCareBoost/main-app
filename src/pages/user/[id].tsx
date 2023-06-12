@@ -36,14 +36,6 @@ import type { StatsKey } from "../../utils/statsTitleMap";
 import { statsToTitleMap } from "../../utils/statsTitleMap";
 import { RecomendedRecipes } from "../../components/recipe/Recomended";
 
-export const LN = dynamic(
-  () =>
-    import("../../components/landing/LandingNavbar").then(
-      (mod) => mod.LandingNavbar
-    ),
-  { ssr: false }
-);
-
 type FormData = z.infer<typeof ChangeNameSchema>;
 
 const UserProfile: NextPage<{ user_id: string }> = (
@@ -84,10 +76,6 @@ const UserProfile: NextPage<{ user_id: string }> = (
 
   return (
     <>
-      {/* <div className={`${styles.paddingX} ${styles.flexCenter}`}>
-        <LN />
-      </div> */}
-
       <Layout>
         <div className="container">
           {/* <div className="flex w-full flex-grow flex-col flex-wrap py-4 sm:flex-row sm:flex-nowrap"> */}
@@ -104,7 +92,7 @@ const UserProfile: NextPage<{ user_id: string }> = (
                     image:
                       userData.user && userData.user.image
                         ? userData.user.image
-                        : "https://images.unsplash.com/photo-1604426633861-11b2faead63c?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80",
+                        : null,
                   }}
                 />
 
@@ -202,8 +190,10 @@ const UserProfile: NextPage<{ user_id: string }> = (
             </aside>
             <main className="sm:col-span-2">
               <div className="grid gap-4 sm:grid-cols-3">
-                <h1 className={`${styles.heading2} text-center sm:col-span-3`}>
-                  Check thiis out
+                <h1
+                  className={`${styles.heading2} text-center capitalize sm:col-span-3`}
+                >
+                  Check out your profile stats
                 </h1>
                 <div className="row-start-2 sm:col-span-3 sm:mb-16">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.

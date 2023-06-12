@@ -22,6 +22,7 @@ export const PostItem: React.FC<CommentProps> = ({
   recipe_id,
   edited,
   createdAt,
+  updatedAt,
   text,
   user,
   onCommentChange,
@@ -44,6 +45,7 @@ export const PostItem: React.FC<CommentProps> = ({
         variant: "destructive",
       });
     }
+    onCommentChange();
   };
 
   return (
@@ -68,7 +70,7 @@ export const PostItem: React.FC<CommentProps> = ({
           <div className="flex items-center">
             <strong>{user && user.name ? user.name : "Anonymous"}</strong>{" "}
             <span className="mx-2 text-xs text-gray-400">
-              {format(createdAt, "dd MMMM yyyy")} {edited && "(edited)"}
+              {format(updatedAt, "dd MMMM yyyy")} {edited && "(edited)"}
               {/* 3:34 PM */}
             </span>
             {ownComment ? (
@@ -107,6 +109,7 @@ export const Comment: React.FC<CommentProps> = ({
   createdAt,
   text,
   user,
+  onCommentChange,
 }) => {
   const { data: sessionData } = useSession();
   const isLoggedIn = sessionData && sessionData.user;
@@ -125,6 +128,7 @@ export const Comment: React.FC<CommentProps> = ({
         variant: "destructive",
       });
     }
+    onCommentChange();
   };
   return (
     <>

@@ -66,7 +66,7 @@ export const CreateDietForm: React.FC = () => {
         });
 
         mutate({
-          date: addDays(new Date(), 4),
+          date: addDays(new Date(), 1),
           targetCalories: calorieIntake !== 0 ? calorieIntake : 2000,
           timeFrame: "day",
         });

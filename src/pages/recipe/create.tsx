@@ -9,7 +9,7 @@ const CreateRecipe: NextPage = () => {
         <h1
           className={`mb-4 text-center font-poppins text-[52px] font-semibold leading-[75px] text-primaryDark dark:text-white ss:text-[71px] ss:leading-[100px]`}
         >
-          New <span className="text-gradient"> Recipe </span>
+          Create New <span className="text-gradient"> Recipe </span>
         </h1>
         <CreateRecipeForm />
       </div>

@@ -235,7 +235,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
               >
                 Recipe Info
               </h2>
-              <p className={`${styles.paragraph} mt-1 text-sm leading-6`}>
+              <p className={`${styles.paragraph} mt-1 mr-3 text-sm leading-6`}>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                 Officiis laborum aliquid nostrum aperiam, id sint inventore
                 suscipit, sequi quos libero ratione veniam iure doloremque enim
@@ -366,7 +366,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
               >
                 Recipe Ingrediants & Steps
               </h2>
-              <p className={`${styles.paragraph} mt-1 text-sm leading-6`}>
+              <p className={`${styles.paragraph} mt-1 mr-3 text-sm leading-6`}>
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Enim
                 beatae minus, eos doloremque, rem sit assumenda laboriosam,
                 earum reprehenderit iste architecto quisquam magnam facere harum
@@ -460,7 +460,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
                 {fields.map((item, index) => {
                   return (
                     <div
-                      className="text-card-foreground col-span-full grid grid-cols-4 items-center gap-4 rounded-lg border p-4 shadow-sm"
+                      className="col-span-full grid grid-cols-4 items-center gap-4 rounded-lg border p-4 text-card-foreground shadow-sm"
                       key={item.id}
                     >
                       <div className="col-span-full sm:col-span-3">
@@ -566,6 +566,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
             // className="col-start-3 row-start-1 row-end-3"
             variant={"default"}
             type="submit"
+            className="w-48"
             disabled={isSubmitting}
           >
             {/* <Check className="h-4 w-4" />  */}
