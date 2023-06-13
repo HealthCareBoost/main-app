@@ -141,6 +141,10 @@ export const userRouter = createTRPCRouter({
     )
     .query(({ input, ctx }) => {
       try {
+        if (input.from === null || input.to === null) {
+          throw new Error("need 2 valid dates");
+        }
+
         const queryFilters: { NOT: { meal_type: MealTypes } }[] = [];
 
         if (input.filters && input.filters.length > 0) {
@@ -153,35 +157,31 @@ export const userRouter = createTRPCRouter({
           });
         }
 
-        if (input.from !== null && input.to !== null) {
-          return ctx.prisma.userDailyDiet.findMany({
-            where: {
-              AND: [
-                { user_id: ctx.session.user.id },
-                {
-                  date: {
-                    lte: input.to,
-                    gte: input.from,
-                  },
+        return ctx.prisma.userDailyDiet.findMany({
+          where: {
+            AND: [
+              { user_id: ctx.session.user.id },
+              {
+                date: {
+                  lte: input.to,
+                  gte: input.from,
                 },
-                ...queryFilters,
-              ],
-            },
-            include: {
-              recipe: {
-                select: { name: true },
               },
-              // user: {
-              //   select: {
-              //     id: true,
-              //     name: true,
-              //   },
-              // },
+              ...queryFilters,
+            ],
+          },
+          include: {
+            recipe: {
+              select: { name: true },
             },
-          });
-        } else {
-          throw new Error("need 2 valid dates");
-        }
+            // user: {
+            //   select: {
+            //     id: true,
+            //     name: true,
+            //   },
+            // },
+          },
+        });
       } catch (error) {
         console.error(error);
         throw error;
@@ -579,6 +579,54 @@ export const userRouter = createTRPCRouter({
             ...userStats._count,
             createdAt: userStats.createdAt,
           },
+        };
+      } catch (error) {
+        console.error(error);
+        return { success: false, error };
+      }
+    }),
+
+  getUserDailyCalories: publicProcedure
+    .input(
+      z.object({
+        user_id: z.string(),
+        date: z.date(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const { recipe } = await ctx.prisma.userDailyDiet.findFirstOrThrow({
+          where: {
+            user_id: input.user_id,
+            date: input.date,
+          },
+          select: {
+            recipe: {
+              include: {
+                ingredients: {
+                  select: { nutrition: true },
+                },
+              },
+            },
+          },
+        });
+
+        let totalCal = 0;
+        if (recipe.ingredients && recipe.ingredients.length > 0) {
+          recipe.ingredients.forEach((ingr) => {
+            if (ingr.nutrition && ingr.nutrition.length > 0) {
+              ingr.nutrition.forEach((nutr) => {
+                if (nutr.name === "Calories") {
+                  totalCal += nutr.amount;
+                }
+              });
+            }
+          });
+        }
+
+        return {
+          success: true,
+          calories: totalCal,
         };
       } catch (error) {
         console.error(error);
