@@ -122,11 +122,12 @@ export const exampleRouter = createTRPCRouter({
           const recipe = response.data;
           console.log(`******* ${recipe.title} ********`);
 
-          const exists = !!(await ctx.prisma.recipe.findFirst({
+          const existingRecipe = await ctx.prisma.recipe.findFirst({
             where: {
               name: recipe.title,
             },
-          }));
+          });
+          const exists = !!existingRecipe;
           console.log(exists);
 
           if (!exists) {
@@ -184,6 +185,8 @@ export const exampleRouter = createTRPCRouter({
               },
             });
             recipeIds.push(recipe_id.id);
+          } else {
+            recipeIds.push(existingRecipe.id);
           }
         }
 

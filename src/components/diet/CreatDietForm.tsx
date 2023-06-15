@@ -66,7 +66,7 @@ export const CreateDietForm: React.FC = () => {
         });
 
         mutate({
-          date: addDays(new Date(), 1),
+          date: new Date(),
           targetCalories: calorieIntake !== 0 ? calorieIntake : 2000,
           timeFrame: "day",
         });
@@ -78,7 +78,7 @@ export const CreateDietForm: React.FC = () => {
         </div>
       ) : (
         <Tabs value={tab} className="w-[400px]">
-          <TabsList>
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger
               value="measurements"
               onClick={() => {

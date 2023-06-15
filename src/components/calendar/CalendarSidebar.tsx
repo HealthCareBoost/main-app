@@ -2,9 +2,18 @@ import { labelColor, removeTimezoneOffset } from "@/src/utils/calendarUtils";
 import React, { useContext } from "react";
 import { Button } from "../ui/Button";
 import { Calendar } from "../ui/Calendar";
-import { Dialog, DialogTrigger } from "../ui/Dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/Dialog";
 import { CalendarContext } from "./CalendarContext";
 import { CalendarDialog } from "./CalendarDialog";
+import { format } from "date-fns";
+import { CreateDietForm } from "../diet/CreatDietForm";
 
 export const CalendarSidebar: React.FC = () => {
   const { setCurrentDate, setSelectedDay } = useContext(CalendarContext);
@@ -12,17 +21,35 @@ export const CalendarSidebar: React.FC = () => {
 
   return (
     <aside className="hidden sm:col-span-3 sm:block">
-      <Dialog>
-        <div className="my-2">
-          <Button
-            className="mx-2 flex-1 p-1"
-            onClick={() => {
-              console.log("Generate diet");
-            }}
-            variant="default"
+      <div className="my-2">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              className="mx-2 flex-1 p-1"
+              onClick={() => {
+                console.log("Generate diet");
+              }}
+              variant="default"
+            >
+              Autogenerate
+            </Button>
+          </DialogTrigger>
+          <DialogContent
+            forceMount={true}
+            className="flex flex-col items-center sm:max-w-lg"
           >
-            Autogenerate
-          </Button>
+            <DialogHeader className="self-center">
+              <DialogTitle className="text-center">
+                {format(new Date(), "eeee, dd MMMM")}
+              </DialogTitle>
+              <DialogDescription className="text-center">
+                Autogenerate your daily meal plan.
+              </DialogDescription>
+            </DialogHeader>
+            <CreateDietForm />
+          </DialogContent>
+        </Dialog>
+        <Dialog>
           <DialogTrigger asChild>
             <Button
               className="mx-2 flex-1 p-1"
@@ -34,9 +61,9 @@ export const CalendarSidebar: React.FC = () => {
               Set meal for today
             </Button>
           </DialogTrigger>
-        </div>
-        <CalendarDialog />
-      </Dialog>
+          <CalendarDialog />
+        </Dialog>
+      </div>
       <Calendar
         mode="single"
         selected={date}
