@@ -18,11 +18,17 @@ import { CreateDietForm } from "../diet/CreatDietForm";
 export const CalendarSidebar: React.FC = () => {
   const { setCurrentDate, setSelectedDay } = useContext(CalendarContext);
   const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const [generateDialogOpen, setGenerateDialogOpen] =
+    React.useState<boolean>(false);
+
+  const onDietUpdate = () => {
+    setGenerateDialogOpen(false);
+  };
 
   return (
     <aside className="hidden sm:col-span-3 sm:block">
       <div className="my-2">
-        <Dialog>
+        <Dialog open={generateDialogOpen} onOpenChange={setGenerateDialogOpen}>
           <DialogTrigger asChild>
             <Button
               className="mx-2 flex-1 p-1"
@@ -46,7 +52,7 @@ export const CalendarSidebar: React.FC = () => {
                 Autogenerate your daily meal plan.
               </DialogDescription>
             </DialogHeader>
-            <CreateDietForm />
+            <CreateDietForm onDietUpdate={onDietUpdate} />
           </DialogContent>
         </Dialog>
         <Dialog>

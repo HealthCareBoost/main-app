@@ -35,10 +35,20 @@ import { api } from "@/src/utils/api";
 import { LoadingSpinner } from "../Loading";
 import { calculateCalories } from "@/src/utils/dietHelpers";
 import { addDays } from "date-fns";
+import type { z } from "zod";
+import { useToast } from "@/src/hooks/use-toast";
 
-export const CreateDietForm: React.FC = () => {
+type CreatDietFormProps = {
+  onDietUpdate: () => void;
+};
+type FormData = z.infer<typeof DietSchema>;
+
+export const CreateDietForm: React.FC<CreatDietFormProps> = ({
+  onDietUpdate,
+}) => {
   const [dietOpen, setDietOpen] = useState<boolean>(false);
   const [hcOpen, setHCOpen] = useState<boolean>(false);
+  const { toast } = useToast();
 
   const [tab, setTab] = useState<string>("measurements");
   const form = useZodForm({
@@ -50,28 +60,45 @@ export const CreateDietForm: React.FC = () => {
     },
   });
 
-  const { mutate, isLoading } = api.example.getDiet.useMutation();
-  return (
-    <Form
-      form={form}
-      onSubmit={(data) => {
-        console.log(data);
-        // console.log(form.formState.errors);
-        const calorieIntake = calculateCalories({
-          age: data.age,
-          activityLevel: data.activityLevel,
-          biological_gender: "M",
-          height: data.height,
-          weight: data.weight,
-        });
+  const { mutateAsync, isLoading } = api.example.getDiet.useMutation();
 
-        mutate({
-          date: new Date(),
-          targetCalories: calorieIntake !== 0 ? calorieIntake : 2000,
-          timeFrame: "day",
-        });
-      }}
-    >
+  async function onFormSubmit(data: FormData) {
+    console.log(data);
+    // console.log(form.formState.errors);
+    const calorieIntake = calculateCalories({
+      // age: data.age,
+      // activityLevel: data.activityLevel,
+      // height: data.height,
+      // weight: data.weight,
+      ...data,
+      biological_gender: "M",
+    });
+
+    const { success, error } = await mutateAsync({
+      date: addDays(new Date(), 1),
+      targetCalories: calorieIntake !== 0 ? calorieIntake : 2000,
+      timeFrame: "day",
+    });
+
+    if (!success || error) {
+      return toast({
+        title: "Something went wrong.",
+        description: `Diet was not generated. Please try again.`,
+        variant: "destructive",
+      });
+    }
+
+    if (success) {
+      onDietUpdate();
+      return toast({
+        title: "Diet Updated.",
+        description: `New recipes were added to the diet.`,
+      });
+    }
+  }
+
+  return (
+    <Form form={form} onSubmit={(data) => onFormSubmit(data)}>
       {isLoading ? (
         <div className="mt-[20%] flex h-full min-h-[300px] w-full items-center justify-center">
           <LoadingSpinner size={128} />

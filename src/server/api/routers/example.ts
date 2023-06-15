@@ -10,6 +10,7 @@ import axios from "axios";
 import { env } from "@/src/env/server.mjs";
 import { v2 as cloudinary } from "cloudinary";
 import { addDays } from "date-fns";
+import { getIngredientNutritionsCollection } from "./ingredients";
 
 cloudinary.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
@@ -73,6 +74,7 @@ export const exampleRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const user_id = ctx.session.user.id;
+      const recipeIds: string[] = [];
       const mealplanOptions = {
         method: "GET",
         url: `${env.FOOD_API_URL}/recipes/mealplans/generate`,
@@ -100,7 +102,6 @@ export const exampleRouter = createTRPCRouter({
           throw Error("blah");
         }
 
-        const recipeIds: string[] = [];
         for (const meal of dietResponse.data.meals) {
           const meal_id = meal.id;
           console.log(`******* ID: ${meal_id} ********`);
@@ -150,7 +151,7 @@ export const exampleRouter = createTRPCRouter({
             const imageInfo = await cloudinary.uploader.upload(recipe.image);
             // console.log(imageInfo);
 
-            const recipe_id = await ctx.prisma.recipe.create({
+            const { id, ingredients } = await ctx.prisma.recipe.create({
               data: {
                 creator_id: user_id,
                 description: recipe.summary,
@@ -182,9 +183,38 @@ export const exampleRouter = createTRPCRouter({
               },
               select: {
                 id: true,
+                ingredients: true,
               },
             });
-            recipeIds.push(recipe_id.id);
+            recipeIds.push(id);
+
+            // add nutrition
+            await ctx.prisma.$transaction(
+              async (prisma) => {
+                for (const ingredient of ingredients) {
+                  const nutritionData = await getIngredientNutritionsCollection(
+                    ingredient.name
+                  );
+                  console.log("nutritionData");
+                  console.log(nutritionData);
+                  if (nutritionData) {
+                    const dataToSave = nutritionData.map((x) => ({
+                      ...x,
+                      ingredient_id: ingredient.id,
+                    }));
+                    console.log("dataToSave");
+                    console.log(dataToSave);
+                    await prisma.nutrients.createMany({
+                      data: [...dataToSave],
+                    });
+                  }
+                }
+              },
+              {
+                maxWait: 5000, // default: 2000
+                timeout: 10000, // default: 5000
+              }
+            );
           } else {
             recipeIds.push(existingRecipe.id);
           }
@@ -216,6 +246,26 @@ export const exampleRouter = createTRPCRouter({
         return { success: true, meal: recipeIds };
       } catch (error) {
         console.error(error);
+        // let count = 1;
+        // if(recipeIds){
+        //   for (const recipe_id of recipeIds) {
+        //     await ctx.prisma.userDailyDiet.create({
+        //       data: {
+        //         recipe_id,
+        //         user_id,
+        //         meal_type:
+        //         count === 1
+        //         ? "BREAKFAST"
+        //         : count === 2
+        //         ? "LUNCH"
+        //           : count === 3
+        //           ? "DINNER"
+        //           : "SNACK",
+        //       date: input.date,
+        //     },
+        //   });
+        //   count++;
+        // }
         return { success: false, error };
       }
     }),

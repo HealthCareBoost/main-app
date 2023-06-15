@@ -1,6 +1,6 @@
 import { DifficultyLevel } from "@prisma/client";
 import type { RecipeImage, Prisma } from "@prisma/client";
-import { z } from "zod";
+import { nullable, number, z } from "zod";
 import { Constants } from "../../../utils/constants";
 import { RecipeSchema } from "../../../utils/validations/createRecipeSchema";
 import { ImageInfoSchema } from "../../../utils/validations/imageSchema";
@@ -931,5 +931,70 @@ export const recipeRouter = createTRPCRouter({
       }
 
       return { recipes, nextCursor };
+    }),
+  // type a = { name: string; amount: number; unit: string };
+
+  getNutrition: publicProcedure
+    .input(
+      z.object({
+        recipe_id: z.string(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      try {
+        const { ingredients } = await ctx.prisma.recipe.findUniqueOrThrow({
+          where: {
+            id: input.recipe_id,
+          },
+          select: {
+            ingredients: {
+              select: {
+                nutrition: true,
+              },
+            },
+          },
+        });
+
+        console.log("*********** ingr *******************");
+        console.log(ingredients);
+        console.log("*********** ingr *******************");
+
+        const map = new Map<string, number>([]);
+        if (ingredients && ingredients.length > 0) {
+          ingredients.forEach((ingr, idx) => {
+            console.log(
+              `------------------ ingr nutr ${idx} ------------------`
+            );
+            console.log(ingr.nutrition);
+            console.log(
+              `------------------ ingr nutr ${idx}  ------------------`
+            );
+
+            if (ingr.nutrition && ingr.nutrition.length > 0) {
+              ingr.nutrition.forEach((nutr) => {
+                console.log(`*********** nutr *******************`);
+                console.log(nutr);
+                console.log(`*********** nutr *******************`);
+
+                const val = map.get(nutr.name);
+                console.log(`*********** val *******************`);
+                console.log(val);
+                console.log(`*********** val  *******************`);
+                if (val) {
+                  map.set(nutr.name, val + nutr.amount);
+                } else {
+                  map.set(nutr.name, nutr.amount);
+                }
+              });
+            }
+          });
+        }
+
+        console.log(map);
+        return { nutrition: map.entries(), success: true };
+      } catch (error) {
+        console.error(error);
+        return { error, success: false };
+      }
     }),
 });
