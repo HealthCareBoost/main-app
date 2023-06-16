@@ -11,7 +11,7 @@ import {
 import { BookmarkMinus } from "lucide-react";
 import { api } from "../../utils/api";
 import { useRouter } from "next/navigation";
-import { toast } from "../../hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 import { useSession } from "next-auth/react";
 import type { User } from "@prisma/client";
 
@@ -19,6 +19,7 @@ export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
   recipe_id,
   user,
 }) => {
+  const { toast } = useToast();
   const router = useRouter();
   const { data, isLoading } = api.recipe.getUserPreferences.useQuery({
     recipe_id,

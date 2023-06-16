@@ -16,7 +16,7 @@ import { Button } from "../ui/Button";
 import { Trash } from "lucide-react";
 import { styles } from "../../styles/style";
 import { Separator } from "../ui/Separator";
-import { toast } from "../../hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 import { useRouter } from "next/navigation";
 import type { RecipeComponentProps } from "../../utils/recipe/recipeTypes";
 import type { z } from "zod";
@@ -88,6 +88,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
   // const saveIngredientsMutation = api.ingredients.addIngredient.useMutation();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const router = useRouter();
+  const { toast } = useToast();
   const [imageData, setImageData] = useState<ImageInfo[]>([]);
   const [ingredientText, setIngredientText] = useState<string>("");
 

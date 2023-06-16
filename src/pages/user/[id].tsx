@@ -24,7 +24,7 @@ import {
 import { Input } from "../../components/ui/FormInput";
 import { Form } from "../../components/ui/FormProvider";
 import { Label } from "../../components/ui/Label";
-import { toast } from "../../hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 import { styles } from "../../styles/style";
 import { api } from "../../utils/api";
 import { cn } from "../../utils/cn";
@@ -42,6 +42,7 @@ const UserProfile: NextPage<{ user_id: string }> = (
   // props: InferGetServerSidePropsType<typeof getStaticProps>
   { user_id }
 ) => {
+  const { toast } = useToast();
   const { data: sessionData } = useSession();
   const { data: userData, isLoading } = api.user.getUserProfile.useQuery({
     user_id,

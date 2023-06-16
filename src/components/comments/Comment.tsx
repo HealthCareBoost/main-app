@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { UpdateCommentTextarea } from "./CommentUpdate";
 import { api } from "@/src/utils/api";
-import { toast } from "@/src/hooks/use-toast";
+import { useToast } from "@/src/hooks/use-toast";
 
 type CommentProps = CommentType & {
   user: {
@@ -28,6 +28,8 @@ export const PostItem: React.FC<CommentProps> = ({
   onCommentChange,
 }) => {
   const { data: sessionData } = useSession();
+  const { toast } = useToast();
+
   const isLoggedIn = sessionData && sessionData.user;
   const ownComment = isLoggedIn && sessionData.user.id === user.id;
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -112,6 +114,7 @@ export const Comment: React.FC<CommentProps> = ({
   onCommentChange,
 }) => {
   const { data: sessionData } = useSession();
+  const { toast } = useToast();
   const isLoggedIn = sessionData && sessionData.user;
   const ownComment = isLoggedIn && sessionData.user.id === user.id;
   const [isEditing, setIsEditing] = useState<boolean>(false);

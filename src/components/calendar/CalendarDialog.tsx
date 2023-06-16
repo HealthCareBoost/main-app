@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
 import { Label } from "../ui/Label";
 import { FormSearchBar } from "../recipe/Search";
-import { toast } from "@/src/hooks/use-toast";
+import { useToast } from "@/src/hooks/use-toast";
 
 export const CalendarDialog: React.FC = () => {
   const {
@@ -38,6 +38,7 @@ export const CalendarDialog: React.FC = () => {
   const updateDiet = api.user.updateUserDailyDiet.useMutation();
   const deleteMutation = api.user.deleteDiet.useMutation();
 
+  const { toast } = useToast();
   const router = useRouter();
 
   const form = useZodForm({

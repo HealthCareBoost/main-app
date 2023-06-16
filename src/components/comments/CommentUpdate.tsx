@@ -6,7 +6,7 @@ import { z } from "zod";
 import { buttonVariants } from "../ui/Button";
 import { cn } from "../../utils/cn";
 import { api } from "../../utils/api";
-import { toast } from "../../hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 
 type UpdateCommentProps = {
   recipe_id: string;
@@ -22,6 +22,7 @@ export const UpdateCommentTextarea: React.FC<UpdateCommentProps> = ({
   setIsEditing,
   onUpdate,
 }) => {
+  const { toast } = useToast();
   const updateCommentMutation = api.user.updateComment.useMutation({
     onError: (error: unknown) => {
       console.error(error);

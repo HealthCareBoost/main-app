@@ -12,7 +12,7 @@ import { buttonVariants } from "../ui/Button";
 import { GoogleIcon } from "../ui/GoogleIcon";
 import { DiscordIcon } from "../ui/DiscordIcon";
 import { Form } from "../ui/FormProvider";
-import { toast } from "../../hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 
 type ProviderName = "Discord" | "Google" | "Email";
 
@@ -32,6 +32,7 @@ export const RegisterForm: React.FC<{
   providers: AppProps;
 }> = ({ csrfToken, providers, className, ...props }) => {
   const saveName = api.user.saveName.useMutation();
+  const { toast } = useToast();
   const [isProviderLoading, setIsProviderLoading] = React.useState<
     Record<ProviderName, boolean>
   >({
