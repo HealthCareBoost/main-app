@@ -96,27 +96,197 @@ export const calculateCalories: (input: FNInput) => number = ({
 //   Cholesterol: "Cholesterol",
 // } as const;
 
-export const excludeProducts: (
-  hp: typeof HealthProblems,
-  diet: typeof Diets
-) => string = (hp, diet) => {
-  let str = "";
-  if (hp.Cholesterol) {
-    str = str.concat();
-  }
-  if (hp.Diabetes) {
-    str = str.concat();
-  }
-  if (hp.Gluten || diet.Gluten) {
-    str = str.concat();
-  }
-  if (hp.Lactose) {
-  }
-  if (hp.Nut) {
-  }
-  if (diet.Vegan) {
-  }
-  if (diet.Vegetarian) {
-  }
-  return str;
-};
+export function getRestrictedFoods(input: string): string[] {
+  const restrictedFoods: { [key: string]: string[] } = {
+    [Diets.Vegetarian]: [
+      "meat",
+      "poultry",
+      "fish",
+      "seafood",
+      "shellfish",
+      "bacon",
+      "ham",
+      "sausage",
+      "beef",
+      "pork",
+      "lamb",
+      "veal",
+      "venison",
+      "chicken",
+      "turkey",
+      "duck",
+      "goose",
+      "salmon",
+      "tuna",
+      "cod",
+      "shrimp",
+      "lobster",
+      "crab",
+      "anchovies",
+      "sardines",
+      "herring",
+      "gelatin",
+    ],
+    [Diets.Vegan]: [
+      "meat",
+      "poultry",
+      "fish",
+      "seafood",
+      "shellfish",
+      "bacon",
+      "ham",
+      "sausage",
+      "beef",
+      "pork",
+      "lamb",
+      "veal",
+      "venison",
+      "chicken",
+      "turkey",
+      "duck",
+      "goose",
+      "salmon",
+      "tuna",
+      "cod",
+      "shrimp",
+      "lobster",
+      "crab",
+      "anchovies",
+      "sardines",
+      "herring",
+      "gelatin",
+      "dairy",
+      "milk",
+      "cheese",
+      "yogurt",
+      "butter",
+      "cream",
+      "honey",
+      "egg",
+    ],
+    [Diets.Gluten]: [
+      "wheat",
+      "barley",
+      "rye",
+      "triticale",
+      "spelt",
+      "kamut",
+      "semolina",
+      "durum",
+      "farina",
+      "grahamflour",
+      "bulgur",
+      "couscous",
+      "malt",
+      "brewer'syeast",
+      "wheatstarch",
+      "wheatbran",
+      "wheatgerm",
+    ],
+    [Diets.Ketogenic]: [], // Add ketogenic diet
+    [Diets.Paleo]: [], // Add paleo diet restrictions
+    [HealthProblems.Alcohol]: [
+      "alcohol",
+      "beer",
+      "wine",
+      "liquor",
+      "spirits",
+      "cocktails",
+      "brandy",
+      "whiskey",
+      "rum",
+      "vodka",
+      "tequila",
+      "gin",
+      "sake",
+      "liqueurs",
+    ],
+    [HealthProblems.Nut]: [
+      "almonds",
+      "peanuts",
+      "cashews",
+      "walnuts",
+      "hazelnuts",
+      "pistachios",
+      "pecans",
+    ],
+    [HealthProblems.Lactose]: [
+      "milk",
+      "cheese",
+      "yogurt",
+      "butter",
+      "cream",
+      "ice cream",
+      "whey",
+      "cottage cheese",
+      "sour cream",
+      "cream cheese",
+      "buttermilk",
+      "milk powder",
+      "chocolate",
+    ],
+    [HealthProblems.Gluten]: [
+      "wheat",
+      "barley",
+      "rye",
+      "triticale",
+      "spelt",
+      "kamut",
+      "semolina",
+      "durum",
+      "farina",
+      "grahamflour",
+      "bulgur",
+      "couscous",
+      "malt",
+      "brewer'syeast",
+      "wheatstarch",
+      "wheatbran",
+      "wheatgerm",
+    ],
+    [HealthProblems.Diabetes]: [
+      "sugar",
+      "white rice",
+      "white bread",
+      "white pasta",
+      "soda",
+      "fruit juices",
+      "candy",
+      "cookies",
+      "cakes",
+      "pastries",
+      "syrups",
+      "ice cream",
+      "coffee drinks",
+    ],
+    [HealthProblems.Cholesterol]: [
+      "sausage",
+      "hot dog",
+      "bacon",
+      "whole milk",
+      "cheese",
+      "cookie",
+      "doughnuts",
+      "potato chip",
+      "french fries",
+      "palm oil",
+      "coconut oil",
+      "hydrogenated oils",
+      "lard",
+      "shortening",
+    ],
+  };
+
+  const restrictedFoodsList = restrictedFoods[input];
+  // let result = "";
+  // if (restrictedFoodsList && restrictedFoodsList.length > 0) {
+  //   result = restrictedFoodsList.reduce(
+  //     (prev, curr) => prev.concat(`${curr}, `),
+  //     ""
+  //   );
+  // }
+  return restrictedFoodsList && restrictedFoodsList.length > 0
+    ? restrictedFoodsList
+    : [];
+  // return result;
+}

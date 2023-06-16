@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Tabs,
   TabsContent,
@@ -33,7 +33,7 @@ import {
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { api } from "@/src/utils/api";
 import { LoadingSpinner } from "../Loading";
-import { calculateCalories } from "@/src/utils/dietHelpers";
+import { calculateCalories, getRestrictedFoods } from "@/src/utils/dietHelpers";
 import { addDays } from "date-fns";
 import type { z } from "zod";
 import { useToast } from "@/src/hooks/use-toast";
@@ -62,6 +62,16 @@ export const CreateDietForm: React.FC<CreatDietFormProps> = ({
 
   const { mutateAsync, isLoading } = api.example.getDiet.useMutation();
 
+  useEffect(() => {
+    if (dietOpen === false) {
+      form.resetField("diet");
+    }
+    if (hcOpen === false) {
+      form.resetField("healthProblemsAdditional");
+      form.resetField("healthProblemsDefault");
+    }
+  }, [dietOpen, form, hcOpen]);
+
   async function onFormSubmit(data: FormData) {
     console.log(data);
     // console.log(form.formState.errors);
@@ -74,10 +84,15 @@ export const CreateDietForm: React.FC<CreatDietFormProps> = ({
       biological_gender: "M",
     });
 
+    const restrictedFoods = getRestrictedFoods(data.diet);
+    console.log(restrictedFoods);
+
     const { success, error } = await mutateAsync({
       date: addDays(new Date(), 1),
       targetCalories: calorieIntake !== 0 ? calorieIntake : 2000,
       timeFrame: "day",
+      exclude: restrictedFoods,
+      // diet: data.diet
     });
 
     if (!success || error) {
@@ -220,12 +235,14 @@ export const CreateDietForm: React.FC<CreatDietFormProps> = ({
                 </div>
                 <div className="space-y-1">
                   <Collapsible open={dietOpen} onOpenChange={setDietOpen}>
-                    <CollapsibleTrigger className="flex items-center justify-between">
-                      Want to follow specific diet?
+                    <CollapsibleTrigger className="flex items-center justify-between text-left">
+                      <span className="mr-6">
+                        Want to follow specific diet?
+                      </span>
                       {dietOpen ? (
-                        <ChevronUp className="h-4 w-4" />
+                        <ChevronUp className="ml-auto h-4 w-4" />
                       ) : (
-                        <ChevronDown className="h-4 w-4" />
+                        <ChevronDown className="ml-auto h-4 w-4" />
                       )}
                     </CollapsibleTrigger>
                     <CollapsibleContent>
@@ -252,9 +269,9 @@ export const CreateDietForm: React.FC<CreatDietFormProps> = ({
                     <CollapsibleTrigger className="flex items-center justify-between text-left">
                       Do you have any Health Conditions or Allergies?
                       {dietOpen ? (
-                        <ChevronUp className="h-4 w-4" />
+                        <ChevronUp className="ml-auto h-4 w-4" />
                       ) : (
-                        <ChevronDown className="h-4 w-4" />
+                        <ChevronDown className="ml-auto h-4 w-4" />
                       )}
                     </CollapsibleTrigger>
                     <CollapsibleContent className="my-4">
