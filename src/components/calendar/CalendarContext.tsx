@@ -33,7 +33,7 @@ export const WeeklyCalendarContext = createContext<WeeklyCalendarContextType>(
   {} as WeeklyCalendarContextType
 );
 
-export type DietResult = RouterOutputs["user"]["getUserWeeklyDiet"];
+export type DietResult = RouterOutputs["user"]["getUserDiet"];
 export type DietQueryReturnType =
   | (UserDailyDiet & {
       recipe: {
@@ -60,8 +60,10 @@ type CalendarContextType = {
   filters: MealTypeFilter[];
   setFilters: React.Dispatch<React.SetStateAction<MealTypeFilter[]>>;
 
-  monthlyDiet: DietResult | undefined;
-  setMonthlyDiet: React.Dispatch<React.SetStateAction<DietResult | undefined>>;
+  monthlyDiet: DietQueryReturnType | undefined;
+  setMonthlyDiet: React.Dispatch<
+    React.SetStateAction<DietQueryReturnType | undefined>
+  >;
 
   // showEventModal: boolean;
   // setShowEventModal: React.Dispatch<React.SetStateAction<string | null>>;

@@ -16,11 +16,14 @@ import { z } from "zod";
 import format from "date-fns/format";
 import { api } from "../../utils/api";
 import { WeeklyCalendarContext, CalendarContext } from "./CalendarContext";
-import { useRouter } from "next/navigation";
 import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
 import { Label } from "../ui/Label";
 import { FormSearchBar } from "../recipe/Search";
 import { useToast } from "@/src/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { LogginParagraph } from "../LogginParagraph";
+// import { useSession } from "next-auth/react";
 
 export const CalendarDialog: React.FC = () => {
   const {
@@ -40,6 +43,7 @@ export const CalendarDialog: React.FC = () => {
 
   const { toast } = useToast();
   const router = useRouter();
+  const { data: sessionData } = useSession();
 
   const form = useZodForm({
     schema: z.object({
@@ -67,6 +71,11 @@ export const CalendarDialog: React.FC = () => {
     meal_type: "BREAKFAST" | "DINNER" | "LUNCH" | "SNACK";
     recipe_name: string;
   }) => {
+    if (!sessionData || !sessionData.user) {
+      router.push("/login");
+      return;
+    }
+
     console.log("***** form data *****");
     console.log(data);
     console.log("***** daily data *****");
@@ -235,9 +244,19 @@ export const CalendarDialog: React.FC = () => {
                   Delete
                 </Button>
               )}
-              <Button className="col-span-2 col-start-3" type="submit">
-                Save
-              </Button>
+              {!sessionData || !sessionData.user ? (
+                <div className="col-span-full">
+                  <LogginParagraph actionText={"To update your diet"} />
+                </div>
+              ) : (
+                <Button
+                  disabled={!sessionData || !sessionData.user}
+                  className="col-span-2 col-start-3"
+                  type="submit"
+                >
+                  Save
+                </Button>
+              )}
             </div>
           </div>
         </Form>

@@ -1,7 +1,11 @@
 import { MealTypes } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import { Dialog } from "../ui/Dialog";
-import type { DietInfo, DietResult, MealTypeFilter } from "./CalendarContext";
+import type {
+  DietInfo,
+  DietQueryReturnType,
+  MealTypeFilter,
+} from "./CalendarContext";
 import { CalendarContext } from "./CalendarContext";
 import { CalendarHeader } from "./CalendarHeader";
 import { GetMonthDays, removeTimezoneOffset } from "@/src/utils/calendarUtils";
@@ -16,9 +20,9 @@ export const Calendar: React.FC = () => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDay, setSelectedDay] = useState<Date>(currentDate);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [monthlyDiet, setMonthlyDiet] = useState<DietResult | undefined>(
-    undefined
-  );
+  const [monthlyDiet, setMonthlyDiet] = useState<
+    DietQueryReturnType | undefined
+  >(undefined);
   const [dailyDietInfo, setDailyDiet] = useState<DietInfo | undefined>(
     undefined
   );
@@ -36,7 +40,7 @@ export const Calendar: React.FC = () => {
     data: dietData,
     isLoading,
     refetch,
-  } = api.user.getUserWeeklyDiet.useQuery({
+  } = api.user.getUserDiet.useQuery({
     from: removeTimezoneOffset(startOfMonth(currentDate)),
     to: removeTimezoneOffset(endOfMonth(currentDate)),
     filters: filters,
@@ -45,7 +49,7 @@ export const Calendar: React.FC = () => {
   useEffect(() => {
     if (isLoading) return;
     if (dietData) {
-      setMonthlyDiet(dietData);
+      setMonthlyDiet(dietData.recipes);
     }
   }, [dietData, isLoading]);
 

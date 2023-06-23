@@ -9,8 +9,7 @@ import { api } from "../../utils/api";
 import { useToast } from "../../hooks/use-toast";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { styles } from "@/src/styles/style";
+import { LogginParagraph } from "../LogginParagraph";
 
 type CommentTextareaProps = {
   recipe_id: string;
@@ -79,19 +78,7 @@ export const CommentTextarea: React.FC<CommentTextareaProps> = ({
         {...form.register("comment")}
       />
       {formDisabled ? (
-        <div
-          className={`${styles.paragraph} my-2 list-none p-2 pl-0 font-normal text-primaryDark dark:text-white`}
-        >
-          To leave your comment please{" "}
-          <Link className="text-orange-400 underline" href={"/login"}>
-            log into your account
-          </Link>{" "}
-          or{" "}
-          <Link className="text-orange-400 underline" href={"/register"}>
-            create a new account
-          </Link>
-          .
-        </div>
+        <LogginParagraph actionText={"To leave your comment"} />
       ) : (
         <button
           className={cn(

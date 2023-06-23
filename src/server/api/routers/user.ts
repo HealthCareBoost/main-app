@@ -124,7 +124,7 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
-  getUserWeeklyDiet: protectedProcedure
+  getUserDiet: publicProcedure
     .input(
       z.object({
         from: z.date().nullable(),
@@ -139,8 +139,13 @@ export const userRouter = createTRPCRouter({
           .nullish(),
       })
     )
-    .query(({ input, ctx }) => {
+    .query(async ({ input, ctx }) => {
       try {
+        if (!ctx.session || !ctx.session.user) {
+          // throw Error("Not logged in");
+          return { recipes: undefined, success: true };
+        }
+
         if (input.from === null || input.to === null) {
           throw new Error("need 2 valid dates");
         }
@@ -157,7 +162,7 @@ export const userRouter = createTRPCRouter({
           });
         }
 
-        return ctx.prisma.userDailyDiet.findMany({
+        const recipes = await ctx.prisma.userDailyDiet.findMany({
           where: {
             AND: [
               { user_id: ctx.session.user.id },
@@ -182,10 +187,11 @@ export const userRouter = createTRPCRouter({
             // },
           },
         });
+        return { recipes, success: true };
       } catch (error) {
         console.error(error);
-        throw error;
-        // return { error };
+        // throw error;
+        return { error, success: false };
       }
     }),
 
