@@ -7,6 +7,10 @@ import { buttonVariants } from "../ui/Button";
 import { cn } from "../../utils/cn";
 import { api } from "../../utils/api";
 import { useToast } from "../../hooks/use-toast";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { styles } from "@/src/styles/style";
 
 type CommentTextareaProps = {
   recipe_id: string;
@@ -18,13 +22,16 @@ export const CommentTextarea: React.FC<CommentTextareaProps> = ({
   onCommentCreate,
 }) => {
   const { toast } = useToast();
+  const { data: sessionData } = useSession();
+  const router = useRouter();
+  const formDisabled = !sessionData || !sessionData.user;
 
   const commentMutation = api.user.comment.useMutation({
     onError: (error: unknown) => {
       console.error(error);
       return toast({
         title: "Something went wrong.",
-        description: "Your post was not created. Please try again.",
+        description: "Your comment was not created. Please try again.",
         variant: "destructive",
       });
     },
@@ -47,6 +54,11 @@ export const CommentTextarea: React.FC<CommentTextareaProps> = ({
     <Form
       className="mb-6"
       onSubmit={(data) => {
+        if (!sessionData || !sessionData.user) {
+          router.push(`/login`);
+          return;
+        }
+
         // console.log(data);
         commentMutation.mutate({
           recipe_id,
@@ -66,14 +78,31 @@ export const CommentTextarea: React.FC<CommentTextareaProps> = ({
         required
         {...form.register("comment")}
       />
-      <button
-        className={cn(
-          buttonVariants(),
-          "bg-orange-gradient hover:text-primaryDark hover:dark:text-white"
-        )}
-      >
-        Post Comment
-      </button>
+      {formDisabled ? (
+        <div
+          className={`${styles.paragraph} my-2 list-none p-2 pl-0 font-normal text-primaryDark dark:text-white`}
+        >
+          To leave your comment please{" "}
+          <Link className="text-orange-400 underline" href={"/login"}>
+            log into your account
+          </Link>{" "}
+          or{" "}
+          <Link className="text-orange-400 underline" href={"/register"}>
+            create a new account
+          </Link>
+          .
+        </div>
+      ) : (
+        <button
+          className={cn(
+            buttonVariants(),
+            "bg-orange-gradient hover:text-primaryDark hover:dark:text-white"
+          )}
+          disabled={formDisabled}
+        >
+          Post Comment
+        </button>
+      )}
     </Form>
   );
 };

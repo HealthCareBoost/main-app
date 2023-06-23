@@ -3,18 +3,8 @@ import type { GetStaticProps } from "next";
 import { type NextPage } from "next";
 import { api } from "../../utils/api";
 import Layout from "../../components/Layout";
-import dynamic from "next/dynamic";
-
-export const LN = dynamic(
-  () =>
-    import("../../components/landing/LandingNavbar").then(
-      (mod) => mod.LandingNavbar
-    ),
-  { ssr: false }
-);
 
 // type RecipeOutput = RouterOutputs["recipe"]["getRecipeByID"];
-
 const ViewRecipe: NextPage<{ recipe_id: string }> = (
   // props: InferGetServerSidePropsType<typeof getStaticProps>
   { recipe_id }
