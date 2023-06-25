@@ -74,14 +74,19 @@ export const LandingHeroSection: React.FC = () => {
         className={`flex flex-1 ${styles.flexCenter} relative my-10 md:my-0`}
       >
         <Image
-          //src="assets/robot.png"
-          src={robot}
-          // width={100}
-          // height={100}
+          // src="/assets/robot.png"
+          // src={robot}
+          src="/people-cooking.png"
+          width={100}
+          height={100}
           // src={"assets/orange.svg"}
           alt="billing"
           sizes={"100%"}
-          className="relative z-[5] h-full w-full"
+          style={{
+            clipPath:
+              "polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 100% 100%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 0 0)",
+          }}
+          className="relative z-[5] mx-auto h-full w-full"
         />
         <div className="pink__gradient absolute top-0 z-[0] h-[35%] w-[40%]" />
         <div className="white__gradient absolute top-0 bottom-40 z-[1] h-[80%] w-[80%] rounded-full" />

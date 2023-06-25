@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button } from "../ui/Button";
+import { Button, buttonVariants } from "../ui/Button";
 import {
   DialogContent,
   DialogDescription,
@@ -23,6 +23,9 @@ import { useToast } from "@/src/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { LogginParagraph } from "../LogginParagraph";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { cn } from "@/src/utils/cn";
 // import { useSession } from "next-auth/react";
 
 export const CalendarDialog: React.FC = () => {
@@ -186,14 +189,15 @@ export const CalendarDialog: React.FC = () => {
         <DialogDescription>
           Add daily meal and click save when you&apos;re done.
         </DialogDescription>
-        <Form form={form} onSubmit={onFormSubmit}>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              {/* <>{dailyDietInfo ? dailyDietInfo.recipe.name : "no name"}</> */}
-              <Label htmlFor="name" className="text-right">
-                Recipe
-              </Label>
-              {/* <Input
+      </DialogHeader>
+      <Form form={form} onSubmit={onFormSubmit}>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            {/* <>{dailyDietInfo ? dailyDietInfo.recipe.name : "no name"}</> */}
+            <Label htmlFor="name" className="text-right">
+              Recipe
+            </Label>
+            {/* <Input
                 type="text"
                 label="Recipe"
                 hiddenLabel
@@ -201,66 +205,94 @@ export const CalendarDialog: React.FC = () => {
                 required
                 {...form.register("recipe_name")}
               /> */}
-              <div className="col-span-3">
-                <FormSearchBar
-                  searchedValue={searchedValue}
-                  setSearchedValue={setSearchedValue}
-                  {...form.register("recipe_name", {
-                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                      setSearchedValue(e.target.value);
-                      form.setValue("recipe_name", e.target.value);
-                    },
-                  })}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              {/* <>{dailyDietInfo ? dailyDietInfo.meal_type : "no meal_typx"}</> */}
-              <Label htmlFor="meal_type" className="text-right">
-                For
-              </Label>
-              <FormSelect
-                className="col-span-3 w-full"
-                label="For"
-                required
-                hiddenLabel
-                {...form.register("meal_type")}
-              >
-                {Object.entries(MealTypes).map(([key, value]) => (
-                  <option key={key} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </FormSelect>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              {dailyDietInfo !== undefined && (
-                <Button
-                  variant={"destructive"}
-                  className="col-span-1"
-                  onClick={() => void onDeleteClick()}
-                >
-                  {/* <Trash2 className="h-4 w-4" />  */}
-                  Delete
-                </Button>
-              )}
-              {!sessionData || !sessionData.user ? (
-                <div className="col-span-full">
-                  <LogginParagraph actionText={"To update your diet"} />
-                </div>
-              ) : (
-                <Button
-                  disabled={!sessionData || !sessionData.user}
-                  className="col-span-2 col-start-3"
-                  type="submit"
-                >
-                  Save
-                </Button>
-              )}
+            <div className="col-span-3">
+              <FormSearchBar
+                searchedValue={searchedValue}
+                setSearchedValue={setSearchedValue}
+                {...form.register("recipe_name", {
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                    setSearchedValue(e.target.value);
+                    form.setValue("recipe_name", e.target.value);
+                  },
+                })}
+              />
             </div>
           </div>
-        </Form>
-      </DialogHeader>
+          <div className="grid grid-cols-4 items-center gap-4">
+            {/* <>{dailyDietInfo ? dailyDietInfo.meal_type : "no meal_typx"}</> */}
+            <Label htmlFor="meal_type" className="text-right">
+              For
+            </Label>
+            <FormSelect
+              className="col-span-3 w-full"
+              label="For"
+              required
+              hiddenLabel
+              {...form.register("meal_type")}
+            >
+              {Object.entries(MealTypes).map(([key, value]) => (
+                <option key={key} value={value}>
+                  {value}
+                </option>
+              ))}
+            </FormSelect>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            {dailyDietInfo !== undefined && (
+              <Button
+                variant={"destructive"}
+                className="col-span-1"
+                onClick={() => void onDeleteClick()}
+              >
+                {/* <Trash2 className="h-4 w-4" />  */}
+                Delete
+              </Button>
+            )}
+            {!sessionData || !sessionData.user ? (
+              <div className="col-span-full">
+                <LogginParagraph actionText={"To update your diet"} />
+              </div>
+            ) : (
+              <Button
+                disabled={!sessionData || !sessionData.user}
+                className="col-span-2 col-start-3"
+                type="submit"
+              >
+                {dailyDietInfo === undefined ? "Save" : "Update"}
+              </Button>
+            )}
+          </div>
+        </div>
+      </Form>
+      {dailyDietInfo && dailyDietInfo.recipe_id ? (
+        <DialogFooter className="sm:justify-end">
+          <Link
+            href={`/recipe/${dailyDietInfo.recipe_id}`}
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              "flex items-center text-center text-lg"
+            )}
+          >
+            <span>Go To Recipe </span>
+            <ArrowRight className="mx-2 h-4 w-4" />
+          </Link>
+          {/* <Link
+              href={`/recipe/${recipe.id}`}
+              className="text-lg font-semibold text-gray-800 dark:text-white"
+            >
+              {recipe.name}
+            </Link> */}
+          {/* <Link
+      className={`bg-orange-gradient primaryDark mx-2 flex items-center rounded-md py-3 px-5 text-center align-middle font-poppins text-[16px] font-medium outline-none transition-colors dark:text-primaryDark sm:text-sm ${
+        styles ? styles : ""
+      }`}
+      type="button"
+      href={"/login"}
+    >
+      Login
+    </Link> */}
+        </DialogFooter>
+      ) : null}
     </DialogContent>
   );
 };
