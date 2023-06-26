@@ -60,7 +60,7 @@ export const CreateDietForm: React.FC<CreatDietFormProps> = ({
     },
   });
 
-  const { mutateAsync, isLoading } = api.example.getDiet.useMutation();
+  const { mutateAsync, isLoading } = api.example.generateDiet.useMutation();
 
   useEffect(() => {
     if (dietOpen === false) {
@@ -88,7 +88,7 @@ export const CreateDietForm: React.FC<CreatDietFormProps> = ({
     console.log(restrictedFoods);
 
     const { success, error } = await mutateAsync({
-      date: addDays(new Date(), 1),
+      date: addDays(new Date(), 0),
       targetCalories: calorieIntake !== 0 ? calorieIntake : 2000,
       timeFrame: "day",
       exclude: restrictedFoods,

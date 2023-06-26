@@ -9,7 +9,6 @@ import type { AxiosResponse } from "axios";
 import axios from "axios";
 import { env } from "@/src/env/server.mjs";
 import { v2 as cloudinary } from "cloudinary";
-import { addDays } from "date-fns";
 import { getIngredientNutritionsCollection } from "./ingredients";
 
 cloudinary.config({
@@ -62,7 +61,7 @@ export const exampleRouter = createTRPCRouter({
       });
     }),
 
-  getDiet: protectedProcedure
+  generateDiet: protectedProcedure
     .input(
       z.object({
         timeFrame: z.enum(["day", "week"]),
@@ -189,9 +188,9 @@ export const exampleRouter = createTRPCRouter({
             recipeIds.push(id);
 
             // add nutrition
-            await ctx.prisma.$transaction(
-              async (prisma) => {
-                for (const ingredient of ingredients) {
+            for (const ingredient of ingredients) {
+              await ctx.prisma.$transaction(
+                async (prisma) => {
                   const nutritionData = await getIngredientNutritionsCollection(
                     ingredient.name
                   );
@@ -208,13 +207,13 @@ export const exampleRouter = createTRPCRouter({
                       data: [...dataToSave],
                     });
                   }
+                },
+                {
+                  maxWait: 5000, // default: 2000
+                  timeout: 10000, // default: 5000
                 }
-              },
-              {
-                maxWait: 5000, // default: 2000
-                timeout: 10000, // default: 5000
-              }
-            );
+              );
+            }
           } else {
             recipeIds.push(existingRecipe.id);
           }
