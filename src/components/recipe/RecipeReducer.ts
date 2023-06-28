@@ -14,8 +14,10 @@ export type RecipesQueryResult = Recipe & {
       name: string;
     };
   }[];
+  user_preferences?: {
+    liked: boolean;
+  }[];
 };
-
 export type RecipeFiltersType = {
   take: number;
   cursor: string | undefined;

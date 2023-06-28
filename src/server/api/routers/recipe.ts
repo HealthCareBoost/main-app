@@ -513,6 +513,20 @@ export const recipeRouter = createTRPCRouter({
         whereConditions = result.whereConditions;
       }
 
+      let preferencesOptions = {};
+      if (ctx.session && ctx.session.user) {
+        preferencesOptions = {
+          user_preferences: {
+            where: {
+              // ...(ctx.session.user.id ? { user_id: ctx.session.user.id } : {}),
+              user_id: ctx.session.user.id,
+            },
+            select: { liked: true },
+            take: 1,
+          },
+        };
+      }
+
       const recipes = await ctx.prisma.recipe.findMany({
         take: input.take + 1,
         // skip: 1,
@@ -533,6 +547,7 @@ export const recipeRouter = createTRPCRouter({
           user: {
             select: { name: true, id: true },
           },
+          ...preferencesOptions,
           categories: {
             select: {
               category: {

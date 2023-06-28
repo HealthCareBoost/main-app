@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import millify from "millify";
 import { Separator } from "../ui/Separator";
 import { useTheme } from "next-themes";
@@ -19,30 +19,24 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
   const { theme } = useTheme();
   const { data: sessionData } = useSession();
   const likeMutation = api.recipe.likeRecipe.useMutation();
-  const { data: userPreferences } = api.recipe.getUserPreferences.useQuery({
-    recipe_id: recipe.id,
-  });
   const [totalLikes, setTotalLikes] = useState<number>(recipe.total_likes);
   const time = minutesToReadableTime(recipe.total_time_minutes);
 
   const [isLiked, setIsLiked] = useState<boolean>(
-    userPreferences && userPreferences.preferences
-      ? userPreferences.preferences.liked
+    // userPreferences && userPreferences.preferences
+    recipe.user_preferences &&
+      recipe.user_preferences.length > 0 &&
+      recipe.user_preferences[0]
+      ? recipe.user_preferences[0]?.liked
       : false
   );
-
-  useEffect(() => {
-    if (userPreferences && userPreferences.preferences) {
-      setIsLiked(userPreferences.preferences.liked);
-    }
-  }, [userPreferences]);
 
   const onLikeClick = async () => {
     if (!sessionData || !sessionData.user) {
       return;
     }
 
-    const { success, error, liked } = await likeMutation.mutateAsync({
+    const { success, liked } = await likeMutation.mutateAsync({
       recipe_id: recipe.id,
     });
 
@@ -181,10 +175,8 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
                     className="color mx-4 w-[1px]"
                   /> */}
             <span className="mx-2 text-center">•</span>
-            <span className="text-center text-gray-600 dark:text-dimWhite">
-              {recipe.difficulty_level.charAt(0).toUpperCase() +
-                recipe.difficulty_level.slice(1)}{" "}
-              Difficulty
+            <span className="text-center capitalize text-gray-600 dark:text-dimWhite">
+              {`${recipe.difficulty_level} Difficulty`}
             </span>
           </div>
         </div>
