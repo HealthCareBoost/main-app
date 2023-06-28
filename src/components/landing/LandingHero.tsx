@@ -1,8 +1,6 @@
 import Image from "next/image";
 import React from "react";
 import { styles } from "../../styles/style";
-import { robot } from "../../../public/assets";
-import orenge from "../../../public/assets/orange.svg";
 import Link from "next/link";
 
 export const LandingHeroSection: React.FC = () => {
@@ -18,7 +16,7 @@ export const LandingHeroSection: React.FC = () => {
           <h1
             className={`flex-1 font-poppins text-[52px] font-semibold leading-[75px] text-primaryDark dark:text-white ss:text-[71px] ss:leading-[100px]`}
           >
-            Heading
+            The Next
             <br className="hidden sm:block" />
             <span className="text-gradient"> Generation </span>
           </h1>
@@ -58,9 +56,9 @@ export const LandingHeroSection: React.FC = () => {
 
         <h1
           className={`
-        w-full font-poppins text-[52px] font-semibold leading-[75px] text-primaryDark dark:text-white ss:text-[68px] ss:leading-[100px]`}
+        w-full font-poppins text-[52px] font-semibold leading-[75px] text-primaryDark dark:text-white ss:text-[64px] ss:leading-[100px]`}
         >
-          Payment Method
+          Culinary Organizer
         </h1>
         <p className={`${styles.paragraph} mt-5 max-w-[470px]`}>
           Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
@@ -82,11 +80,11 @@ export const LandingHeroSection: React.FC = () => {
           // src={"assets/orange.svg"}
           alt="billing"
           sizes={"100%"}
-          style={{
-            clipPath:
-              "polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 100% 100%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 0 0)",
-          }}
-          className="relative z-[5] mx-auto h-full w-full"
+          // style={{
+          //   clipPath:
+          //     "polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 100% 100%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 0 0)",
+          // }}
+          className="relative z-[5] mx-auto h-full w-[80%] rounded-[5rem] rounded-tl-3xl rounded-br-3xl"
         />
         <div className="pink__gradient absolute top-0 z-[0] h-[35%] w-[40%]" />
         <div className="white__gradient absolute top-0 bottom-40 z-[1] h-[80%] w-[80%] rounded-full" />

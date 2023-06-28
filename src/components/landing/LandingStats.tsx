@@ -10,13 +10,13 @@ export const LandingStatsSection: React.FC = () => {
     },
     {
       id: "stats-2",
-      title: "Trusted by Company",
+      title: "Trusted by Experts",
       value: "230+",
     },
     {
       id: "stats-3",
-      title: "Transaction",
-      value: "$230M+",
+      title: "Original Recipes",
+      value: "2M+",
     },
   ];
   return (

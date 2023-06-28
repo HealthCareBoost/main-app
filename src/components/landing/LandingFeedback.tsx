@@ -51,7 +51,7 @@ export const LandingFeedback: React.FC = () => {
     {
       id: "feedback-1",
       content:
-        "Money is only a tool. It will take you wherever you wish, but it will not replace you as the driver.",
+        "This is the best tool for managing your diet. I feel more in control of my nutrition and enjoy trying new dishes I wouldn't have discovered otherwise.",
       name: "Herman Jensen",
       title: "Founder & Leader",
       img: "/assets/people01.png",
@@ -59,7 +59,7 @@ export const LandingFeedback: React.FC = () => {
     {
       id: "feedback-2",
       content:
-        "Money makes your life easier. If you're lucky to have it, you're lucky.",
+        "This app makes your life easier and using it has been a game-changer for me. It takes the stress out of figuring out what to cook every day and helps me stick to a healthier eating routine.",
       name: "Steve Mark",
       title: "Founder & Leader",
       img: "/assets/people02.png",
@@ -67,7 +67,7 @@ export const LandingFeedback: React.FC = () => {
     {
       id: "feedback-3",
       content:
-        "It is usually people in the money business, finance, and international trade that are really rich.",
+        "I'm a busy professional, and the meal planner has been a lifesaver for me. It helps me stay organized, save time, and make healthier choices. I love it.",
       name: "Kenn Gallagher",
       title: "Founder & Leader",
       img: "/assets/people03.png",
@@ -86,13 +86,13 @@ export const LandingFeedback: React.FC = () => {
         </h2>
         <div className="mt-6 w-full md:mt-0">
           <p className={`${styles.paragraph} max-w-[450px] text-left`}>
-            Everything you need to accept card payments and grow your business
-            anywhere on the planet.
+            Everything you need to organize schedule your meals in advance and
+            never stop eating healthy.
           </p>
         </div>
       </div>
 
-      <div className="feedback-container relative z-[1] flex w-full flex-wrap justify-center sm:justify-start">
+      <div className="feedback-container relative z-[1] flex w-full flex-wrap justify-center md:justify-between">
         {feedback.map((card) => (
           <FeedbackCard key={card.id} {...card} />
         ))}

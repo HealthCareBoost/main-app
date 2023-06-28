@@ -69,10 +69,7 @@ export const LandingBusinessSection: React.FC = () => {
   return (
     <section id="features" className={`${layout.section}`}>
       <div className={layout.sectionInfo}>
-        <h2 className={styles.heading2}>
-          You do the work, <br className="hidden sm:block" /> we&apos;ll handle
-          it.
-        </h2>
+        <h2 className={styles.heading2}>Unlock Your Culinary Potential.</h2>
         <p className={`${styles.paragraph} mt-5 max-w-[470px]`}>
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt,
           perferendis corporis nisi officia dolor consequuntur in aperiam? Lorem

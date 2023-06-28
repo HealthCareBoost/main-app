@@ -16,15 +16,20 @@ export const LandingNavLinks: NavItem[] = [
     title: "Features",
     href: "#features",
   },
-  {
-    id: "product",
-    title: "Product",
-    href: "#product",
-  },
+  // {
+  //   id: "product",
+  //   title: "Product",
+  //   href: "#product",
+  // },
   {
     id: "clients",
     title: "Clients",
     href: "#clients",
+  },
+  {
+    id: "recipe",
+    title: "Recipes",
+    href: "/recipe",
   },
 ];
 
