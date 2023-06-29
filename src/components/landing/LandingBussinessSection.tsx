@@ -46,23 +46,23 @@ export const LandingBusinessSection: React.FC = () => {
     {
       id: "feature-1",
       icon: "assets/Star.svg",
-      title: "Rewards",
+      title: "Personalized Recommendations",
       content:
-        "The best credit cards offer some tantalizing combinations of promotions and prizes",
+        "We offer personalized recipe recommendations based on the your dietary preferences, restrictions, and goals.",
     },
     {
       id: "feature-2",
-      icon: "assets/Shield.svg",
-      title: "100% Secured",
+      icon: "assets/calendar.svg",
+      title: "Meal Scheduling and Planning",
       content:
-        "We take proactive steps make sure your information and transactions are secure.",
+        "You can easily create a weekly or monthly meal plan, selecting recipes and assigning them to specific days.",
     },
     {
       id: "feature-3",
-      icon: "assets/Send.svg",
-      title: "Balance Transfer",
+      icon: "assets/square.svg",
+      title: "Nutritional Information and Tracking",
       content:
-        "A balance transfer credit card can save you a lot of money in interest charges.",
+        "We provide detailed nutritional information for each recipe, including calorie count and macronutrient breakdown.",
     },
   ];
 
