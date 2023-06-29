@@ -31,6 +31,7 @@ export type RecipeFiltersType = {
     | undefined;
   orderBy: OrderByValues | undefined;
   recipes: RecipesQueryResult[] | undefined;
+  searched_recipe: string | undefined;
 };
 
 export const RecipeReducerActions = {
@@ -39,9 +40,10 @@ export const RecipeReducerActions = {
   CHANGE_DIFFICULTY: "CHANGE_DIFFICULTY",
   CHANGE_TIME_TO_COOK: "CHANGE_TIME_TO_COOK",
   CHANGE_ORDER_BY: "CHANGE_ORDER_BY",
+  CHANGE_SEARCHED_RECIPE: "CHANGE_SEARCHED_RECIPE",
 } as const;
 
-export const initialState = {
+export const initialState: RecipeFiltersType = {
   take: Constants.DEFAULT_SELECT_NUMBER,
   cursor: undefined,
   selectedCategoryId: undefined,
@@ -49,6 +51,7 @@ export const initialState = {
   selectedTimeToCook: undefined,
   orderBy: "createdAt" as OrderByValues,
   recipes: [] as RecipesQueryResult[],
+  searched_recipe: undefined,
 };
 
 export const RecipeReducer: (
@@ -86,6 +89,14 @@ export const RecipeReducer: (
     case RecipeReducerActions.CHANGE_ORDER_BY: {
       console.log(action.payload.orderBy);
       return { ...state, orderBy: action.payload.orderBy };
+    }
+
+    case RecipeReducerActions.CHANGE_SEARCHED_RECIPE: {
+      console.log(action.payload);
+      return {
+        ...state,
+        searched_recipe: action.payload.searched_recipe,
+      };
     }
 
     case RecipeReducerActions.RECIPES_FETCHED: {

@@ -21,6 +21,9 @@ export type WhereConditionsType = (
   | {
       categories: { every: { category: { id: number } } };
     }
+  | {
+      name: { contains: string };
+    }
 )[];
 
 export const getFiltersForQuery: (
@@ -35,6 +38,7 @@ export const getFiltersForQuery: (
             }
           | undefined;
         orderBy?: OrderByValues | undefined;
+        searched_recipe?: string | undefined;
       }
     | undefined
 ) => {
@@ -114,6 +118,13 @@ export const getFiltersForQuery: (
     whereConditions.push({
       categories: { every: { category: { id: filters.categoryId } } },
     });
+  }
+
+  if (
+    filters.searched_recipe !== undefined &&
+    filters.searched_recipe.length > 0
+  ) {
+    whereConditions.push({ name: { contains: filters.searched_recipe } });
   }
 
   // console.log(whereConditions);

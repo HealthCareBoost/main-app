@@ -14,6 +14,7 @@ import {
 } from "../ui/Select";
 import type { OrderByValues } from "../../utils/enumsMap";
 import { RecipeFiltersMap } from "../../utils/enumsMap";
+import { SearchBar } from "./Search";
 
 export const RecipeGrid: React.FC = () => {
   const { recipeState, recipeDispatch, returnToFirstPage } =
@@ -24,6 +25,15 @@ export const RecipeGrid: React.FC = () => {
       className="rounded-md border border-none border-slate-200 p-0 dark:border-slate-700"
       style={{ animationDuration: "0s" }} //"animation-duration: 0s"
     >
+      <SearchBar
+        onSearchFinish={(recipe_name) => {
+          recipeDispatch({
+            type: RecipeReducerActions.CHANGE_SEARCHED_RECIPE,
+            payload: { searched_recipe: recipe_name },
+          });
+        }}
+      />
+      <Separator orientation="horizontal" className="my-4" />
       <div className="flex items-center justify-between">
         <div className="grid w-full gap-4 space-y-1 ss:grid-cols-2">
           <div>
@@ -62,7 +72,6 @@ export const RecipeGrid: React.FC = () => {
           </Select>
         </div>
       </div>
-      <Separator orientation="horizontal" className="my-4" />
       {renderContent(recipeState.recipes)}
     </div>
   );

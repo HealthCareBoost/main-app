@@ -2,7 +2,6 @@ import React, { useEffect, useReducer, useState } from "react";
 import { type NextPage } from "next";
 import { CategorySidebar } from "../../components/recipe/CategorySidebar";
 import { RecipeGrid } from "../../components/recipe/RecipeGrid";
-import { styles } from "../../styles/style";
 import { RecipeContext } from "../../components/recipe/RecipeContext";
 import { api } from "../../utils/api";
 import {
@@ -32,6 +31,7 @@ const RecipePreviewPage: NextPage = () => {
           difficulty: recipeState.selectedDifficulty,
           timeToCook: recipeState.selectedTimeToCook,
           orderBy: recipeState.orderBy,
+          searched_recipe: recipeState.searched_recipe,
         },
       },
       {

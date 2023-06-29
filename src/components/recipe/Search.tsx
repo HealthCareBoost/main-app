@@ -1,53 +1,37 @@
-import { useDebounce } from "@/src/hooks/useDebounce";
-import { api } from "@/src/utils/api";
-import { Check, Search } from "lucide-react";
-import React, { ComponentProps, forwardRef, useEffect, useState } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/src/components/ui/Popover";
-import { ChevronsUpDown } from "lucide-react";
-import { Button } from "../ui/Button";
-import {
-  Command,
-  CommandGroup,
-  CommandItem,
-  CommandInput,
-} from "../ui/Command";
+import { useDebounce } from "@/src/hooks/useDebounce";
+import { api } from "@/src/utils/api";
 import { cn } from "@/src/utils/cn";
+import type { Recipe } from "@prisma/client";
+import { Check, ChevronsUpDown, Search } from "lucide-react";
+import type { ComponentProps } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { Recipe } from "@prisma/client";
-import * as Popover2 from "@radix-ui/react-popover";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../ui/Collapsible";
-import { ScrollArea } from "../ui/ScrollArea";
-import { Separator } from "../ui/Separator";
-import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
+import { Button } from "../ui/Button";
+import { Command, CommandGroup } from "../ui/Command";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/DropDown";
 
-export const SearchBar: React.FC = () => {
+export const SearchBar: React.FC<{
+  onSearchFinish: (name: string) => void;
+}> = ({ onSearchFinish }) => {
   const [searchedValue, setSearchedValue] = useState<string>("");
   const [selectedValue, setSelected] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
 
   const deb = useDebounce(searchedValue, 500);
-  const { data, isFetching, isLoading } =
-    api.recipe.searchRecipeByName.useQuery({
-      name: deb,
-    });
+  const { data, isLoading } = api.recipe.searchRecipeByName.useQuery({
+    name: deb,
+  });
 
-  console.log(selectedValue);
+  // console.log(selectedValue);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       {/* <CommandInput placeholder="Type a command or search..." /> */}
@@ -56,13 +40,13 @@ export const SearchBar: React.FC = () => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-[200px] justify-between sm:w-[380px]"
         >
           {selectedValue ? selectedValue : "Select Recipe..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[200px] p-0 sm:w-[380px]">
         <Command className="flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground">
           {/* CommandInput */}
           <div
@@ -100,6 +84,9 @@ export const SearchBar: React.FC = () => {
                     setOpen(false);
                     setSelected((prev) =>
                       prev === recipe.name ? "" : recipe.name
+                    );
+                    onSearchFinish(
+                      selectedValue === recipe.name ? "" : recipe.name
                     );
                   }}
                   aria-selected={selectedValue === recipe.name}

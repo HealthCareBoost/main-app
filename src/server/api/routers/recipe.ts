@@ -473,6 +473,7 @@ export const recipeRouter = createTRPCRouter({
                 "name",
               ])
               .optional(),
+            searched_recipe: z.string().optional(),
           })
           .optional(),
       })
