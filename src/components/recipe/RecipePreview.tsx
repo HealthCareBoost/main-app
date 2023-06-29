@@ -63,7 +63,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border-2 border-orange-300 bg-gray-50 dark:bg-primaryDark">
+    <div className="h-full w-full overflow-hidden rounded-2xl border-2 border-orange-300 bg-gray-50 dark:bg-primaryDark">
       <div className="relative flex h-[180px] overflow-hidden">
         {recipe.images.length > 0 &&
         recipe.images[0] &&

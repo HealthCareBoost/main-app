@@ -13,7 +13,11 @@ export const RecomendedRecipes: React.FC<{
   // console.log(width);
   const items: SwiperNodes[] = recipes.map((r) => {
     return {
-      node: <RecipePreview recipe={r} />,
+      node: (
+        <div className="h-96 w-80">
+          <RecipePreview recipe={r} />
+        </div>
+      ),
       key: r.id,
     };
   });

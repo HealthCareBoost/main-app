@@ -1,6 +1,5 @@
-import Image from "next/image";
 import React from "react";
-import { layout, styles } from "../../styles/style";
+import { styles } from "../../styles/style";
 import { RecomendedRecipes } from "../recipe/Recomended";
 import { api } from "@/src/utils/api";
 
