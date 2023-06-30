@@ -287,7 +287,8 @@ export const userRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        const res = await ctx.prisma.userDailyDiet.delete({
+        // console.log(input);
+        const deletedDiet = await ctx.prisma.userDailyDiet.delete({
           where: {
             user_id_recipe_id_date: {
               user_id: ctx.session.user.id,
@@ -296,8 +297,8 @@ export const userRouter = createTRPCRouter({
             },
           },
         });
-        console.log(res);
-        return { success: true };
+        // console.log(res);
+        return { success: true, diet: deletedDiet };
       } catch (error) {
         console.error(error);
         return { success: false, error };

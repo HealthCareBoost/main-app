@@ -812,14 +812,22 @@ export const recipeRouter = createTRPCRouter({
       })
     )
     .query(({ ctx, input }) => {
-      return ctx.prisma.recipe.findMany({
-        where: {
-          name: {
-            contains: input.name,
+      try {
+        if (!input.name || input.name.length <= 1) {
+          return [];
+        }
+        return ctx.prisma.recipe.findMany({
+          where: {
+            name: {
+              contains: input.name,
+            },
           },
-        },
-        take: Constants.MAX_SEARCH,
-      });
+          take: Constants.MAX_SEARCH,
+        });
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
     }),
 
   getInteractedRecipes: publicProcedure

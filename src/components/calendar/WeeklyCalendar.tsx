@@ -192,7 +192,11 @@ export const WeeklyCalendar: React.FC = () => {
                 <tr className="h-full text-center">
                   {daysOfWeek.length > 0 &&
                     daysOfWeek.map((day, idx) => {
-                      if (data !== undefined && data.length > 0) {
+                      if (
+                        data !== undefined &&
+                        data.recipes &&
+                        data.recipes.length > 0
+                      ) {
                         return (
                           <td
                             key={`${day}${idx}`}
@@ -206,7 +210,7 @@ export const WeeklyCalendar: React.FC = () => {
                           lg:w-30 md:w-30 ease
                           h-40 w-10 cursor-pointer overflow-auto border-2 border-solid p-1 transition duration-500 hover:bg-gray-300 sm:w-20 xl:w-40"
                           >
-                            {data.map((dailyDietInfo) => {
+                            {data.recipes.map((dailyDietInfo) => {
                               let returnBody;
                               const columnDate = removeTimezoneOffset(
                                 new Date(day)

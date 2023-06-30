@@ -42,7 +42,7 @@ export const SearchBar: React.FC<{
           aria-expanded={open}
           className="w-[200px] justify-between sm:w-[380px]"
         >
-          {selectedValue ? selectedValue : "Select Recipe..."}
+          {selectedValue ? selectedValue : "Search Recipes..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -58,7 +58,7 @@ export const SearchBar: React.FC<{
               className={
                 "placeholder:text-foreground-muted flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50"
               }
-              placeholder={"Search Recipes..."}
+              placeholder={"Select Recipe..."}
               type="text"
               onChange={(e) => {
                 setSearchedValue(e.target.value);
@@ -170,7 +170,12 @@ export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
             <DropdownMenuContent>
               {/* Empty  */}
               {!isLoading && (!data || data.length === 0) && (
-                <div className="py-6 text-center text-sm">Not found.</div>
+                <div
+                  className="relative flex w-full min-w-[200px] cursor-default select-none items-center rounded-sm px-2 py-1.5 text-left text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                  // className="py-6 text-center text-sm"
+                >
+                  Not found.
+                </div>
               )}
               {data &&
                 data.length > 0 &&
@@ -185,7 +190,7 @@ export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
                           return recipe;
                         }
                         if (prev.name === recipe.name) {
-                          form.setValue("recipe_name", "");
+                          form.setValue("recipe_name", undefined);
                           return undefined;
                         }
                         form.setValue("recipe_name", recipe.name);
@@ -195,7 +200,7 @@ export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
                     aria-selected={
                       selectedValue && selectedValue.name === recipe.name
                     }
-                    className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-left text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                    className="relative flex min-w-[200px] cursor-default select-none items-center rounded-sm px-2 py-1.5 text-left text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                   >
                     <Check
                       className={cn(

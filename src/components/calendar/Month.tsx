@@ -56,8 +56,8 @@ export const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
                             onClick={(e: React.MouseEvent) => {
                               e.preventDefault();
                               e.stopPropagation();
-                              console.log("adsfg");
-                              console.log(dietInfo);
+                              // console.log("adsfg");
+                              // console.log(dietInfo);
                               setDailyDiet(dietInfo);
                               setSelectedDay(new Date(day));
                               setIsDialogOpen(true);

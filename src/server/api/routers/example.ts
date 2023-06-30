@@ -238,6 +238,7 @@ export const exampleRouter = createTRPCRouter({
                   ? "DINNER"
                   : "SNACK",
               date: input.date,
+              // removeTimezoneOffset()
             },
           });
           count++;

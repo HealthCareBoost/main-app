@@ -16,7 +16,7 @@ import { z } from "zod";
 import format from "date-fns/format";
 import { api } from "../../utils/api";
 import { WeeklyCalendarContext, CalendarContext } from "./CalendarContext";
-import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
+// import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
 import { Label } from "../ui/Label";
 import { FormSearchBar } from "../recipe/Search";
 import { useToast } from "@/src/hooks/use-toast";
@@ -91,9 +91,10 @@ export const CalendarDialog: React.FC = () => {
     ) {
       await updateDiet.mutateAsync(
         {
-          date: removeTimezoneOffset(
-            new Date(dailyDietInfo.date.toDateString())
-          ),
+          // date: removeTimezoneOffset(
+          //   new Date(dailyDietInfo.date.toDateString())
+          // ),
+          date: dailyDietInfo.date,
           meal_type: data.meal_type,
           previous_recipe_id: dailyDietInfo.recipe_id,
           // new_recipe_id: "clhen81uk0007uyksrz8k5u38",
@@ -120,7 +121,8 @@ export const CalendarDialog: React.FC = () => {
     } else {
       await saveDiet.mutateAsync(
         {
-          date: removeTimezoneOffset(new Date(selectedDay.toDateString())),
+          // date: removeTimezoneOffset(new Date(selectedDay.toDateString())),
+          date: selectedDay,
           meal_type: data.meal_type,
           recipe_name: data.recipe_name,
         },
@@ -149,15 +151,19 @@ export const CalendarDialog: React.FC = () => {
     // router.refresh();
   };
 
-  const onDeleteClick = async () => {
+  const onDeleteClick = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     console.log("delete");
+    e.preventDefault();
     if (
       dailyDietInfo !== undefined &&
       dailyDietInfo.recipe_id &&
       dailyDietInfo.date
     ) {
       const { success } = await deleteMutation.mutateAsync({
-        date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
+        // date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
+        date: dailyDietInfo.date,
         meal_type: dailyDietInfo.meal_type,
         recipe_id: dailyDietInfo.recipe_id,
       });
@@ -242,7 +248,7 @@ export const CalendarDialog: React.FC = () => {
               <Button
                 variant={"destructive"}
                 className="col-span-1"
-                onClick={() => void onDeleteClick()}
+                onClick={(e) => void onDeleteClick(e)}
               >
                 {/* <Trash2 className="h-4 w-4" />  */}
                 Delete
@@ -347,7 +353,8 @@ export const WeeklyCalendarDialog: React.FC = () => {
       dailyDietInfo.date
     ) {
       await updateDiet.mutateAsync({
-        date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
+        // date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
+        date: dailyDietInfo.date,
         meal_type: data.meal_type,
         previous_recipe_id: dailyDietInfo.recipe_id,
         new_recipe_name: data.recipe_name,
@@ -355,7 +362,8 @@ export const WeeklyCalendarDialog: React.FC = () => {
       });
     } else {
       await saveDiet.mutateAsync({
-        date: removeTimezoneOffset(new Date(selectedDay.toDateString())),
+        // date: removeTimezoneOffset(new Date(selectedDay.toDateString())),
+        date: selectedDay,
         meal_type: data.meal_type,
         recipe_name: data.recipe_name,
         // recipe_id: "clhf0xx3y0001uy8kc1ekbvdd",
@@ -374,7 +382,8 @@ export const WeeklyCalendarDialog: React.FC = () => {
       dailyDietInfo.date
     ) {
       await deleteMutation.mutateAsync({
-        date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
+        // date: removeTimezoneOffset(new Date(dailyDietInfo.date.toDateString())),
+        date: dailyDietInfo.date,
         meal_type: dailyDietInfo.meal_type,
         recipe_id: dailyDietInfo.recipe_id,
       });
