@@ -79,8 +79,8 @@ export function CommentOperations({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
+              className="bg-red-600 focus:ring-red-600 dark:bg-red-600 dark:text-white dark:hover:bg-red-400 dark:focus:ring-red-600"
               onClick={(e) => void deleteComment(e)}
-              className="bg-red-600 focus:ring-red-600"
             >
               {isDeleteLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

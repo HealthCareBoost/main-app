@@ -33,6 +33,7 @@ export const Input = forwardRef<HTMLInputElement, Props>((props, ref) => {
         )}
         {...inputProps}
         name={name}
+        autoComplete="off"
         ref={ref}
       />
       {state.error && (

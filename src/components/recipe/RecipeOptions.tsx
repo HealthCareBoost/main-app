@@ -14,6 +14,16 @@ import { useRouter } from "next/navigation";
 import { useToast } from "../../hooks/use-toast";
 import { useSession } from "next-auth/react";
 import type { User } from "@prisma/client";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/AlertDialog";
 
 export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
   recipe_id,
@@ -21,7 +31,7 @@ export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
 }) => {
   const { toast } = useToast();
   const router = useRouter();
-  const { data, isLoading } = api.recipe.getUserPreferences.useQuery({
+  const { data } = api.recipe.getUserPreferences.useQuery({
     recipe_id,
   });
 
@@ -41,6 +51,8 @@ export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
   );
   const likeMutation = api.recipe.likeRecipe.useMutation();
   const saveMutation = api.recipe.saveRecipe.useMutation();
+  const deleteMutation = api.recipe.delete.useMutation();
+  const [showDeleteAlert, setShowDeleteAlert] = useState<boolean>(false);
 
   useEffect(() => {
     if (data && data.preferences) {
@@ -94,6 +106,19 @@ export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
         variant: "destructive",
       });
     }
+  };
+
+  const onDelete = async () => {
+    console.log("delete");
+    await deleteMutation.mutateAsync({
+      id: recipe_id,
+    });
+    router.push("/recipe");
+    return toast({
+      variant: "default",
+      title: "Recipe was deleted",
+      description: "Recipe was deleted.",
+    });
   };
 
   return (
@@ -207,7 +232,7 @@ export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
               <li className="my-2 flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
                 <button
                   className="truncate sm:flex sm:flex-col sm:justify-center"
-                  onClick={() => console.log("delete")}
+                  onClick={() => setShowDeleteAlert(true)}
                 >
                   <Trash
                     width={28}
@@ -224,6 +249,28 @@ export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
           ) : null}
         </ul>
       </div>
+      <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure you want to delete this recipe?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 focus:ring-red-600 dark:bg-red-600 dark:text-white dark:hover:bg-red-400 dark:focus:ring-red-600"
+              onClick={() => void onDelete()}
+            >
+              <Trash className="mr-2 h-4 w-4" />
+              <span>Delete</span>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
