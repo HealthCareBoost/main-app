@@ -1,6 +1,6 @@
 import { DifficultyLevel } from "@prisma/client";
 import type { RecipeImage, Prisma } from "@prisma/client";
-import { nullable, number, z } from "zod";
+import { z } from "zod";
 import { Constants } from "../../../utils/constants";
 import { RecipeSchema } from "../../../utils/validations/createRecipeSchema";
 import { ImageInfoSchema } from "../../../utils/validations/imageSchema";
@@ -979,43 +979,29 @@ export const recipeRouter = createTRPCRouter({
           },
         });
 
-        console.log("*********** ingr *******************");
-        console.log(ingredients);
-        console.log("*********** ingr *******************");
-
-        const map = new Map<string, number>([]);
+        const map = new Map<string, { amount: number; unit: string }>([]);
         if (ingredients && ingredients.length > 0) {
-          ingredients.forEach((ingr, idx) => {
-            console.log(
-              `------------------ ingr nutr ${idx} ------------------`
-            );
-            console.log(ingr.nutrition);
-            console.log(
-              `------------------ ingr nutr ${idx}  ------------------`
-            );
-
+          ingredients.forEach((ingr) => {
             if (ingr.nutrition && ingr.nutrition.length > 0) {
-              ingr.nutrition.forEach((nutr) => {
-                console.log(`*********** nutr *******************`);
-                console.log(nutr);
-                console.log(`*********** nutr *******************`);
-
-                const val = map.get(nutr.name);
-                console.log(`*********** val *******************`);
-                console.log(val);
-                console.log(`*********** val  *******************`);
-                if (val) {
-                  map.set(nutr.name, val + nutr.amount);
+              ingr.nutrition.forEach((nutrient) => {
+                const existingNutrient = map.get(nutrient.name);
+                if (existingNutrient) {
+                  map.set(nutrient.name, {
+                    amount: existingNutrient.amount + nutrient.amount,
+                    unit: nutrient.unit,
+                  });
                 } else {
-                  map.set(nutr.name, nutr.amount);
+                  map.set(nutrient.name, {
+                    amount: nutrient.amount,
+                    unit: nutrient.unit,
+                  });
                 }
               });
             }
           });
         }
-
-        console.log(map);
-        return { nutrition: map.entries(), success: true };
+        // console.log(map);
+        return { nutrition: map, success: true };
       } catch (error) {
         console.error(error);
         return { error, success: false };

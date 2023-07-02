@@ -320,6 +320,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
                 <div className="col-span-full">
                   <Textarea
                     label="Description"
+                    rows={6}
                     required
                     placeholder="Write a few sentences about the recipe."
                     {...form.register("description")}

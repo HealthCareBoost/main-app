@@ -4,7 +4,10 @@ import { RecomendedRecipes } from "../recipe/Recomended";
 import { api } from "@/src/utils/api";
 
 export const LandingBilling: React.FC = () => {
-  const { data } = api.recipe.getPaginatedRecipes.useQuery({ take: 8 });
+  const { data } = api.recipe.getPaginatedRecipes.useQuery({
+    take: 8,
+    filters: { orderBy: "createdAt" },
+  });
 
   return (
     <>

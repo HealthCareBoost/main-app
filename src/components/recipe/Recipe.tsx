@@ -17,6 +17,47 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/HoverCard";
 import { Separator } from "../ui/Separator";
 
 export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
+  const displayNutrion: () => React.ReactNode[] = () => {
+    const nodes: React.ReactNode[] = [];
+    if (recipe.nutrition) {
+      const sortedByKey = new Map([...recipe.nutrition].sort());
+
+      sortedByKey.forEach(({ amount, unit }, key) => {
+        if (key === "Sugar") return;
+        nodes.push(
+          <div key={`${key}${amount}`}>
+            <div className="uppercase">
+              {key === "Carbohydrates" ? "CARBS" : key}
+            </div>
+            <div>
+              {amount} {unit}
+            </div>
+          </div>
+        );
+      });
+    }
+
+    if (recipe.nutrition === undefined) {
+      [
+        { name: "CALORIES", amount: 522, unit: "g" },
+        { name: "FAT", amount: 33, unit: "g" },
+        { name: "CARBS", amount: 25, unit: "g" },
+        { name: "PROTEIN", amount: 31, unit: "g" },
+      ].forEach((n) => {
+        nodes.push(
+          <div key={`${n.name}${Math.random()}`}>
+            <div>{n.name}</div>
+            <div>
+              {n.amount} {n.unit}
+            </div>
+          </div>
+        );
+      });
+    }
+
+    return nodes;
+  };
+
   return (
     <>
       {/* <div className="mt-4 flex items-center justify-center">
@@ -169,19 +210,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-row items-center justify-between text-center">
-                      {[
-                        { name: "CALORIES", amount: 522, unit: "g" },
-                        { name: "FAT", amount: 33, unit: "g" },
-                        { name: "CARBS", amount: 25, unit: "g" },
-                        { name: "PROTEIN", amount: 31, unit: "g" },
-                      ].map((n) => (
-                        <div key={`${n.name}${Math.random()}`}>
-                          <div>{n.name}</div>
-                          <div>
-                            {n.amount} {n.unit}
-                          </div>
-                        </div>
-                      ))}
+                      {displayNutrion()}
                     </div>
                   </CardContent>
                   <CardFooter className="flex flex-col items-start justify-between">

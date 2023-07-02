@@ -23,7 +23,9 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
     refetch: refetchComments,
   } = api.recipe.getCommentsForRecipe.useQuery({ recipe_id });
 
-  const {} = api.recipe.getNutrition.useQuery({ recipe_id });
+  const { data: recipeNutrition } = api.recipe.getNutrition.useQuery({
+    recipe_id,
+  });
 
   const onCommentsChange = async () => {
     if (isCommentsLoading) return;
@@ -81,7 +83,14 @@ const ViewRecipe: NextPage<{ recipe_id: string }> = (
                   </li>
                 ))}
               </ol>
-              <Recipe recipe={data.recipe} />
+              <Recipe
+                recipe={{
+                  ...data.recipe,
+                  nutrition: recipeNutrition
+                    ? recipeNutrition.nutrition
+                    : undefined,
+                }}
+              />
             </nav>
             <Separator orientation="horizontal" className="my-4" />
           </main>

@@ -37,6 +37,15 @@ export type RecipeComponentProps = {
         name: string;
       };
     }[];
+    nutrition:
+      | Map<
+          string,
+          {
+            amount: number;
+            unit: string;
+          }
+        >
+      | undefined;
   };
 };
 
