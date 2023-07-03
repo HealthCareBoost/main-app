@@ -1,5 +1,5 @@
 import { type NextPage } from "next";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import type { z } from "zod";
 import Layout from "../../components/Layout";
@@ -42,9 +42,14 @@ const UserProfile: NextPage<{ user_id: string }> = (
   // props: InferGetServerSidePropsType<typeof getStaticProps>
   { user_id }
 ) => {
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const { toast } = useToast();
   const { data: sessionData } = useSession();
-  const { data: userData, isLoading } = api.user.getUserProfile.useQuery({
+  const {
+    data: userData,
+    isLoading,
+    refetch,
+  } = api.user.getUserProfile.useQuery({
     user_id,
   });
   const changeName = api.user.changeName.useMutation();
@@ -112,9 +117,12 @@ const UserProfile: NextPage<{ user_id: string }> = (
                 </div>
 
                 {ownProfile ? (
-                  <Dialog>
+                  <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
-                      <Button className="mx-auto w-3/5 text-center">
+                      <Button
+                        variant={"secondary"}
+                        className="mx-auto w-3/5 text-center hover:bg-slate-300 dark:hover:bg-slate-800"
+                      >
                         Edit Profile Name
                       </Button>
                     </DialogTrigger>
@@ -124,8 +132,10 @@ const UserProfile: NextPage<{ user_id: string }> = (
                           // console.log(data);
                           const { success, error } =
                             await changeName.mutateAsync({ name: data.name });
+                          await refetch();
 
                           if (!success || error) {
+                            setDialogOpen(false);
                             return toast({
                               title: "Something went wrong.",
                               description:
@@ -135,6 +145,7 @@ const UserProfile: NextPage<{ user_id: string }> = (
                           }
 
                           if (success) {
+                            setDialogOpen(false);
                             return toast({
                               title: "Success!",
                               description: "Your name was changed.",
@@ -169,7 +180,13 @@ const UserProfile: NextPage<{ user_id: string }> = (
                         </div>
                         <DialogFooter>
                           {/* <DialogPrimitive.Close asChild> */}
-                          <Button type="submit">Save changes</Button>
+                          <Button
+                            variant={"outline"}
+                            className="text-center hover:bg-orange-400 "
+                            type="submit"
+                          >
+                            Save changes
+                          </Button>
                           {/* </DialogPrimitive.Close> */}
                         </DialogFooter>
                       </Form>
@@ -181,8 +198,14 @@ const UserProfile: NextPage<{ user_id: string }> = (
                   <Button
                     className={cn(
                       buttonVariants({ variant: "destructive" }),
-                      `mx-auto mt-auto mb-2 w-3/5 self-end justify-self-end text-center`
+                      `mx-auto mt-auto mb-2 w-3/5 self-end justify-self-end text-center hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-800`
                     )}
+                    onClick={() =>
+                      void signOut({
+                        redirect: true,
+                        callbackUrl: `${window.location.origin}`,
+                      })
+                    }
                   >
                     Sign out
                   </Button>
@@ -284,6 +307,7 @@ import type { GetStaticProps } from "next";
 import superjson from "superjson";
 import { appRouter } from "../../server/api/root";
 import { prisma } from "../../server/db";
+import { useState } from "react";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({

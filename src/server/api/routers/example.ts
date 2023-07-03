@@ -10,6 +10,7 @@ import axios from "axios";
 import { env } from "@/src/env/server.mjs";
 import { v2 as cloudinary } from "cloudinary";
 import { getIngredientNutritionsCollection } from "./ingredients";
+import { removeWordsFromArray } from "@/src/utils/removeHTML";
 
 cloudinary.config({
   cloud_name: env.CLOUDINARY_CLOUD_NAME,
@@ -153,10 +154,10 @@ export const exampleRouter = createTRPCRouter({
             const { id, ingredients } = await ctx.prisma.recipe.create({
               data: {
                 creator_id: user_id,
-                description: recipe.summary,
+                description: removeWordsFromArray(recipe.summary),
                 difficulty_level: "medium",
                 name: recipe.title,
-                recipe_steps: recipe.instructions,
+                recipe_steps: removeWordsFromArray(recipe.instructions),
                 // cooking_time_minutes: 0,
                 // preparation_time_minutes: 0,
                 total_time_minutes: recipe.readyInMinutes,
