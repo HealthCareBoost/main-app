@@ -85,7 +85,7 @@ model Recipe {
     difficulty_level            DifficultyLevel
     preparation_time_minutes    Int         @default(0)
     cooking_time_minutes        Int         @default(0)
-    total_time_minutes        Int         @default(0)
+    total_time_minutes          Int         @default(0)
     description                 String      @db.Text
     images                      RecipeImage[]
     // recipe_steps            RecipeSteps[]
