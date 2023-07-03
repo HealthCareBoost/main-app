@@ -15,6 +15,7 @@ import {
 } from "../ui/Card";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/HoverCard";
 import { Separator } from "../ui/Separator";
+import { roundNumber } from "@/src/utils/numbers";
 
 export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
   const displayNutrion: () => React.ReactNode[] = () => {
@@ -30,7 +31,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
               {key === "Carbohydrates" ? "CARBS" : key}
             </div>
             <div>
-              {amount} {unit}
+              {roundNumber(amount, 2)} {unit}
             </div>
           </div>
         );

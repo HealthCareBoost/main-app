@@ -30,7 +30,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/Dialog";
-import { Label } from "../ui/Label";
 
 type CreateRecipeFormProps = {
   recipeToUpdate?: RecipeComponentProps;
@@ -40,7 +39,7 @@ type FormData = z.infer<typeof RecipeSchema>;
 
 function containsOnlyNumbers(str: string | undefined) {
   if (str === undefined) return false;
-  return /^[0-9]+$/.test(str);
+  return /^(\d+.)*(\d+)$/.test(str);
 }
 
 const transformIngredientsFromList = (ingredientText: string) => {
@@ -87,6 +86,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
   // const addImagesMutation = api.recipe.addImages.useMutation();
   // const saveIngredientsMutation = api.ingredients.addIngredient.useMutation();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
   const router = useRouter();
   const { toast } = useToast();
   const [imageData, setImageData] = useState<ImageInfo[]>([]);
@@ -379,7 +379,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
               <CardContent className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <Button
                   type="button"
-                  className="sticky top-2 col-span-full sm:col-span-4"
+                  className="sticky top-2 col-span-full bg-orange-500/90 hover:bg-orange-600 sm:col-span-4"
                   onClick={() => {
                     append({
                       ingredient_name: "",
@@ -400,9 +400,12 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
                 </div>
 
                 <div className="col-span-full sm:col-span-2">
-                  <Dialog>
+                  <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
-                      <Button className="mx-auto w-full text-center">
+                      <Button
+                        variant={"outline"}
+                        className="mx-auto w-full text-center hover:bg-orange-400 "
+                      >
                         Import List
                       </Button>
                     </DialogTrigger>
@@ -441,15 +444,14 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
                           onClick={() => {
                             const ingredientsArray =
                               transformIngredientsFromList(ingredientText);
-
                             // remove old ingredients
                             for (const _ of fields) {
                               remove();
                             }
-
                             for (const ingr of ingredientsArray) {
                               append({ ...ingr });
                             }
+                            setDialogOpen(false);
                           }}
                         >
                           Submit
@@ -566,9 +568,22 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
         <div className="mt-6 flex items-center justify-end gap-x-6">
           <Button
             // className="col-start-3 row-start-1 row-end-3"
+            onClick={(e) => {
+              e.preventDefault();
+              form.reset();
+            }}
+            variant={"ghost"}
+            className="my-6 w-48"
+            disabled={isSubmitting}
+          >
+            {/* <Check className="h-4 w-4" />  */}
+            Cancel
+          </Button>
+          <Button
+            // className="col-start-3 row-start-1 row-end-3"
             variant={"default"}
             type="submit"
-            className="w-48"
+            className="bg-orange-gradient my-6 w-48 text-bgDark"
             disabled={isSubmitting}
           >
             {/* <Check className="h-4 w-4" />  */}

@@ -214,26 +214,29 @@ export const recipeRouter = createTRPCRouter({
       console.log("ingredients after save");
       console.log(recipe.ingredients);
 
-      await ctx.prisma.$transaction(async (prisma) => {
-        for (const ingredient of recipe.ingredients) {
-          const nutritionData = await getIngredientNutritionsCollection(
-            ingredient.name
+      for (const ingredient of recipe.ingredients) {
+        const nutritionData = await getIngredientNutritionsCollection(
+          ingredient.name
+        );
+        console.log("nutritionData");
+        console.log(nutritionData);
+        if (nutritionData) {
+          await ctx.prisma.$transaction(
+            async (prisma) => {
+              const dataToSave = nutritionData.map((x) => ({
+                ...x,
+                ingredient_id: ingredient.id,
+              }));
+              console.log("dataToSave");
+              console.log(dataToSave);
+              await prisma.nutrients.createMany({
+                data: [...dataToSave],
+              });
+            },
+            { timeout: 10000 }
           );
-          console.log("nutritionData");
-          console.log(nutritionData);
-          if (nutritionData) {
-            const dataToSave = nutritionData.map((x) => ({
-              ...x,
-              ingredient_id: ingredient.id,
-            }));
-            console.log("dataToSave");
-            console.log(dataToSave);
-            await prisma.nutrients.createMany({
-              data: [...dataToSave],
-            });
-          }
         }
-      });
+      }
 
       return {
         success: true,
