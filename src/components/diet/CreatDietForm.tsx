@@ -180,6 +180,7 @@ export const CreateDietForm: React.FC<CreatDietFormProps> = ({
               <CardFooter>
                 <Button
                   className="m-0 ml-auto"
+                  variant={"outline"}
                   onClick={() => {
                     setTab("preferences");
                   }}
@@ -314,7 +315,8 @@ export const CreateDietForm: React.FC<CreatDietFormProps> = ({
                       setTab("measurements");
                     }
                   }}
-                  className="m-0 ml-auto"
+                  className="m-0 ml-auto text-center hover:bg-orange-400"
+                  variant={"outline"}
                   type="submit"
                 >
                   Save changes

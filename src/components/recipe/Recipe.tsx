@@ -38,7 +38,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
       });
     }
 
-    if (recipe.nutrition === undefined) {
+    if (recipe.nutrition === undefined || recipe.nutrition.size === 0) {
       [
         { name: "CALORIES", amount: 522, unit: "g" },
         { name: "FAT", amount: 33, unit: "g" },

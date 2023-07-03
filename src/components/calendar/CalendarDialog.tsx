@@ -261,8 +261,9 @@ export const CalendarDialog: React.FC = () => {
             ) : (
               <Button
                 disabled={!sessionData || !sessionData.user}
-                className="col-span-2 col-start-3"
+                className="col-span-2 col-start-3 hover:bg-orange-400"
                 type="submit"
+                variant={"outline"}
               >
                 {dailyDietInfo === undefined ? "Save" : "Update"}
               </Button>

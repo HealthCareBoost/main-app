@@ -15,6 +15,8 @@ export const CalendarHeader: React.FC = () => {
   return (
     <header className="mb-4 flex items-center justify-end px-4 py-2 sm:mb-0">
       <Button
+        variant={"outline"}
+        // className="border-2 border-orange-300 dark:border-dimWhite"
         onClick={() => {
           setCurrentDate(new Date());
         }}
@@ -23,7 +25,7 @@ export const CalendarHeader: React.FC = () => {
       </Button>
       <Popover>
         <PopoverTrigger asChild>
-          <Button className="block sm:hidden">
+          <Button className="mx-3 block sm:hidden" variant={"outline"}>
             <CalendarDays className="h-4 w-4" />
             <span className="sr-only">Open calendar</span>
           </Button>

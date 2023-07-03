@@ -8,7 +8,7 @@ export const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
     useContext(CalendarContext);
   const currentDay: (day: Date) => string = (day) => {
     return format(day, "dd-MMMM-yyyy") === format(new Date(), "dd-MMMM-yyyy")
-      ? "bg-orange-400 text-primaryDark rounded-full w-7"
+      ? "bg-orange-500/80 dark:bg-orange-500 text-white dark:text-primaryDark rounded-full w-7"
       : "";
   };
 

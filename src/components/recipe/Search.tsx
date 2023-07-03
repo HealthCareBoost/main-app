@@ -124,7 +124,7 @@ export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
     const [selectedValue, setSelected] = useState<Recipe | undefined>(
       undefined
     );
-    const [open, setOpen] = React.useState(false);
+    const [openDropdown, setDropdownOpen] = React.useState(false);
 
     const deb = useDebounce(searchedValue, 500);
     const { data, isLoading } = api.recipe.searchRecipeByName.useQuery({
@@ -135,8 +135,8 @@ export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
     const state = form.getFieldState(props.name);
 
     useEffect(() => {
-      if (searchedValue.length > 1) {
-        setOpen(true);
+      if (searchedValue.length > 2) {
+        setDropdownOpen(true);
       }
     }, [searchedValue]);
 
@@ -165,7 +165,7 @@ export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
               {state.error.message}
             </p>
           )}
-          <DropdownMenu open={open} onOpenChange={setOpen}>
+          <DropdownMenu open={openDropdown} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger></DropdownMenuTrigger>
             <DropdownMenuContent>
               {/* Empty  */}
@@ -183,7 +183,7 @@ export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
                   <div
                     key={recipe.id}
                     onClick={() => {
-                      console.log("click");
+                      // console.log("click");
                       setSelected((prev) => {
                         if (!prev) {
                           form.setValue("recipe_name", recipe.name);

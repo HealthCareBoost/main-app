@@ -16,27 +16,23 @@ import { format } from "date-fns";
 import { CreateDietForm } from "../diet/CreatDietForm";
 
 export const CalendarSidebar: React.FC = () => {
-  const { setCurrentDate, setSelectedDay } = useContext(CalendarContext);
+  const { setCurrentDate, setSelectedDay, onDietUpdate } =
+    useContext(CalendarContext);
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [generateDialogOpen, setGenerateDialogOpen] =
     React.useState<boolean>(false);
 
-  const onDietUpdate = () => {
+  const onDietUpdateHandler = () => {
     setGenerateDialogOpen(false);
+    onDietUpdate();
   };
 
   return (
-    <aside className="hidden sm:col-span-3 sm:block">
+    <aside className="mr-4 hidden sm:col-span-3 sm:block">
       <div className="my-2">
         <Dialog open={generateDialogOpen} onOpenChange={setGenerateDialogOpen}>
           <DialogTrigger asChild>
-            <Button
-              className="mx-2 flex-1 p-1"
-              onClick={() => {
-                console.log("Generate diet");
-              }}
-              variant="default"
-            >
+            <Button className="mx-2 flex-1 p-1" variant="outline">
               Autogenerate
             </Button>
           </DialogTrigger>
@@ -52,7 +48,7 @@ export const CalendarSidebar: React.FC = () => {
                 Autogenerate your daily meal plan.
               </DialogDescription>
             </DialogHeader>
-            <CreateDietForm onDietUpdate={onDietUpdate} />
+            <CreateDietForm onDietUpdate={onDietUpdateHandler} />
           </DialogContent>
         </Dialog>
         <Dialog>
@@ -62,7 +58,7 @@ export const CalendarSidebar: React.FC = () => {
               onClick={() => {
                 setSelectedDay(removeTimezoneOffset(new Date()));
               }}
-              variant="default"
+              variant="outline"
             >
               Set meal for today
             </Button>
@@ -115,7 +111,9 @@ export const Filters: React.FC = () => {
             className={`form-checkbox h-5 w-5 cursor-pointer rounded focus:ring-0`}
             style={{ accentColor: labelColor(name), color: labelColor(name) }}
           />
-          <span className="ml-2 capitalize text-gray-700">{name}</span>
+          <span className="ml-2 capitalize text-gray-700 dark:text-white">
+            {name}
+          </span>
         </label>
       ))}
     </React.Fragment>

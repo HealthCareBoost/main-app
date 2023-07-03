@@ -90,9 +90,9 @@ export const Calendar: React.FC = () => {
           setIsDialogOpen(open);
         }}
       >
-        <div className="container mx-auto flex h-full w-full flex-col ">
+        <div className="container mx-auto flex h-full w-full flex-col">
           <CalendarHeader />
-          <div className="flex flex-1">
+          <div className="flex flex-1 justify-between">
             <CalendarSidebar />
             <CalendarMonth month={currenMonth} />
           </div>
