@@ -75,6 +75,10 @@ export const exampleRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user_id = ctx.session.user.id;
       const recipeIds: string[] = [];
+      const restrictedFoods =
+        input.exclude && input.exclude.length > 0
+          ? input.exclude.reduce((prev, curr) => (prev += `${curr}, `), "")
+          : "";
       const mealplanOptions = {
         method: "GET",
         url: `${env.FOOD_API_URL}/recipes/mealplans/generate`,
@@ -82,7 +86,7 @@ export const exampleRouter = createTRPCRouter({
           timeFrame: input.timeFrame,
           targetCalories: input.targetCalories,
           // diet: input.diet,
-          // exclude: ""
+          exclude: restrictedFoods,
         },
         headers: {
           "X-RapidAPI-Key": env.FOOD_API_KEY,
