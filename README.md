@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/HealthCareBoost/main-app">
-    <img src="public/assets/cook-dark.png" alt="letmecook-logo-white" height="120">
+    <img src="public/assets/cook.png" alt="letmecook-logo-white" height="120">
   </a>
 </div>
 
