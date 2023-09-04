@@ -1,4 +1,4 @@
-import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { PhotoIcon } from "@heroicons/react/24/solid";
 import { Card, CardContent } from "../ui/Card";
 import React, { useState } from "react";
 import { api } from "../../utils/api";
@@ -18,7 +18,7 @@ import { styles } from "../../styles/style";
 import { Separator } from "../ui/Separator";
 import { useToast } from "../../hooks/use-toast";
 import { useRouter } from "next/navigation";
-import type { RecipeComponentProps } from "../../utils/recipe/recipeTypes";
+import type { RecipeToUpdateType } from "../../utils/recipe/recipeTypes";
 import type { z } from "zod";
 import { RecipeMapper } from "../../utils/recipeMapper";
 import {
@@ -32,7 +32,7 @@ import {
 } from "../ui/Dialog";
 
 type CreateRecipeFormProps = {
-  recipeToUpdate?: RecipeComponentProps;
+  recipeToUpdate?: RecipeToUpdateType;
 };
 
 type FormData = z.infer<typeof RecipeSchema>;

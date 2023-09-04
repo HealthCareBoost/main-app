@@ -49,6 +49,20 @@ export type RecipeComponentProps = {
   };
 };
 
+export type RecipeToUpdateType = {
+  recipe: RecipeType & {
+    user: User;
+    ingredients: Ingredients[];
+    images: RecipeImage[];
+    categories: {
+      category: {
+        id: number;
+        name: string;
+      };
+    }[];
+  };
+};
+
 // export type NewIngredient = Pick<
 //   Ingredients,
 //   "measurement_unit" | "quantity" | "name"

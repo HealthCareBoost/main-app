@@ -1,8 +1,8 @@
-import type { RecipeComponentProps, RecipeForm } from "./recipe/recipeTypes";
+import type { RecipeToUpdateType, RecipeForm } from "./recipe/recipeTypes";
 import { minutesToFormTime } from "./timeConverter";
 
 export function RecipeMapper(
-  result: RecipeComponentProps
+  result: RecipeToUpdateType
 ): RecipeForm | undefined {
   if (!result || !result.recipe) return;
   const { recipe } = result;

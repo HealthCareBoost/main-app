@@ -9,7 +9,7 @@ const FeatureCard: React.FC<{
   title: string;
   content: string;
   isLastElement: boolean;
-}> = ({ id, icon, content, title, isLastElement }) => {
+}> = ({ icon, content, title, isLastElement }) => {
   return (
     <div
       className={`flex flex-row rounded-[20px] p-6 ${

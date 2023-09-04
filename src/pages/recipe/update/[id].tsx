@@ -5,7 +5,6 @@ import type { NextPage } from "next";
 import { api } from "../../../utils/api";
 import Layout from "../../../components/Layout";
 import { CreateRecipeForm } from "../../../components/recipe/CreateRecipeForm";
-import { RecipeMapper } from "../../../utils/recipeMapper";
 import { LoadingSpinner } from "../../../components/Loading";
 
 const UpdateRecipe: NextPage<{ recipe_id: string }> = ({ recipe_id }) => {

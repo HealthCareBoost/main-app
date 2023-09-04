@@ -1,6 +1,5 @@
 import { type NextPage } from "next";
 import { signOut, useSession } from "next-auth/react";
-import dynamic from "next/dynamic";
 import type { z } from "zod";
 import Layout from "../../components/Layout";
 import { LoadingSpinner } from "../../components/Loading";

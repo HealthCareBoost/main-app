@@ -1,4 +1,3 @@
-import Image from "next/image";
 import React from "react";
 import { styles } from "../../styles/style";
 import { SocialIcons } from "./SocialIcons";
@@ -40,7 +39,7 @@ export const FooterSmall = () => {
   return (
     <div className="flex w-full flex-col items-center justify-between border-t-[1px] border-t-orange-400 pt-6 md:flex-row">
       <p className="text-center font-poppins text-[16px] font-normal leading-[27px] text-dimDark dark:text-dimWhite">
-        Copyright Ⓒ 2022 HooBank. All Rights Reserved.
+        Copyright Ⓒ 2023 LetMeCook. All Rights Reserved.
       </p>
 
       <div className="mt-6 flex flex-row md:mt-0">

@@ -9,7 +9,6 @@ import { Separator } from "@/src/components/ui/Separator";
 import { cn } from "@/src/utils/cn";
 import type { InfiniteData } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
 import Layout from "../../../components/Layout";
 import { Button, buttonVariants } from "../../../components/ui/Button";
 
