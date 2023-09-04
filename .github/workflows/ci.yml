@@ -4,12 +4,23 @@ on: [push, pull_request]
 
 env:
   DATABASE_URL: "https://fake.com"
-  DISCORD_CLIENT_ID: "https://fake.com"
-  DISCORD_CLIENT_SECRET: "https://fake.com"
-  GOOGLE_CLIENT_ID: "https://fake.com"
-  GOOGLE_CLIENT_SECRET: "https://fake.com"
-  EMAIL_USER: "https://fake.com"
-  EMAIL_SERVER: "https://fake.com"
+
+  DISCORD_CLIENT_ID: "1i234567890"
+  DISCORD_CLIENT_SECRET: "very_secret_secret"
+  GOOGLE_CLIENT_ID: "1i234567890"
+  GOOGLE_CLIENT_SECRET: "very_secret_secret"
+  EMAIL_USER: "fake@mail.com"
+  EMAIL_SERVER: "smtp://fake.com"
+
+  NEXTAUTH_SECRET: "very_secret_secret"
+  NEXTAUTH_URL: "https://fake.com"
+  FOOD_API_HOST: "secret_host"
+  FOOD_API_KEY: "1234567890"
+  FOOD_API_URL: "https://fake.com"
+
+  CLOUDINARY_CLOUD_NAME: "secret_clould_name"
+  CLOUDINARY_API_KEY: "1234567890"
+  CLOUDINARY_API_SECRET: "very_secret_secret"
 
 jobs:
   build:
