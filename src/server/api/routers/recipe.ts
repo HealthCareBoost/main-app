@@ -1010,4 +1010,39 @@ export const recipeRouter = createTRPCRouter({
         return { error, success: false };
       }
     }),
+
+  getRecomendationBasedOnProducts: publicProcedure
+    .input(
+      z.object({
+        product_names: z.string().array(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        if (input.product_names.length < 1) {
+          return [];
+        }
+
+        const allProducts = input.product_names.map((name) => ({
+          name: { contains: name },
+        }));
+
+        const res = await ctx.prisma.recipe.findMany({
+          where: {
+            ingredients: {
+              some: {
+                AND: [...allProducts],
+              },
+            },
+          },
+          take: Constants.MAX_SEARCH,
+        });
+
+        console.log(res);
+        return res;
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    }),
 });
