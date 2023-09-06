@@ -76,7 +76,14 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
             // loading="lazy"
             className="h-auto w-full object-cover"
             src={recipe.images[0].url}
-          ></CldImage>
+            format="auto" //avif, webp
+            sizes="(min-width: 480px) 50vw, (min-width: 728px) 33vw, (min-width: 976px) 25vw, 100vw"
+            crop="thumb"
+            // quality="auto:eco"
+            // gravity="faces"
+            // deliveryType="fetch"
+            // transformations={["scale"]}
+          />
         ) : (
           <Image
             className="h-auto w-full object-cover"

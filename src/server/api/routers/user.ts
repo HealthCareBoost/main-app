@@ -153,7 +153,7 @@ export const userRouter = createTRPCRouter({
         const queryFilters: { NOT: { meal_type: MealTypes } }[] = [];
 
         if (input.filters && input.filters.length > 0) {
-          input.filters.map((filter) => {
+          input.filters.forEach((filter) => {
             if (!filter.checked) {
               queryFilters.push({
                 NOT: { meal_type: filter.key as MealTypes },

@@ -80,6 +80,7 @@ export const LandingHeroSection: React.FC = () => {
           // src={"assets/orange.svg"}
           alt="billing"
           sizes={"100%"}
+          priority
           // style={{
           //   clipPath:
           //     "polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 100% 100%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 0 0)",

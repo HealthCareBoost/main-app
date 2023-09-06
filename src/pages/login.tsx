@@ -10,6 +10,7 @@ import { styles } from "../styles/style";
 import { LoginForm } from "../components/auth/LoginForm";
 import { SignInError } from "../components/AuthError";
 import useQuery from "../hooks/useQuery";
+import { api } from "../utils/api";
 
 export default function LoginPage({
   providers,
@@ -23,7 +24,7 @@ export default function LoginPage({
 
   useEffect(() => {
     if (!query) return;
-    console.log(query);
+    // console.log(query);
     setError(query.error);
   }, [query]);
 
@@ -47,6 +48,7 @@ export default function LoginPage({
               className="mx-auto h-10 w-10 sm:h-12 sm:w-12"
               src="assets/orange.svg"
               alt="letmecook-logo"
+              priority
             />
             <h1 className={`${styles.heading2} uppercase lg:text-4xl`}>
               Welcome back

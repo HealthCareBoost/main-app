@@ -24,7 +24,7 @@ export default function RegisterPage({
 
   useEffect(() => {
     if (!query) return;
-    console.log(query);
+    // console.log(query);
     setError(query.error);
   }, [query]);
 
@@ -55,6 +55,7 @@ export default function RegisterPage({
             className="object-cover"
             sizes="(max-width: 1200px) 42vh"
             alt="left-filler"
+            loading="lazy"
           />
         </div>
         <div className="col-span-7 lg:p-8">
@@ -66,6 +67,7 @@ export default function RegisterPage({
                 className="mx-auto h-10 w-10 sm:h-12 sm:w-12"
                 src="assets/orange.svg"
                 alt="letmecook-logo"
+                priority
               />
               <h1
                 className={`${styles.heading2} uppercase lg:text-4xl`}

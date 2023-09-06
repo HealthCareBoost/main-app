@@ -45,6 +45,7 @@ export const RecipeGrid: React.FC = () => {
             </p>
           </div>
           <Select
+            aria-label="Search recipes button"
             onValueChange={(value) => {
               recipeDispatch({
                 type: RecipeReducerActions.CHANGE_ORDER_BY,
@@ -55,7 +56,10 @@ export const RecipeGrid: React.FC = () => {
               returnToFirstPage();
             }}
           >
-            <SelectTrigger className="w-[180px] justify-self-end">
+            <SelectTrigger
+              aria-label="orderByBtn"
+              className="w-[180px] justify-self-end"
+            >
               <SelectValue placeholder="Order By" />
             </SelectTrigger>
             <SelectContent>

@@ -40,6 +40,8 @@ export const SearchBar: React.FC<{
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          id="recipeSearchBtn"
+          aria-label="Search recipes button"
           className="w-[200px] justify-between sm:w-[380px]"
         >
           {selectedValue ? selectedValue : "Search Recipes..."}
