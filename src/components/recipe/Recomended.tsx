@@ -10,11 +10,11 @@ export const RecomendedRecipes: React.FC<{
   recipes: RecipesQueryResult[];
 }> = ({ recipes }) => {
   const { width } = useWindowDimensions();
-  // console.log(width);
+  console.log(width);
   const items: SwiperNodes[] = recipes.map((r) => {
     return {
       node: (
-        <div className="h-96 w-80">
+        <div className="mx-auto h-96 w-80">
           <RecipePreview recipe={r} />
         </div>
       ),
@@ -35,18 +35,25 @@ export const RecomendedRecipes: React.FC<{
 const slidesPerWindowWidth: (width: number | undefined) => number = (width) => {
   if (!width) return 1;
   if (width <= WindowSizes.sm) {
-    console.log("width <= sm");
-    console.log(width <= WindowSizes.sm);
+    // console.log("width <= sm");
+    // console.log(width <= WindowSizes.sm);
     return 1;
   }
-  if (width <= WindowSizes.lg) {
-    console.log("width <= lg");
-    console.log(width <= WindowSizes.lg);
+
+  if (width <= WindowSizes.md) {
+    // console.log("width <= md");
+    // console.log(width <= WindowSizes.lg);
     return 2;
   }
+
+  if (width <= WindowSizes.lg) {
+    // console.log("width <= lg");
+    // console.log(width <= WindowSizes.lg);
+    return 3;
+  }
   if (width >= WindowSizes.lg) {
-    console.log("width >= xl");
-    console.log(width >= WindowSizes.xl);
+    // console.log("width >= xl");
+    // console.log(width >= WindowSizes.xl);
     return 4;
   }
   return 1;

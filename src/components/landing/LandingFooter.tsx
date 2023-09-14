@@ -2,6 +2,8 @@ import React from "react";
 import { styles } from "../../styles/style";
 import { SocialIcons } from "./SocialIcons";
 import dynamic from "next/dynamic";
+import { env } from "process";
+import Link from "next/link";
 
 export const DynamicLogo = dynamic(
   () => import("@/src/components/Logo").then((mod) => mod.Logo),
@@ -76,23 +78,23 @@ export const LandingFooter: React.FC = () => {
       links: [
         {
           name: "Content",
-          link: "https://www.hoobank.com/content/",
+          link: "/content",
         },
         {
           name: "How it Works",
-          link: "https://www.hoobank.com/how-it-works/",
+          link: "/how-it-works",
         },
         {
           name: "Create",
-          link: "https://www.hoobank.com/create/",
+          link: "/create",
         },
         {
           name: "Explore",
-          link: "https://www.hoobank.com/explore/",
+          link: "/explore",
         },
         {
           name: "Terms & Services",
-          link: "https://www.hoobank.com/terms-and-services/",
+          link: "/terms-and-services",
         },
       ],
     },
@@ -101,23 +103,23 @@ export const LandingFooter: React.FC = () => {
       links: [
         {
           name: "Help Center",
-          link: "https://www.hoobank.com/help-center/",
+          link: "/help-center",
         },
         {
           name: "Partners",
-          link: "https://www.hoobank.com/partners/",
+          link: "/partners",
         },
         {
           name: "Suggestions",
-          link: "https://www.hoobank.com/suggestions/",
+          link: "/suggestions",
         },
         {
           name: "Blog",
-          link: "https://www.hoobank.com/blog/",
+          link: "/blog",
         },
         {
           name: "Newsletters",
-          link: "https://www.hoobank.com/newsletters/",
+          link: "/newsletters",
         },
       ],
     },
@@ -125,12 +127,12 @@ export const LandingFooter: React.FC = () => {
       title: "Partner",
       links: [
         {
-          name: "Our Partner",
-          link: "https://www.hoobank.com/our-partner/",
+          name: "Our Partners",
+          link: "/our-partners",
         },
         {
           name: "Become a Partner",
-          link: "https://www.hoobank.com/become-a-partner/",
+          link: "/become-a-partner",
         },
       ],
     },
@@ -142,7 +144,7 @@ export const LandingFooter: React.FC = () => {
         <div className="mr-10 flex flex-[1] flex-col justify-start">
           <DynamicLogo />
           <p className={`${styles.paragraph} mt-4 max-w-[312px]`}>
-            A new way to make the payments easy, reliable and secure.
+            A new way to easy save, organize and prepare your meals.
           </p>
         </div>
 
@@ -157,14 +159,15 @@ export const LandingFooter: React.FC = () => {
               </h4>
               <ul className="mt-4 list-none">
                 {footerlink.links.map((link, index) => (
-                  <li
-                    key={link.name}
-                    className={`cursor-pointer font-poppins text-[16px] font-normal leading-[24px] text-dimDark hover:text-orange-400 dark:text-dimWhite ${
-                      index !== footerlink.links.length - 1 ? "mb-4" : "mb-0"
-                    }`}
-                  >
-                    {link.name}
-                  </li>
+                  <Link key={link.name} href={link.link}>
+                    <li
+                      className={`cursor-pointer font-poppins text-[16px] font-normal leading-[24px] text-dimDark hover:text-orange-400 dark:text-dimWhite ${
+                        index !== footerlink.links.length - 1 ? "mb-4" : "mb-0"
+                      }`}
+                    >
+                      {link.name}
+                    </li>
+                  </Link>
                 ))}
               </ul>
             </div>
