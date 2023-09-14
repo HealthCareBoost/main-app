@@ -123,7 +123,7 @@ export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
 
   return (
     <div className="sticky top-10 z-50 h-full w-full flex-shrink flex-grow-0 px-4 sm:w-1/6 lg:w-[10%]">
-      <div className="sticky top-0 h-full w-full rounded-xl bg-orange-400 p-4 dark:bg-orange-500">
+      <div className="sticky top-0 h-full w-full min-w-[100px] rounded-xl bg-orange-400 p-4 dark:bg-orange-500">
         <ul className="flex content-center justify-center overflow-hidden sm:flex-col">
           <li className="my-2 flex items-center justify-center rounded-md py-2 hover:bg-orange-100 dark:hover:bg-orange-100">
             <button

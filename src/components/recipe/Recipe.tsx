@@ -16,6 +16,8 @@ import {
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/HoverCard";
 import { Separator } from "../ui/Separator";
 import { roundNumber } from "@/src/utils/numbers";
+import { shortenText } from "@/src/utils/shortenText";
+import { Constants } from "@/src/utils/constants";
 
 export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
   const displayNutrion: () => React.ReactNode[] = () => {
@@ -73,12 +75,6 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
           >
             {recipe.name}
           </h1>
-          <p
-            id="description"
-            className={`${styles.paragraph} my-0 mx-auto pb-8 pt-1 pr-3 text-left italic`}
-          >
-            {recipe.description}
-          </p>
 
           <div className="relative mb-2 w-full bg-slate-100 pt-[50%]">
             <div className="absolute top-0 right-0 flex h-full w-full items-center justify-center overflow-hidden">
@@ -105,6 +101,17 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
               )}
             </div>
           </div>
+
+          <p
+            id="description"
+            className={`${styles.paragraph} my-0 mx-auto pb-8 pt-1 pr-3 text-left italic`}
+          >
+            {shortenText(
+              recipe.description,
+              Constants.MAX_DESCRIPTION_SENTENCES
+            )}
+          </p>
+
           <div className="flex flex-col">
             <div className="my-4 flex flex-col items-center sm:flex-row sm:items-center sm:justify-between">
               <div className={`my-4 sm:my-2 sm:pl-4 md:pl-5`}>

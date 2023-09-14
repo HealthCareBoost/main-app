@@ -8,6 +8,8 @@ export const Constants = {
   MAX_NAME: 50,
   MIN_QUANTITY: 0.01,
   MIN_DESCRIPTION: 15,
+  MAX_DESCRIPTION: 1000,
+  MAX_DESCRIPTION_SENTENCES: 10,
 } as const;
 
 export const WindowSizes = {

@@ -31,7 +31,10 @@ export const RecipeSchema = z.object({
     .min(0),
   // preparationTimeUnit: z.nativeEnum(TimeUnits),
   difficultyLevel: z.nativeEnum(DifficultyLevel),
-  description: z.string().min(Constants.MIN_DESCRIPTION),
+  description: z
+    .string()
+    .min(Constants.MIN_DESCRIPTION)
+    .max(Constants.MAX_DESCRIPTION),
   images: ImageInfoSchema.optional(), // doesn't work if its not optional
   category: z.nativeEnum(Categories).optional(),
   recipe_steps: z.string(),

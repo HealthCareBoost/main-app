@@ -97,7 +97,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
       </div>
 
       <div className="p-6">
-        <div className="flex flex-col items-center justify-between ss:flex-row ss:items-start">
+        <div className="flex h-3/4 flex-col items-center justify-between ss:flex-row ss:items-start">
           <div className="text-center ss:text-left">
             <Link
               href={`/recipe/${recipe.id}`}
@@ -118,7 +118,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
             }}
             className="flex flex-col items-center"
           >
-            <div className="mt-2 flex flex-row items-center rounded-full bg-orange-400 p-3 text-sm font-medium text-white">
+            <div className="w-m-[75px] mt-2 flex flex-row items-center rounded-full bg-orange-400 p-3 text-sm font-medium text-white">
               <span className="mx-2 text-base text-primaryDark dark:text-white">
                 {/* 5.0 (2.5k) */}
                 {millify(totalLikes)}
@@ -149,7 +149,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
         />
 
         <div className="flex w-full flex-wrap justify-between">
-          <div className="mx-auto flex flex-col items-center sm:inline-flex sm:flex-row">
+          <div className="mx-auto flex w-full flex-col items-center justify-between sm:inline-flex sm:flex-row">
             <div className="flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -181,10 +181,11 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
                     }}
                     className="color mx-4 w-[1px]"
                   /> */}
-            <span className="mx-2 text-center">•</span>
-            <span className="text-center capitalize text-gray-600 dark:text-dimWhite">
-              {`${recipe.difficulty_level} Difficulty`}
-            </span>
+            {/* <div className="mx-2 text-center">•</div> */}
+            {/* <div className="w-m-[75px] mt-2 flex flex-row items-center rounded-full bg-orange-400 p-3 text-sm font-medium text-white"> */}
+            <div className="rounded-full bg-orange-400 text-center capitalize text-gray-600 dark:text-dimWhite">
+              {`${recipe.difficulty_level}`}
+            </div>
           </div>
         </div>
       </div>
