@@ -14,7 +14,7 @@ export const RecomendedRecipes: React.FC<{
   const items: SwiperNodes[] = recipes.map((r) => {
     return {
       node: (
-        <div className="mx-auto h-96 w-80">
+        <div className="mx-auto h-96 w-80 max-w-xs lg:w-72">
           <RecipePreview recipe={r} />
         </div>
       ),

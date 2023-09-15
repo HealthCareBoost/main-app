@@ -21,7 +21,7 @@ export const GetMonthDays = (date: Date) => {
 export const labelColor: (type: MealTypes) => string = (meal_type) => {
   return MEAL_TYPE_COLORS[meal_type]
     ? MEAL_TYPE_COLORS[meal_type]
-    : LABEL_COLORS.yellow;
+    : LABEL_COLORS.yellow_200;
 };
 
 export const removeTimezoneOffset: (date: Date) => Date = (date) => {

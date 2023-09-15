@@ -10,6 +10,7 @@ import Link from "next/link";
 import { api } from "../../utils/api";
 import { Heart, HeartOff } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { getColovByDifficulty } from "@/src/utils/recipe/recipeDifficMapper";
 
 type RecipePreviewProps = {
   recipe: NonNullable<RecipesQueryResult>;
@@ -118,7 +119,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
             }}
             className="flex flex-col items-center"
           >
-            <div className="w-m-[75px] mt-2 flex flex-row items-center rounded-full bg-orange-400 p-3 text-sm font-medium text-white">
+            <div className="mt-2 flex min-w-[75px] flex-row items-center rounded-full bg-orange-400 p-3 text-sm font-medium text-white">
               <span className="mx-2 text-base text-primaryDark dark:text-white">
                 {/* 5.0 (2.5k) */}
                 {millify(totalLikes)}
@@ -183,7 +184,12 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
                   /> */}
             {/* <div className="mx-2 text-center">•</div> */}
             {/* <div className="w-m-[75px] mt-2 flex flex-row items-center rounded-full bg-orange-400 p-3 text-sm font-medium text-white"> */}
-            <div className="rounded-full bg-orange-400 text-center capitalize text-gray-600 dark:text-dimWhite">
+            <div
+              className="min-w-[75px] rounded-full bg-orange-400 p-1 text-center text-sm font-medium capitalize text-primaryDark dark:text-white"
+              style={{
+                backgroundColor: getColovByDifficulty(recipe.difficulty_level),
+              }}
+            >
               {`${recipe.difficulty_level}`}
             </div>
           </div>

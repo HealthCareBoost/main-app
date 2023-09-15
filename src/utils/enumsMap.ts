@@ -111,26 +111,40 @@ export type OrderByValues =
   | "difficulty_level";
 
 export const LABEL_COLORS = {
-  red: "#fecaca",
-  rose: "#fecdd3",
+  red_200: "#fecaca",
+  red_600: "#dc2626",
+  rose_200: "#fecdd3",
 
-  amber: "#fde68a",
-  yellow: "#fef08a",
+  amber_200: "#fde68a",
+  yellow_200: "#fef08a",
+  yellow_500: "#eab308",
 
-  purple: "#e9d5ff",
-  violet: "#ddd6fe",
+  orange_400: "#fb923c",
+  orange_600: "#ea580c",
+  orange_700: "#c2410c",
 
-  green: "#bbf7d0",
-  emerald: "#a7f3d0",
+  purple_200: "#e9d5ff",
+  violet_200: "#ddd6fe",
 
-  indigo: "#c7d2fe",
-  blue: "#bfdbfe",
-  sky: "#bae6fd",
+  green_200: "#bbf7d0",
+  green_500: "#22c55e",
+  emerald_200: "#a7f3d0",
+
+  indigo_200: "#c7d2fe",
+  blue_200: "#bfdbfe",
+  sky_200: "#bae6fd",
 } as const;
 
 export const MEAL_TYPE_COLORS = {
-  BREAKFAST: LABEL_COLORS.amber,
-  DINNER: LABEL_COLORS.indigo,
-  LUNCH: LABEL_COLORS.green,
-  SNACK: LABEL_COLORS.red,
+  BREAKFAST: LABEL_COLORS.amber_200,
+  DINNER: LABEL_COLORS.indigo_200,
+  LUNCH: LABEL_COLORS.green_200,
+  SNACK: LABEL_COLORS.red_200,
+} as const;
+
+export const DIFFICULTY_COLORS = {
+  easy: LABEL_COLORS.green_500,
+  medium: LABEL_COLORS.yellow_500,
+  hard: LABEL_COLORS.orange_600,
+  expert: LABEL_COLORS.red_600,
 } as const;
