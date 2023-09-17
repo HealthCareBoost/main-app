@@ -11,21 +11,21 @@ export const LandingNavLinks: NavItem[] = [
     title: "Home",
     href: "#home",
   },
-  {
-    id: "features",
-    title: "Features",
-    href: "#features",
-  },
+  // {
+  //   id: "features",
+  //   title: "Features",
+  //   href: "#features",
+  // },
   // {
   //   id: "product",
   //   title: "Product",
   //   href: "#product",
   // },
-  {
-    id: "clients",
-    title: "Clients",
-    href: "#clients",
-  },
+  // {
+  //   id: "clients",
+  //   title: "Clients",
+  //   href: "#clients",
+  // },
   {
     id: "recipe",
     title: "Recipes",

@@ -2,7 +2,6 @@ import React from "react";
 import { styles } from "../../styles/style";
 import { SocialIcons } from "./SocialIcons";
 import dynamic from "next/dynamic";
-import { env } from "process";
 import Link from "next/link";
 
 export const DynamicLogo = dynamic(
@@ -77,24 +76,16 @@ export const LandingFooter: React.FC = () => {
       title: "Useful Links",
       links: [
         {
-          name: "Content",
-          link: "/content",
+          name: "About us",
+          link: "/about",
         },
         {
           name: "How it Works",
-          link: "/how-it-works",
-        },
-        {
-          name: "Create",
-          link: "/create",
-        },
-        {
-          name: "Explore",
-          link: "/explore",
+          link: "/how",
         },
         {
           name: "Terms & Services",
-          link: "/terms-and-services",
+          link: "/terms",
         },
       ],
     },
@@ -108,10 +99,6 @@ export const LandingFooter: React.FC = () => {
         {
           name: "Partners",
           link: "/partners",
-        },
-        {
-          name: "Suggestions",
-          link: "/suggestions",
         },
         {
           name: "Blog",
