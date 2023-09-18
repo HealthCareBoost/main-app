@@ -25,7 +25,9 @@ const HowItWorksPage = () => {
 
   return (
     <Layout>
-      <main className={`my-8 h-full rounded-3xl bg-orange-400 p-4`}>
+      <main
+        className={`my-8 h-full rounded-3xl border-t-2 border-l-2 border-orange-400 p-4`}
+      >
         <div
           className={`${styles.boxWidth} mx-auto flex flex-col items-center justify-center bg-white dark:bg-bgDark`}
         >
@@ -85,7 +87,9 @@ const HowStep: React.FC<{
         >
           {title}
         </h4>
-        <p className={`${styles.paragraph} md:text-lg`}>{description}</p>
+        <p className={`${styles.paragraph} list-none p-2 pl-0 md:text-lg`}>
+          {description}
+        </p>
       </div>
     </div>
   );
