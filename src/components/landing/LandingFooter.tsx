@@ -9,8 +9,15 @@ export const DynamicLogo = dynamic(
   { ssr: false }
 );
 
+interface IconsType {
+  id: string;
+  name: "instagram" | "facebook" | "twitter" | "linkedin" | "github";
+  icon: string;
+  link: string;
+}
+
 export const FooterSmall = () => {
-  const socialMedia = [
+  const socialMedia: IconsType[] = [
     {
       id: "social-media-1",
       icon: "assets/instagram.svg",
@@ -34,6 +41,12 @@ export const FooterSmall = () => {
       icon: "assets/linkedin.svg",
       name: "linkedin",
       link: "https://www.linkedin.com/",
+    },
+    {
+      id: "social-media-5",
+      icon: "assets/github.svg",
+      name: "github",
+      link: "https://www.github.com/",
     },
   ];
 
