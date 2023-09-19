@@ -9,17 +9,17 @@ const HowItWorksPage = () => {
     {
       title: "Save Recipes",
       description:
-        "You can get ETH, the digital currency that fuels transactions on the Ethereum blockchain, from a digital currency exchange",
+        "The app provides a centralized platform where users can easily save and organize their recipes, plan meals, and track their grocery needs.",
     },
     {
       title: "Discover New",
       description:
-        "A crypto wallet, such as MetaMask, stores your ETH and processes transactions on the Ethereum blockchain.",
+        "The app offers an extensive catalog of recipes that users can choose from and incorporate into their meal plan.",
     },
     {
-      title: "Plan Ahead",
+      title: "Plan Your Meals",
       description:
-        "Let's connect your wallet to BUM, edit your profile, and begin interacting in the space.",
+        "We want our users to access their meal plans and recipes anytime, anywhere, providing convenience and flexibility in managing their meals.",
     },
   ];
 
@@ -34,12 +34,13 @@ const HowItWorksPage = () => {
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <section className="my-auto flex h-1/2 flex-col items-center justify-center gap-2 px-4 text-center">
               <h1 className={`${styles.heading2} uppercase`}>How it works?</h1>
-              <Separator className="my-1 w-4/5 bg-orange-400" />
+              <Separator className="my-1 w-4/5 bg-orange-400 dark:bg-orange-400" />
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam
-                vitae incidunt dolore id labore eum? Laborum non repudiandae
-                deleniti vitae, sunt nesciunt. Cupiditate, in! Vel suscipit
-                placeat aut pariatur labore.
+                Our meal planning application is a powerful tool, that help
+                users achieve balance and good nutrition. With its intuitive
+                functionalities and personalized solutions, the app supports
+                users to make healthy food decisions and enjoy well-planned and
+                tasty meals!
               </p>
               <div className={"my-4"}>
                 <LandingButton text="Get Started" />
