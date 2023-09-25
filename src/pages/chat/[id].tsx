@@ -1,11 +1,11 @@
 import React from "react";
-import Layout from "../components/Layout";
-import { api } from "../utils/api";
-import { Input } from "../components/ui/FormInput";
-import { Form } from "../components/ui/FormProvider";
-import { useZodForm } from "../hooks/useZodFormHook";
+import Layout from "../../components/Layout";
+import { api } from "../../utils/api";
+import { Input } from "../../components/ui/FormInput";
+import { Form } from "../../components/ui/FormProvider";
+import { useZodForm } from "../../hooks/useZodFormHook";
 import { z } from "zod";
-import { Button } from "../components/ui/Button";
+import { Button } from "../../components/ui/Button";
 import { ArrowBigRight } from "lucide-react";
 
 const Ai = () => {

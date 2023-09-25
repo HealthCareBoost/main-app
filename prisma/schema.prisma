@@ -58,6 +58,7 @@ model User {
     daily_diet      UserDailyDiet[]
     comments        Comment[]
     preferences     UserPreferences[]  
+    chats           Chat[]  
     // likes           UserLike[]
     createdAt       DateTime  @default(now())
     updatedAt       DateTime  @updatedAt
@@ -252,6 +253,29 @@ model UserDailyDiet {
     @@id([user_id, recipe_id, date])
     @@index([recipe_id])
     @@index([user_id])
+}
+
+model Chat {
+    id            String    @id @default(cuid())       
+    user_id       String
+    user          User      @relation(fields: [user_id], references: [id])
+    messages      ChatMessage[]
+
+
+    @@index([user_id])
+}
+
+model ChatMessage {
+    id              Int       @id @default(autoincrement())
+    prompt          String
+    responce        String 
+    chat_id         String
+    chat            Chat      @relation(fields: [chat_id], references: [id])  
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @updatedAt
+
+
+    @@index([chat_id])
 }
 
 // Not sure about that
