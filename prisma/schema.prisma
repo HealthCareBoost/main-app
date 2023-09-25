@@ -267,8 +267,8 @@ model Chat {
 
 model ChatMessage {
     id              Int       @id @default(autoincrement())
-    prompt          String
-    responce        String 
+    prompt          String    @db.LongText
+    responce        String    @db.LongText
     chat_id         String
     chat            Chat      @relation(fields: [chat_id], references: [id])  
     createdAt       DateTime  @default(now())

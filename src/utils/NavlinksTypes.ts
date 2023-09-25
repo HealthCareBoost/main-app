@@ -31,6 +31,11 @@ export const LandingNavLinks: NavItem[] = [
     title: "Recipes",
     href: "/recipe",
   },
+  {
+    id: "ai",
+    title: "AI Chat",
+    href: "/chat",
+  },
 ];
 
 export const MainNavLinks: NavItem[] = [
@@ -53,5 +58,10 @@ export const MainNavLinks: NavItem[] = [
     id: "diet",
     title: "Diet",
     href: "/user/diet",
+  },
+  {
+    id: "ai",
+    title: "AI Chat",
+    href: "/chat",
   },
 ];
