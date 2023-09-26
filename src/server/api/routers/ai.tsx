@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import OpenAI from "openai";
+import { env } from "process";
 
 const openai = new OpenAI({
   // apiKey: "my api key",
@@ -8,6 +9,12 @@ const openai = new OpenAI({
 });
 
 export const chatRouter = createTRPCRouter({
+  getUserChats: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.chat.findMany({
+      where: { user_id: ctx.session.user.id },
+    });
+  }),
+
   getChatMessages: publicProcedure
     .input(z.object({ chatId: z.string() }))
     .query(async ({ input, ctx }) => {
@@ -39,6 +46,7 @@ export const chatRouter = createTRPCRouter({
         })
         .join("\n\n");
 
+      if (!env.OPENAI_ENABLED) throw new Error("No API Credits");
       const completion = await openai.chat.completions.create({
         messages: [{ role: "user", content: input.message }],
         model: "gpt-3.5-turbo",
@@ -55,7 +63,6 @@ export const chatRouter = createTRPCRouter({
           chat_id: input.chatId,
         },
       });
-
       return completion.choices[0]?.message.content ?? "";
     }),
 

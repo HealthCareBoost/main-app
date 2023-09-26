@@ -41,14 +41,19 @@ const ChatPage: NextPage<{ chatId: string }> = ({ chatId }) => {
     <Layout>
       <main className={`container py-4 ${styles.boxWidth}`}>
         <div>
+          {isLoading && <LoadingSpinner size={128} />}
           {messages.map((m, idx) => (
-            <div key={idx} className="my-4 p-4">
-              <div className="w-full border-b border-black/10 p-2 dark:border-gray-900/50 dark:bg-gray-800">
+            <div
+              key={idx}
+              className="my-4 flex flex-col gap-2 whitespace-pre-wrap p-4 text-base font-normal"
+            >
+              <div className="w-full border-b border-black/10 p-2 font-semibold dark:border-gray-900/50 dark:bg-slate-800">
                 {m.prompt}
               </div>
               <div
                 className="w-full border-b border-black/10 bg-gray-50 p-2
-               dark:border-gray-900/50 dark:bg-[#444654]"
+               dark:border-slate-600/50 dark:bg-primaryDark"
+                //  bg-[#444654]
               >
                 {m.responce}
               </div>
@@ -160,9 +165,9 @@ import type { GetStaticProps, NextPage } from "next";
 import superjson from "superjson";
 import { appRouter } from "../../server/api/root";
 import { prisma } from "../../server/db";
-import { da } from "date-fns/locale";
-import { ChatMessage } from "@prisma/client";
+import type { ChatMessage } from "@prisma/client";
 import { styles } from "@/src/styles/style";
+import { LoadingSpinner } from "@/src/components/Loading";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({

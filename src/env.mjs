@@ -26,6 +26,7 @@ const server = z.object({
   GOOGLE_CLIENT_SECRET: z.string().min(1),
   EMAIL_USER: z.string().min(1),
   EMAIL_SERVER: z.string().min(1),
+  OPENAI_ENABLED: z.coerce.boolean(),
 });
 
 /**
@@ -53,6 +54,7 @@ const processEnv = {
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   EMAIL_USER: process.env.EMAIL_USER,
   EMAIL_SERVER: process.env.EMAIL_SERVER,
+  OPENAI_ENABLED: process.env.OPENAI_ENABLED,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 
