@@ -61,10 +61,11 @@ export const LandingHeroSection: React.FC = () => {
           Culinary Organizer
         </h1>
         <p className={`${styles.paragraph} mt-5 max-w-[470px]`}>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis
-          quaerat molestias est odio, totam saepe neque hic accusantium ab
-          consectetur ipsam dolorum error voluptatem. Eligendi numquam illum
-          necessitatibus consequatur eius!
+          Introducing our meal planner - LetMeCook, your partner in crafting
+          well-balanced, hassle-free, and delightful meals. Say goodbye to daily
+          dilemmas about what is for dinner. With our intuitive tool, you can
+          effortlessly create personalized meal plans that cater to your tastes,
+          dietary preferences, and nutrition goals.
         </p>
       </div>
       {/* right side */}

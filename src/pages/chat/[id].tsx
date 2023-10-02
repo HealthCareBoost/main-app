@@ -10,10 +10,9 @@ import { ArrowBigRight } from "lucide-react";
 
 const ChatPage: NextPage<{ chatId: string }> = ({ chatId }) => {
   // props: InferGetServerSidePropsType<typeof getStaticProps>
-  const { data, isFetching, isLoading, refetch } =
-    api.chat.getChatMessages.useQuery({
-      chatId,
-    });
+  const { data, isLoading, refetch } = api.chat.getChatMessages.useQuery({
+    chatId,
+  });
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const sendMessage = api.chat.sendMessage.useMutation();

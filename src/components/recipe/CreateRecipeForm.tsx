@@ -237,10 +237,13 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
                 Recipe Info
               </h2>
               <p className={`${styles.paragraph} mt-1 mr-3 text-sm leading-6`}>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Officiis laborum aliquid nostrum aperiam, id sint inventore
-                suscipit, sequi quos libero ratione veniam iure doloremque enim
-                porro deserunt sit non consequatur?
+                Elevate your recipes from mere instructions to mouthwatering
+                masterpieces. Upload tantalizing images that showcase your
+                dish&apos;s allure. Craft a captivating description that
+                narrates its journey from the kitchen to the plate. Specify
+                preparation time and dish difficulty, helping others understand
+                what to expect. With every detail, your recipe comes alive,
+                inviting others to savor the flavors you&apos;ve perfected.
               </p>
             </div>
             <Card>
@@ -366,13 +369,15 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
               <h2
                 className={`${styles.heading2} text-base font-semibold leading-7`}
               >
-                Recipe Ingrediants & Steps
+                Recipe Ingredients & Steps
               </h2>
               <p className={`${styles.paragraph} mt-1 mr-3 text-sm leading-6`}>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Enim
-                beatae minus, eos doloremque, rem sit assumenda laboriosam,
-                earum reprehenderit iste architecto quisquam magnam facere harum
-                quibusdam veniam ipsa? Iusto, minus.
+                Bring your culinary creations to life by filling out our
+                intuitive. Add the finest ingredients, specify quantities, and
+                describe preparation techniques with ease. Whether you&apos;re
+                sharing a family favorite or a gourmet experiment, our form
+                makes it simple to capture the essence of your recipe. Unleash
+                your inner chef and inspire others with your culinary prowess.
               </p>
             </div>
             <Card>

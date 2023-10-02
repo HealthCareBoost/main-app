@@ -482,8 +482,6 @@ export const recipeRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      console.log("************************");
-      console.log(input);
       // if (input.cursor) {
       //   console.log(`Cursor: ${input.cursor}`);
       //   console.log(
@@ -507,7 +505,9 @@ export const recipeRouter = createTRPCRouter({
       //     );
       //   }
       // }
-      console.log("************************");
+      // console.log("************************");
+      // console.log(input);
+      // console.log("************************");
       let orderBy = {};
       let whereConditions: WhereConditionsType = [];
 

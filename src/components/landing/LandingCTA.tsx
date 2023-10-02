@@ -11,9 +11,12 @@ export const LandingCTA: React.FC = () => {
       <div className="flex flex-1 flex-col">
         <h2 className={`${styles.heading2}`}>Try our service now!</h2>
         <p className={`${styles.paragraph} mt-5 max-w-[470px]`}>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Maiores
-          eveniet modi labore qui cupiditate autem sapiente corrupti, sequi sint
-          exercitationem dicta sit.
+          Embark on your culinary adventure by creating your profile! It&apos;s
+          quick and easy. Simply click the button, and you&apos;ll be on your
+          way to discovering a world of delightful recipes, meal planning, and
+          more. Your profile is your passport to the flavors of LetMeCook. Join
+          our community of food enthusiasts, and let&apos;s savor the art of
+          cooking together.
         </p>
       </div>
       <div className={`${styles.flexCenter} ml-0 mt-10 sm:ml-10 sm:mt-0`}>

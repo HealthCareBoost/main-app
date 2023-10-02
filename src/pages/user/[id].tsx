@@ -218,11 +218,13 @@ const UserProfile: NextPage<{ user_id: string }> = (
                 >
                   Check out your profile stats
                 </h1>
-                <div className="row-start-2 sm:col-span-3 sm:mb-16">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Doloremque laborum itaque ut, natus molestias temporibus
-                  soluta tenetur vitae ex voluptatibus esse qui at placeat
-                  perspiciatis! Iste possimus maxime reiciendis voluptatibus!
+                <div className="row-start-2 text-base sm:col-span-3 sm:mb-16">
+                  Check out your recipe creations and dietary achievements all
+                  in one place. Whether you&apos;re aiming to eat healthier, try
+                  new cuisines, or simply enjoy more home-cooked meals, the
+                  profile stats provide valuable insights into your cooking
+                  habits. Celebrate your culinary milestones and keep setting
+                  new goals as you embark on a flavorful adventure with us.
                 </div>
 
                 {userData.userStats &&
@@ -282,10 +284,10 @@ const UserProfile: NextPage<{ user_id: string }> = (
               <h1 className={`${styles.heading2} text-center sm:col-span-3`}>
                 Recomended For You
               </h1>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Temporibus nihil veniam earum voluptatem eaque tempora ea quia
-              dicta adipisci! Reiciendis quam ratione aliquid architecto rem
-              culpa accusamus omnis cupiditate officia?
+              Explore a world of culinary delights with our carefully curated
+              selection of recommended recipes. Our team of food enthusiasts has
+              handpicked these dishes to delight your taste buds and inspire
+              your next meal.
             </div>
             <div className="sm:col-span-full">
               {recomendedRecipes && recomendedRecipes.length > 0 && (

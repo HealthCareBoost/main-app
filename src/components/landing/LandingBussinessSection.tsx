@@ -71,11 +71,12 @@ export const LandingBusinessSection: React.FC = () => {
       <div className={layout.sectionInfo}>
         <h2 className={styles.heading2}>Unlock Your Culinary Potential.</h2>
         <p className={`${styles.paragraph} mt-5 max-w-[470px]`}>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt,
-          perferendis corporis nisi officia dolor consequuntur in aperiam? Lorem
-          ipsum dolor sit amet, consectetur adipisicing elit. Libero aliquam
-          quasi consectetur possimus porro inventore amet quidem culpa
-          praesentium doloribus provident.
+          Embark on a flavorful journey and unlock your culinary potential with
+          us. Whether you&apos;re a seasoned chef or a kitchen novice, our
+          platform is your gateway to culinary excellence. Discover recipes,
+          plan meals, and create dishes that will leave your taste buds
+          tingling. It&apos;s time to explore, experiment, and elevate your
+          cooking game.
         </p>
         <LandingButton styles="mt-10" text="Get Started" />
       </div>
