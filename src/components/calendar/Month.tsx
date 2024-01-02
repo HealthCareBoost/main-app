@@ -2,6 +2,7 @@ import { labelColor, removeTimezoneOffset } from "@/src/utils/calendarUtils";
 import { format } from "date-fns";
 import React, { useContext } from "react";
 import { CalendarContext } from "./CalendarContext";
+import { ScrollArea } from "../ui/ScrollArea";
 
 export const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
   const { setSelectedDay, setDailyDiet, setIsDialogOpen, monthlyDiet } =
@@ -26,7 +27,7 @@ export const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
                     setSelectedDay(new Date(day));
                     setIsDialogOpen(true);
                   }}
-                  className="flex flex-col border border-[#dadce0]"
+                  className="flex h-[120px] flex-col border border-[#dadce0]"
                   key={`${dayIdx}-${day.toString()}`}
                 >
                   <div className="flex flex-col items-center">
@@ -34,14 +35,14 @@ export const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
                       <p className="mt-1 text-base">{format(day, "EEE")}</p>
                     )}
                     <p
-                      className={`my-1 p-1 text-center text-base ${currentDay(
+                      className={`py-1 pb-1 text-center text-base ${currentDay(
                         day
                       )}`}
                     >
                       {format(day, "dd")}
                     </p>
                   </div>
-                  <div className="flex-1 cursor-pointer">
+                  <ScrollArea className="mb-1 cursor-pointer">
                     {monthlyDiet.map((dietInfo, idx) => {
                       let returnBody;
                       const columnDate = removeTimezoneOffset(new Date(day));
@@ -62,7 +63,7 @@ export const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
                               setSelectedDay(new Date(day));
                               setIsDialogOpen(true);
                             }}
-                            className={`event mx-1  mb-1 truncate rounded p-1 text-sm text-gray-600`}
+                            className={`mx-1 mb-1 w-full truncate rounded p-1 text-sm text-gray-600`}
                             style={{
                               backgroundColor: labelColor(dietInfo.meal_type),
                             }}
@@ -74,7 +75,7 @@ export const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
                       }
                       return returnBody;
                     })}
-                  </div>
+                  </ScrollArea>
                 </div>
               );
             } else {
@@ -85,7 +86,7 @@ export const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
                     setSelectedDay(new Date(day));
                     setIsDialogOpen(true);
                   }}
-                  className="flex flex-col border border-[#dadce0]"
+                  className="flex h-[120px] flex-col border border-[#dadce0]"
                   key={`${dayIdx}-${day.toString()}`}
                 >
                   <div className="flex flex-col items-center">
@@ -93,7 +94,7 @@ export const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
                       <p className="mt-1 text-base">{format(day, "EEE")}</p>
                     )}
                     <p
-                      className={`my-1 p-1 text-center text-base ${currentDay(
+                      className={`py-1 pb-1 text-center text-base ${currentDay(
                         day
                       )}`}
                     >

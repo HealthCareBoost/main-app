@@ -8,7 +8,7 @@ import type {
 } from "./CalendarContext";
 import { CalendarContext } from "./CalendarContext";
 import { CalendarHeader } from "./CalendarHeader";
-import { GetMonthDays, removeTimezoneOffset } from "@/src/utils/calendarUtils";
+import { GetMonthDays } from "@/src/utils/calendarUtils";
 import { CalendarMonth } from "./Month";
 import { CalendarDialog } from "./CalendarDialog";
 import { CalendarSidebar } from "./CalendarSidebar";
@@ -41,8 +41,8 @@ export const Calendar: React.FC = () => {
     isLoading,
     refetch,
   } = api.user.getUserDiet.useQuery({
-    from: removeTimezoneOffset(startOfMonth(currentDate)),
-    to: removeTimezoneOffset(endOfMonth(currentDate)),
+    from: startOfMonth(currentDate), // removeTimezoneOffset
+    to: endOfMonth(currentDate),
     filters: filters,
   });
 
