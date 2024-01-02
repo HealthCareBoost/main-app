@@ -1,16 +1,25 @@
 import React from "react";
 import { RecipePreview } from "../../components/recipe/RecipePreview";
 import type { RecipesQueryResult } from "../../components/recipe/RecipeReducer";
-import type { SwiperNodes } from "../../components/ui/Carousel";
-import { SwiperCarousel } from "../../components/ui/Carousel";
+import type { SwiperNodes } from "../../components/ui/SwiperCarousel";
+import { SwiperCarousel } from "../../components/ui/SwiperCarousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/src/components/ui/Carousel";
+
 import useWindowDimensions from "../../hooks/useMediaQuery";
 import { WindowSizes } from "../../utils/constants";
+import { CAROUSEL_TYPE } from "@/src/utils/constants";
 
 export const RecomendedRecipes: React.FC<{
   recipes: RecipesQueryResult[];
 }> = ({ recipes }) => {
   const { width } = useWindowDimensions();
-  console.log(width);
+  // console.log(width);
   const items: SwiperNodes[] = recipes.map((r) => {
     return {
       node: (
@@ -21,14 +30,39 @@ export const RecomendedRecipes: React.FC<{
       key: r.id,
     };
   });
+
   return (
-    <SwiperCarousel
-      props={{
-        slidesPerView: slidesPerWindowWidth(width),
-        className: "w-full",
-      }}
-      items={items}
-    />
+    <>
+      {CAROUSEL_TYPE === "swiper" ? (
+        <SwiperCarousel
+          props={{
+            slidesPerView: slidesPerWindowWidth(width),
+            className: "w-full",
+          }}
+          items={items}
+        />
+      ) : (
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+        >
+          <CarouselContent className="-ml-1">
+            {items.map((item, idx) => (
+              <CarouselItem
+                key={`${item.key}-${idx}`}
+                className="pl-2 sm:basis-1/2 md:basis-1/3 xl:basis-1/4"
+              >
+                {item.node}
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      )}
+    </>
   );
 };
 
