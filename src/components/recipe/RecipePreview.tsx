@@ -97,8 +97,8 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
         )}
       </div>
 
-      <div className="p-6">
-        <div className="flex h-3/4 flex-col items-center justify-between ss:flex-row ss:items-start">
+      <div className="p-4">
+        <div className="flex h-[100px] flex-col items-center justify-between ss:flex-row ss:items-start">
           <div className="text-center ss:text-left">
             <Link
               href={`/recipe/${recipe.id}`}
@@ -146,11 +146,11 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
             backgroundColor:
               theme === "dark" ? "rgba(255, 255, 255, 0.7)" : "rgb(0 4 15)",
           }}
-          className="my-4 h-[2px] dark:h-[1px]"
+          className="my-2 h-[2px] dark:h-[1px]"
         />
 
         <div className="flex w-full flex-wrap justify-between">
-          <div className="mx-auto flex w-full flex-col items-center justify-between sm:inline-flex sm:flex-row">
+          <div className="mx-auto flex w-full items-center justify-between sm:inline-flex sm:flex-row">
             <div className="flex items-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
