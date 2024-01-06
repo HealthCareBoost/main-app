@@ -5,8 +5,10 @@ import { Form } from "../ui/FormProvider";
 import { Input } from "../ui/FormInput";
 import { Button } from "../ui/Button";
 import { ArrowBigUp } from "lucide-react";
+import { useToast } from "@/src/hooks/use-toast";
 
 interface ChatFormProps {
+  currentChatId: string | null;
   onMessageSend?: () => Promise<unknown> | undefined;
 }
 
@@ -16,7 +18,9 @@ const chatSchema = z.object({
 
 type FormData = z.infer<typeof chatSchema>;
 
-export const ChatForm = ({ onMessageSend }: ChatFormProps) => {
+export const ChatForm = ({ onMessageSend, currentChatId }: ChatFormProps) => {
+  const { toast } = useToast();
+  const createChat = api.chat.createChat.useMutation();
   const sendMessage = api.chat.sendMessage.useMutation();
 
   const form = useZodForm({
@@ -31,10 +35,25 @@ export const ChatForm = ({ onMessageSend }: ChatFormProps) => {
       className="w-full"
       form={form}
       onSubmit={async (data: FormData) => {
-        await sendMessage.mutateAsync({
-          chatId: "chatId",
-          message: data.message,
-        });
+        if (currentChatId) {
+          await sendMessage.mutateAsync({
+            chatId: currentChatId,
+            message: data.message,
+          });
+        } else {
+          const chatId = await createChat.mutateAsync();
+          if (!chatId)
+            return toast({
+              title: "Error Sending Message!",
+              description: "Last Message was not send! Please Try Again!",
+              variant: "destructive",
+            });
+
+          await sendMessage.mutateAsync({
+            chatId,
+            message: data.message,
+          });
+        }
 
         if (onMessageSend) {
           await onMessageSend();

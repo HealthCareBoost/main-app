@@ -9,9 +9,30 @@ const openai = new OpenAI({
 });
 
 export const chatRouter = createTRPCRouter({
+  getUserChatsPreview: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.chat.findMany({
+      where: { user_id: ctx.session.user.id },
+      select: {
+        id: true,
+        user_id: true,
+        messages: {
+          take: 1,
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+  }),
+
   getUserChats: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.chat.findMany({
       where: { user_id: ctx.session.user.id },
+      select: {
+        id: true,
+        user_id: true,
+        messages: true,
+      },
     });
   }),
 

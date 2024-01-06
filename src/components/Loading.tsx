@@ -1,4 +1,5 @@
 import React from "react";
+import { Constants } from "../utils/constants";
 
 const LoadingInternal = (props: { size?: number }) => {
   const size = props.size ?? "24";
@@ -20,7 +21,7 @@ export const LoadingSpinner = React.memo(LoadingInternal);
 
 const LoadingPageInternal = () => (
   <div className="absolute top-0 right-0 flex h-screen w-screen items-center justify-center">
-    <LoadingInternal size={128} />
+    <LoadingInternal size={Constants.LOADING_SPINNER_SIZE_PX} />
   </div>
 );
 

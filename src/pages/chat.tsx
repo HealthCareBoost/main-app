@@ -1,47 +1,27 @@
 import { type GetServerSidePropsContext } from "next";
-import React, { useCallback, useEffect } from "react";
-import { getServerAuthSession } from "../server/auth";
-import { api } from "../utils/api";
-import { useRouter } from "next/router";
+import React from "react";
 import Layout from "../components/Layout";
-import Image from "next/image";
-import { Button } from "../components/ui/Button";
+import { ChatMessages } from "../components/chat/ChatMessages";
+import { ChatForm } from "../components/chat/Form";
+
+import ChatSidebar from "../components/chat/ChatSidebar";
+import { getServerAuthSession } from "../server/auth";
 
 const ChatPage: React.FC = () => {
-  const router = useRouter();
-  const createChat = api.chat.createChat.useMutation();
-
-  const redirectToChat = useCallback(async () => {
-    const chatId = await createChat.mutateAsync();
-    if (chatId) {
-      void router.push(`/chat/${chatId}`);
-    }
-  }, [createChat, router]);
-
-  useEffect(() => {
-    void redirectToChat();
-  }, [redirectToChat]);
-
   return (
     <Layout>
-      <div className="container flex w-full flex-col items-center justify-center">
-        <div className="mx-auto flex min-h-[350px] min-w-[350px] flex-col justify-evenly space-y-2 text-center">
-          <Image
-            width={100}
-            height={100}
-            className="mx-auto h-16 w-16 sm:h-20 sm:w-20"
-            src="assets/orange.svg"
-            alt="letmecook-logo"
-            priority
-          />
-          <Button
-            className="my-2"
-            onClick={() => {
-              void redirectToChat();
-            }}
-          >
-            Create New Chat
-          </Button>
+      <div className="container flex h-[85vh] w-full flex-row items-start">
+        <aside className="h-full rounded-lg border border-orange-400 bg-card p-4 lg:w-1/5">
+          <ChatSidebar />
+        </aside>
+
+        <div className="flex h-full w-full flex-1 flex-col items-center justify-center p-8">
+          <section>
+            <ChatMessages chatId={""} messages={[]} />
+          </section>
+          <div className="mt-auto mb-0 w-full">
+            <ChatForm currentChatId={null} />
+          </div>
         </div>
       </div>
     </Layout>

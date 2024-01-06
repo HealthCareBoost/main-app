@@ -10,6 +10,7 @@ export const Constants = {
   MIN_DESCRIPTION: 15,
   MAX_DESCRIPTION: 1000,
   MAX_DESCRIPTION_SENTENCES: 10,
+  LOADING_SPINNER_SIZE_PX: 128,
 } as const;
 
 export const WindowSizes = {
