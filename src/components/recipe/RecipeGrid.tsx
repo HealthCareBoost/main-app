@@ -95,7 +95,7 @@ const renderContent = (recipes: RecipesQueryResult[] | undefined) => {
   } else {
     return (
       <div className="mt-[20%] flex h-full min-h-[300px] w-full items-center justify-center">
-        <LoadingSpinner size={128} />
+        <LoadingSpinner />
       </div>
     );
   }

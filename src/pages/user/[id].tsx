@@ -66,7 +66,7 @@ const UserProfile: NextPage<{ user_id: string }> = (
   if (isLoading) {
     return (
       <div className="mt-[20%] flex h-full min-h-[300px] w-full items-center justify-center">
-        <LoadingSpinner size={128} />
+        <LoadingSpinner />
       </div>
     );
   }
@@ -211,7 +211,7 @@ const UserProfile: NextPage<{ user_id: string }> = (
                 ) : null}
               </div>
             </aside>
-            <main className="sm:col-span-2">
+            <section className="sm:col-span-2">
               <div className="grid gap-4 sm:grid-cols-3">
                 <h1
                   className={`${styles.heading2} text-center capitalize sm:col-span-3`}
@@ -276,7 +276,7 @@ const UserProfile: NextPage<{ user_id: string }> = (
                   </CardContent>
                 </Card>
               </div>
-            </main>
+            </section>
           </div>
           <Separator className="my-16 h-1" />
           <section className="mt-6 grid h-full grid-cols-1 gap-4 sm:grid-cols-4">

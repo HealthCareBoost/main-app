@@ -28,13 +28,13 @@ export function MainNav({}: MainNavProps) {
   return (
     <nav className="navbar flex w-full items-center justify-between py-6">
       <DynamicLogo />
-      <ul className="hidden flex-1 list-none items-center justify-start sm:flex">
+      <ul className="hidden flex-1 list-none items-center justify-start text-center sm:flex">
         {MainNavLinks.map((nav) => (
           <li
             key={`${nav.id}`}
-            className={`ml-10 cursor-pointer
-        font-poppins text-[16px] font-medium text-primaryDark hover:text-orange-400
-        dark:font-normal dark:text-white`}
+            className={`ml-6 cursor-pointer font-poppins
+        text-[16px] font-medium text-primaryDark hover:text-orange-400 dark:font-normal
+        dark:text-white lg:ml-10`}
           >
             <a href={`${nav.href}`}>{nav.title}</a>
           </li>

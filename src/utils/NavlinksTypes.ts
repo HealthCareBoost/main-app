@@ -49,11 +49,11 @@ export const MainNavLinks: NavItem[] = [
     title: "Recipes",
     href: "/recipe",
   },
-  {
-    id: "add-recipe",
-    title: "Create Recipe",
-    href: "/recipe/create",
-  },
+  // {
+  //   id: "add-recipe",
+  //   title: "Create Recipe",
+  //   href: "/recipe/create",
+  // },
   {
     id: "diet",
     title: "Diet",

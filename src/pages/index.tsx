@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import React from "react";
 import { styles } from "../styles/style";
 import { LandingNavbar } from "../components/landing/LandingNavbar";
