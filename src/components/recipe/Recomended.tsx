@@ -10,6 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/src/components/ui/Carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 import useWindowDimensions from "../../hooks/useMediaQuery";
 import { WindowSizes } from "../../utils/constants";
@@ -43,6 +44,11 @@ export const RecomendedRecipes: React.FC<{
         />
       ) : (
         <Carousel
+          plugins={[
+            Autoplay({
+              delay: 2000,
+            }),
+          ]}
           opts={{
             align: "start",
             loop: true,
