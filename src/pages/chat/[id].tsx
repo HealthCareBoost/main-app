@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import { api } from "../../utils/api";
-import { styles } from "@/src/styles/style";
 import { LoadingSpinner } from "@/src/components/Loading";
 import { ChatForm } from "@/src/components/chat/Form";
+import { ChatMessages } from "@/src/components/chat/ChatMessages";
+import ChatSidebar from "@/src/components/chat/ChatSidebar";
 
 const ChatPage: NextPage<{ chatId: string }> = ({ chatId }) => {
   // props: InferGetServerSidePropsType<typeof getStaticProps>
@@ -29,11 +30,11 @@ const ChatPage: NextPage<{ chatId: string }> = ({ chatId }) => {
           <section className="mt-0 w-full">
             {isLoading && <LoadingSpinner />}
             {!isLoading && data ? (
-              <ChatMessages chatId={chatId} messages={data.messages} />
+              <ChatMessages chatId={chatId} messages={messages} />
             ) : null}
           </section>
           <div className="mt-auto mb-0 w-full">
-            <ChatForm currentChatId={chatId} />
+            <ChatForm currentChatId={chatId} onMessageSend={refetch} />
           </div>
         </div>
       </div>
@@ -56,8 +57,6 @@ import superjson from "superjson";
 import { appRouter } from "../../server/api/root";
 import { prisma } from "../../server/db";
 import type { ChatMessage } from "@prisma/client";
-import { ChatMessages } from "@/src/components/chat/ChatMessages";
-import ChatSidebar from "@/src/components/chat/ChatSidebar";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({

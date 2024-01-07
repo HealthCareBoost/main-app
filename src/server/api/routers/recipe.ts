@@ -13,6 +13,7 @@ import type {
   IngredientToUpdate,
   NewIngredient,
 } from "../../../utils/recipe/recipeTypes";
+import { RecipeImageMapper } from "@/src/utils/recipe/recipeMapper";
 
 export const recipeRouter = createTRPCRouter({
   /**
@@ -51,11 +52,6 @@ export const recipeRouter = createTRPCRouter({
             ingredients: true,
           },
         });
-
-        // const ingredients = await ctx.prisma.ingredients.findMany({
-
-        // });
-
         return { success: true, recipe };
       } catch (error) {
         console.error(error);
@@ -109,59 +105,17 @@ export const recipeRouter = createTRPCRouter({
   createRecipe: protectedProcedure
     .input(RecipeSchema)
     .mutation(async ({ ctx, input }) => {
-      console.log("crm");
-      console.log(input);
-
-      const imageDataToSave: Omit<
-        RecipeImage,
-        "id" | "is_deleted" | "updatedAt" | "recipe_id"
-      >[] = input.images
-        ? input.images.map((imageInfo) => {
-            return {
-              // recipe_id: "1234567",
-              path: imageInfo.path,
-              filename:
-                imageInfo.public_id && imageInfo.folder
-                  ? (imageInfo.public_id
-                      .split(`${imageInfo.folder}/`)
-                      .pop() as string)
-                  : imageInfo.public_id,
-              original_filename: imageInfo.original_filename,
-              original_extension: imageInfo.original_extension,
-              format: imageInfo.format,
-              size_in_bytes: imageInfo.bytes,
-              createdAt: new Date(imageInfo.created_at),
-              width: imageInfo.width,
-              height: imageInfo.height,
-              url: imageInfo.secure_url,
-            };
-          })
-        : [];
+      // map images data to the fotm to be saved
+      const imageDataToSave = RecipeImageMapper(input.images);
 
       const ingredientsData = [];
-
       for (const ingredient of input.ingredients) {
-        // const exists = !!(await ctx.prisma.ingredients.findFirst({
-        //   where: {
-        //     name: ingredient.ingredient_name,
-        //   },
-        // }));
-
-        // if (!exists) {
-        // getnutr info
         ingredientsData.push({
           quantity: ingredient.quantity,
           measurement_unit: ingredient.measurement_unit,
           name: ingredient.ingredient_name,
         });
-        // }
       }
-      console.log("ingredientsData");
-      console.log(ingredientsData);
-
-      // ctx.prisma.nutrients.createMany({
-      // data: [{}],
-      // });
 
       const recipe = await ctx.prisma.recipe.create({
         data: {
@@ -211,26 +165,23 @@ export const recipeRouter = createTRPCRouter({
           },
         },
       });
-      console.log("ingredients after save");
-      console.log(recipe.ingredients);
 
+      // Get all the nutrition values of the all ingredients
       for (const ingredient of recipe.ingredients) {
         const nutritionData = await getIngredientNutritionsCollection(
           ingredient.name
         );
-        console.log("nutritionData");
-        console.log(nutritionData);
+
         if (nutritionData) {
           await ctx.prisma.$transaction(
             async (prisma) => {
-              const dataToSave = nutritionData.map((x) => ({
-                ...x,
+              const ingredientNutritionData = nutritionData.map((nutrient) => ({
+                ...nutrient,
                 ingredient_id: ingredient.id,
               }));
-              console.log("dataToSave");
-              console.log(dataToSave);
+
               await prisma.nutrients.createMany({
-                data: [...dataToSave],
+                data: [...ingredientNutritionData],
               });
             },
             { timeout: 10000 }
@@ -959,8 +910,19 @@ export const recipeRouter = createTRPCRouter({
 
       return { recipes, nextCursor };
     }),
-  // type a = { name: string; amount: number; unit: string };
 
+  /**
+   * Retrieves aggregated nutrition information for a recipe based on its ID.
+   *
+   * @function
+   * @async
+   * @name getNutrition
+   *
+   * @param {string} recipe_id - The ID of the recipe for which to retrieve nutrition information.
+   * @returns {Promise<Map<string, { amount: number, unit: string }>>} - Returns a Promise thet
+   *  resolves with an object containing aggregated nutrition information as a Map,
+   *  along with a success status or an error in case of failure.
+   */
   getNutrition: publicProcedure
     .input(
       z.object({
@@ -983,27 +945,32 @@ export const recipeRouter = createTRPCRouter({
         });
 
         const map = new Map<string, { amount: number; unit: string }>([]);
-        if (ingredients && ingredients.length > 0) {
-          ingredients.forEach((ingr) => {
-            if (ingr.nutrition && ingr.nutrition.length > 0) {
-              ingr.nutrition.forEach((nutrient) => {
-                const existingNutrient = map.get(nutrient.name);
-                if (existingNutrient) {
-                  map.set(nutrient.name, {
-                    amount: existingNutrient.amount + nutrient.amount,
-                    unit: nutrient.unit,
-                  });
-                } else {
-                  map.set(nutrient.name, {
-                    amount: nutrient.amount,
-                    unit: nutrient.unit,
-                  });
-                }
-              });
-            }
-          });
+
+        if (!ingredients || ingredients.length === 0) {
+          return { nutrition: map, success: true };
         }
-        // console.log(map);
+
+        // for each ingredient check all of its nutrients
+        // and get their stats into a Map
+        ingredients.forEach((ingr) => {
+          if (ingr.nutrition && ingr.nutrition.length > 0) {
+            ingr.nutrition.forEach((nutrient) => {
+              const existingNutrient = map.get(nutrient.name);
+
+              if (existingNutrient) {
+                map.set(nutrient.name, {
+                  amount: existingNutrient.amount + nutrient.amount,
+                  unit: nutrient.unit,
+                });
+              } else {
+                map.set(nutrient.name, {
+                  amount: nutrient.amount,
+                  unit: nutrient.unit,
+                });
+              }
+            });
+          }
+        });
         return { nutrition: map, success: true };
       } catch (error) {
         console.error(error);
@@ -1011,6 +978,17 @@ export const recipeRouter = createTRPCRouter({
       }
     }),
 
+  /**
+   * Retrieves recipe recommendations based on a list of product names.
+   *
+   * @function
+   * @async
+   * @name getRecomendationBasedOnProducts
+   *
+   * @param {string[]} product_names - An array of product names to base recommendations on.
+   *
+   * @returns {Promise<Recipe[]>} - A Promise that resolves with an array of recommended recipes.
+   */
   getRecomendationBasedOnProducts: publicProcedure
     .input(
       z.object({
@@ -1027,7 +1005,7 @@ export const recipeRouter = createTRPCRouter({
           name: { contains: name },
         }));
 
-        const res = await ctx.prisma.recipe.findMany({
+        const recommendations = await ctx.prisma.recipe.findMany({
           where: {
             ingredients: {
               some: {
@@ -1038,8 +1016,7 @@ export const recipeRouter = createTRPCRouter({
           take: Constants.MAX_SEARCH,
         });
 
-        console.log(res);
-        return res;
+        return { recommendations };
       } catch (error) {
         console.error(error);
         return [];

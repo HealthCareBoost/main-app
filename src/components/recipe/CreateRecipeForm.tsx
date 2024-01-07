@@ -20,7 +20,7 @@ import { useToast } from "../../hooks/use-toast";
 import { useRouter } from "next/navigation";
 import type { RecipeToUpdateType } from "../../utils/recipe/recipeTypes";
 import type { z } from "zod";
-import { RecipeMapper } from "../../utils/recipeMapper";
+import { RecipeMapper } from "../../utils/recipe/recipeMapper";
 import {
   Dialog,
   DialogContent,
