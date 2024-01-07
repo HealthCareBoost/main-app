@@ -13,6 +13,22 @@ type NutrientData = {
 };
 
 export const ingredientsRouter = createTRPCRouter({
+  /**
+   * Adds a new ingredient to a recipe and saves it to the database.
+   *
+   * @function
+   * @async
+   * @name addIngredient
+   *
+   * @param {string} recipe_id - The ID of the recipe to which the ingredient will be added.
+   * @param {string} ingredientName - The name of the new ingredient.
+   * @param {string} measurement_unit - The measurement unit of the ingredient.
+   * @param {number} quantity - The quantity of the ingredient.
+   *
+   * @returns {Promise<{ ingredient?: Ingredient }>} -
+   *          A Promise that resolves with an object indicating the success status, along with
+   *          the added ingredient if successful, or an error in case of failure.
+   */
   addIngredient: publicProcedure
     .input(
       z.object({
@@ -24,14 +40,15 @@ export const ingredientsRouter = createTRPCRouter({
     )
     .mutation(async ({ input, ctx }) => {
       try {
+        // Check if the ingredient already exists in the database.
         const ingredient = await ctx.prisma.ingredients.findFirst({
           where: {
             name: input.ingredientName,
           },
         });
-        console.log(input.ingredientName);
+
         if (!ingredient) {
-          //make api req to get nutritions
+          // If the ingredient doesn't exist in the database, fetch its nutrition information.
           const nutritions: Map<
             string,
             {
@@ -39,7 +56,8 @@ export const ingredientsRouter = createTRPCRouter({
               unit: string;
             }
           > | null = await getIngredientNutritions(input.ingredientName);
-          //save to db
+
+          // save to db
           if (nutritions !== null) {
             const nutritionsData: NutrientData[] = [];
             const keys = Array.from(nutritions.keys());
@@ -68,10 +86,7 @@ export const ingredientsRouter = createTRPCRouter({
           }
         }
         return { success: true, ingredient };
-        // is it error if exists ???
-        // else throw new Error("Ingredient is already saved in the database.");
       } catch (error) {
-        // if (error instanceof Prisma.PrismaClientRustPanicError) {}
         return { success: false };
       }
     }),
@@ -80,6 +95,16 @@ export const ingredientsRouter = createTRPCRouter({
     return ctx.prisma.ingredients.findMany();
   }),
 
+  /**
+   * Retrieves all ingredients for a recipe
+   *
+   * @function
+   * @name getAllForRecipeByID
+   *
+   * @param {string} recipe_id - The ID of the recipe
+   *
+   * @returns {Ingredient[]} - An array of ingredients associated with the specified recipe ID.
+   */
   getAllForRecipeByID: publicProcedure
     .input(z.object({ recipe_id: z.string() }))
     .query(({ ctx, input }) => {
@@ -90,6 +115,16 @@ export const ingredientsRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * Retrieves an ingredient based on its ID.
+   *
+   * @function
+   * @name getIngredientByID
+   *
+   * @param {number} input.id - The ID of the ingredient to retrieve.
+   *
+   * @returns {Ingredient | null} - The retrieved ingredient or null if not found.
+   */
   getIngredientByID: publicProcedure
     .input(z.object({ id: z.number() }))
     .query(({ ctx, input }) => {
@@ -100,6 +135,15 @@ export const ingredientsRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * Retrieves nutrition information for an ingredient based on its ID.
+   *
+   * @function
+   * @name getNutrition
+   *
+   * @param {number} ingredient_id - The ID of the ingredient
+   * @returns {Nutrient[]} - An array of nutrition information about the ingredient
+   */
   getNutrintion: publicProcedure
     .input(z.object({ ingredient_id: z.number().positive() }))
     .query(({ ctx, input }) => {
@@ -109,10 +153,6 @@ export const ingredientsRouter = createTRPCRouter({
         },
       });
     }),
-
-  updateIngredient: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
 });
 
 export const getIngredientNutritions: (
