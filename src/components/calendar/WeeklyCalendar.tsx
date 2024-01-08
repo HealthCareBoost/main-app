@@ -20,7 +20,7 @@ export const WeeklyCalendar: React.FC = () => {
     undefined
   );
 
-  const { data, refetch } = api.user.getUserDiet.useQuery({
+  const { data, refetch } = api.diet.getUserDiet.useQuery({
     from: removeTimezoneOffset(
       new Date(daysOfWeek[0] !== undefined ? daysOfWeek[0] : currentDate)
     ),

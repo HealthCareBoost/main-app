@@ -40,7 +40,7 @@ export const Calendar: React.FC = () => {
     data: dietData,
     isLoading,
     refetch,
-  } = api.user.getUserDiet.useQuery({
+  } = api.diet.getUserDiet.useQuery({
     from: startOfMonth(currentDate), // removeTimezoneOffset
     to: endOfMonth(currentDate),
     filters: filters,

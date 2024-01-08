@@ -33,7 +33,7 @@ export const WeeklyCalendarContext = createContext<WeeklyCalendarContextType>(
   {} as WeeklyCalendarContextType
 );
 
-export type DietResult = RouterOutputs["user"]["getUserDiet"];
+export type DietResult = RouterOutputs["diet"]["getUserDiet"];
 export type DietQueryReturnType =
   | (UserDailyDiet & {
       recipe: {

@@ -40,9 +40,9 @@ export const CalendarDialog: React.FC = () => {
   // console.log(dailyDietInfo);
   const [searchedValue, setSearchedValue] = useState<string>("");
 
-  const saveDiet = api.user.saveUserDailyDiet.useMutation();
-  const updateDiet = api.user.updateUserDailyDiet.useMutation();
-  const deleteMutation = api.user.deleteDiet.useMutation();
+  const saveDiet = api.diet.saveUserDailyDiet.useMutation();
+  const updateDiet = api.diet.updateUserDailyDiet.useMutation();
+  const deleteMutation = api.diet.deleteDiet.useMutation();
 
   const { toast } = useToast();
   const router = useRouter();
@@ -313,9 +313,9 @@ export const WeeklyCalendarDialog: React.FC = () => {
     setDailyDiet,
   } = useContext(WeeklyCalendarContext);
 
-  const saveDiet = api.user.saveUserDailyDiet.useMutation();
-  const updateDiet = api.user.updateUserDailyDiet.useMutation();
-  const deleteMutation = api.user.deleteDiet.useMutation();
+  const saveDiet = api.diet.saveUserDailyDiet.useMutation();
+  const updateDiet = api.diet.updateUserDailyDiet.useMutation();
+  const deleteMutation = api.diet.deleteDiet.useMutation();
 
   const form = useZodForm({
     schema: z.object({

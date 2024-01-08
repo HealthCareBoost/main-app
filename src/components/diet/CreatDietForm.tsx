@@ -60,7 +60,7 @@ export const CreateDietForm: React.FC<CreatDietFormProps> = ({
     },
   });
 
-  const { mutateAsync, isLoading } = api.example.generateDiet.useMutation();
+  const { mutateAsync, isLoading } = api.diet.generateDiet.useMutation();
 
   useEffect(() => {
     if (dietOpen === false) {
