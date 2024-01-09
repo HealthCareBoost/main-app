@@ -47,7 +47,7 @@ export const dietRouter = createTRPCRouter({
    * @param {string} recipe_id - The id of the recipe for which the image is
    * @param {string} image_url - Url of an image
 
-   * @returns {Promise<string | null>} - A Promise that resolves with the ID of the newly created chat or null in case of failure.
+   * @returns {Promise<string | null>} A Promise that resolves with the ID of the newly created chat or null in case of failure.
    */
   testUpload: publicProcedure
     .input(
@@ -305,7 +305,7 @@ export const dietRouter = createTRPCRouter({
    * @param {string} diet - The type of diet (optional)
    * @param {string[]} exclude - An array of foods to exclude from the plan (optional)
    *
-   * @returns {Promise<{ meal: string[] }>} - A Promise that resolves with an object indicating
+   * @returns {Promise<{ meal: string[] }>} A Promise that resolves with an object indicating
    *                the success status of diet generation and an array of generated recipe IDs.
    */
   generateDiet: protectedProcedure

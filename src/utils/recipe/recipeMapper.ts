@@ -11,10 +11,9 @@ import type { z } from "zod";
  * @function
  * @name RecipeMapper
  *
- * @param {RecipeToUpdateType} result - The result of a db call containing the recipe to be mapped.
+ * @param {RecipeToUpdateType} result - The result of a db call containing the recipe to be mapped
  *
- * @returns {RecipeForm | undefined} - The mapped RecipeForm object,
- *                                     or undefined if the input is invalid.
+ * @returns {RecipeForm | undefined} The mapped RecipeForm object, or undefined if the input is invalid
  */
 export function RecipeMapper(
   result: RecipeToUpdateType

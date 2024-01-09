@@ -7,7 +7,7 @@
  * @param {number} hours - The number of hours.
  * @param {number} minutes - The number of minutes.
  *
- * @returns {number} - The total time in minutes, or -1 if either hours or minutes are negative.
+ * @returns {number}  The total time in minutes, or -1 if either hours or minutes are negative.
  */
 export const timeToMinutes: (hours: number, minutes: number) => number = (
   hours,
@@ -26,7 +26,7 @@ export const timeToMinutes: (hours: number, minutes: number) => number = (
  * @param {number} preparation_time_minutes - Total preparation time in minutes.
  * @param {number} cooking_time_minutes - Total cooking time in minutes.
  *
- * @returns {object} - An object containing formatted hours and minutes
+ * @returns {object}  An object containing formatted hours and minutes
  *                     for cooking and preparation times.
  */
 export const minutesToFormTime: (
@@ -57,7 +57,7 @@ export const minutesToFormTime: (
  * @name minutesToReadableTime
  *
  * @param {number} minutes - Total minutes to be converted
- * @returns {string} - A readable string showing the time
+ * @returns {string}  A readable string showing the time
  *
  */
 export const minutesToReadableTime: (minutes: number) => string = (minutes) => {

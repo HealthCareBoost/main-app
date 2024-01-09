@@ -11,7 +11,7 @@ export const categoryRouter = createTRPCRouter({
    * @async
    * @name setAll
    *
-   * @returns {Promise<void>} - A Promise that resolves once the default categories
+   * @returns {Promise<void>} A Promise that resolves once the default categories
    *                            are successfully created in the database.
    */
   setAll: protectedProcedure.mutation(async ({ ctx }) => {

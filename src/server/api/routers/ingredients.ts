@@ -25,7 +25,7 @@ export const ingredientsRouter = createTRPCRouter({
    * @param {string} measurement_unit - The measurement unit of the ingredient.
    * @param {number} quantity - The quantity of the ingredient.
    *
-   * @returns {Promise<{ ingredient?: Ingredient }>} -
+   * @returns {Promise<{ ingredient?: Ingredient }>}
    *          A Promise that resolves with an object indicating the success status, along with
    *          the added ingredient if successful, or an error in case of failure.
    */
@@ -103,7 +103,7 @@ export const ingredientsRouter = createTRPCRouter({
    *
    * @param {string} recipe_id - The ID of the recipe
    *
-   * @returns {Ingredient[]} - An array of ingredients associated with the specified recipe ID.
+   * @returns {Ingredient[]} An array of ingredients associated with the specified recipe ID.
    */
   getAllForRecipeByID: publicProcedure
     .input(z.object({ recipe_id: z.string() }))
@@ -123,7 +123,7 @@ export const ingredientsRouter = createTRPCRouter({
    *
    * @param {number} input.id - The ID of the ingredient to retrieve.
    *
-   * @returns {Ingredient | null} - The retrieved ingredient or null if not found.
+   * @returns {Ingredient | null} The retrieved ingredient or null if not found.
    */
   getIngredientByID: publicProcedure
     .input(z.object({ id: z.number() }))
@@ -142,7 +142,7 @@ export const ingredientsRouter = createTRPCRouter({
    * @name getNutrition
    *
    * @param {number} ingredient_id - The ID of the ingredient
-   * @returns {Nutrient[]} - An array of nutrition information about the ingredient
+   * @returns {Nutrient[]} An array of nutrition information about the ingredient
    */
   getNutrintion: publicProcedure
     .input(z.object({ ingredient_id: z.number().positive() }))
