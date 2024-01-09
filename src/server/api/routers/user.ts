@@ -14,10 +14,20 @@ export const userRouter = createTRPCRouter({
     };
   }),
 
+  /**
+   * Retrieves the profile statistics and the preferences of a user
+   *
+   * @function
+   * @async
+   * @name getUserProfile
+   *
+   * @param {string} user_id - The ID of the user
+   * @returns {Promise<{ user: UserProfile, userStats: UserProfileStats }>} A Promise that resolves with the user's profile and statistics.
+   */
   getUserProfile: publicProcedure
     .input(
       z.object({
-        user_id: z.string().min(3),
+        user_id: z.string().min(1),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -36,50 +46,32 @@ export const userRouter = createTRPCRouter({
           },
         });
 
-        // if (ctx.session && ctx.session.user.id === user_id) {
-        //   return { success: true, user: { email, ...rest } };
-        // }
+        // Use Prisma's aggregate functions to get user preferences counts in a single query.
+        const userPrefStats = await ctx.prisma.userPreferences.groupBy({
+          by: ["liked", "made", "saved"],
+          _count: true,
+          where: {
+            user_id: input.user_id,
+          },
+        });
 
-        // Not Cool
-        const userPrefStats: { liked: number; saved: number; made: number } = {
-          liked: 0,
-          made: 0,
-          saved: 0,
+        const userStats: {
+          liked: number;
+          saved: number;
+          made: number;
+          comments: number;
+          recipes: number;
+        } = {
+          liked: userPrefStats.find((stat) => stat.liked)?._count || 0,
+          made: userPrefStats.find((stat) => stat.made)?._count || 0,
+          saved: userPrefStats.find((stat) => stat.saved)?._count || 0,
+          ...user._count,
         };
-
-        const { liked } = await ctx.prisma.userPreferences.count({
-          where: {
-            user_id: input.user_id,
-            liked: true,
-          },
-          select: { liked: true },
-        });
-        const { made } = await ctx.prisma.userPreferences.count({
-          where: {
-            user_id: input.user_id,
-            made: true,
-          },
-          select: { made: true },
-        });
-        const { saved } = await ctx.prisma.userPreferences.count({
-          where: {
-            user_id: input.user_id,
-            saved: true,
-          },
-          select: { saved: true },
-        });
-
-        userPrefStats.liked = liked;
-        userPrefStats.made = made;
-        userPrefStats.saved = saved;
 
         return {
           success: true,
           user,
-          userStats: {
-            ...userPrefStats,
-            ...user._count,
-          },
+          userStats,
         };
       } catch (error) {
         console.error(error);
@@ -163,6 +155,20 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
+  /**
+   * Saves user preferences (like, save, made) for a specific recipe.
+   *
+   * @function
+   * @async
+   * @name saveUserPreferences
+   *
+   * @param {string} recipe_id - The ID of the recipe
+   * @param {boolean} saved - Is recipe saved by the user (optional).
+   * @param {boolean} liked - Is recipe liked by the user (optional).
+   * @param {boolean} made - Is recipe made by the user (optional).
+   *
+   * @returns {Promise<{ success: boolean, error?: any }>} A Promise that resolves with the success status and an optional error.
+   */
   saveUserPreferences: protectedProcedure
     .input(
       z.object({
@@ -182,6 +188,7 @@ export const userRouter = createTRPCRouter({
 
         const user_id = ctx.session.user.id;
 
+        // Object with fields to save.
         const filedsToSave: {
           saved?: boolean;
           liked?: boolean;
@@ -224,6 +231,18 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
+  /**
+   * Adds a comment to a recipe
+   *
+   * @function
+   * @async
+   * @name comment
+   *
+   * @param {string} recipe_id - The ID of the recipe
+   * @param {string} text - The text of the comment.
+   *
+   * @returns {Promise<{ success: boolean, error?: any }>} A Promise that resolves with the success status and an optional error.
+   */
   comment: protectedProcedure
     .input(
       z.object({
@@ -256,6 +275,16 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
+  /**
+   * Delete a comment from a recipe
+   *
+   * @function
+   * @async
+   * @name deleteComment
+   *
+   * @param {string} comment_id - The ID of the comment
+   * @returns {Promise<{ success: boolean, error?: any }>} A Promise that resolves with the success status and an optional error.
+   */
   deleteComment: protectedProcedure
     .input(
       z.object({
@@ -281,6 +310,18 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
+  /**
+   * Updates the text of a user's comment
+   *
+   * @function
+   * @async
+   * @name updateComment
+   *
+   * @param {string} comment_id - The ID of the comment
+   * @param {string} text - The new text content of the comment
+   *
+   * @returns {Promise<{ comment: Comment }>} A Promise that resolves with the new comment's data
+   */
   updateComment: protectedProcedure
     .input(
       z.object({
@@ -307,6 +348,18 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
+  /**
+   * Changes the name of the authenticated user.
+   *
+   * @function
+   * @async
+   * @name changeName
+   *
+   * @param {string} name - The new name for the user
+   *
+   * @returns {Promise<{ success: boolean, user?: User, error?: any }>}
+   *          A Promise that resolves with the success status, updated user data, and an optional error.
+   */
   changeName: protectedProcedure
     .input(
       z.object({
@@ -323,7 +376,6 @@ export const userRouter = createTRPCRouter({
             name: input.name,
           },
         });
-        console.log(user);
         return { success: true, user };
       } catch (error) {
         console.error(error);
@@ -331,50 +383,18 @@ export const userRouter = createTRPCRouter({
       }
     }),
 
-  getUserStats: publicProcedure
-    .input(
-      z.object({
-        user_id: z.string(),
-      })
-    )
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const userStats = await ctx.prisma.user.findFirstOrThrow({
-          where: {
-            id: input.user_id,
-          },
-          select: {
-            _count: {
-              select: {
-                comments: true,
-                recipes: true,
-              },
-            },
-            createdAt: true,
-          },
-        });
-
-        const userPrefStats = await ctx.prisma.userPreferences.count({
-          where: {
-            user_id: input.user_id,
-          },
-          select: { liked: true, saved: true, made: true },
-        });
-
-        return {
-          success: true,
-          userStats: {
-            ...userPrefStats,
-            ...userStats._count,
-            createdAt: userStats.createdAt,
-          },
-        };
-      } catch (error) {
-        console.error(error);
-        return { success: false, error };
-      }
-    }),
-
+  /**
+   * Retrieves the total calories consumed by a user on a specific date
+   *
+   * @function
+   * @async
+   * @name getUserDailyCalories
+   *
+   * @param {string} user_id - The ID of the user
+   * @param {Date} date - The specific date for which daily calories are calculated
+   * @returns {Promise<{ success: boolean, calories?: number, error?: any }>}
+   *    A Promise that resolves with the success status, total calories consumed, and an optional error.
+   */
   getUserDailyCalories: publicProcedure
     .input(
       z.object({
@@ -400,18 +420,26 @@ export const userRouter = createTRPCRouter({
           },
         });
 
+        // Calculate the total calories from the ingredients' nutrition information.
         let totalCal = 0;
-        if (recipe.ingredients && recipe.ingredients.length > 0) {
-          recipe.ingredients.forEach((ingr) => {
-            if (ingr.nutrition && ingr.nutrition.length > 0) {
-              ingr.nutrition.forEach((nutr) => {
-                if (nutr.name === "Calories") {
-                  totalCal += nutr.amount;
-                }
-              });
-            }
-          });
+
+        if (!recipe.ingredients || recipe.ingredients.length <= 0) {
+          return {
+            success: true,
+            calories: totalCal,
+          };
         }
+
+        recipe.ingredients.forEach((ingr) => {
+          // Check if there is a nutrition information and if there is take the number of calories
+          if (ingr.nutrition && ingr.nutrition.length > 0) {
+            ingr.nutrition.forEach((nutr) => {
+              if (nutr.name === "Calories") {
+                totalCal += nutr.amount;
+              }
+            });
+          }
+        });
 
         return {
           success: true,

@@ -23,9 +23,9 @@ export const recipeRouter = createTRPCRouter({
    * @async
    * @name getRecipeByID
    *
-   * @param {string} input.id - The ID of the recipe to retrieve.
+   * @param {string} id - The ID of the recipe to retrieve.
    *
-   * @returns {Promise<Recipe>} - A Promise that resolves with the recipe object
+   * @returns {Promise<Recipe>}  A Promise that resolves with the recipe object
    *                              that matches the specified ID.
    */
   getRecipeByID: publicProcedure
@@ -66,7 +66,7 @@ export const recipeRouter = createTRPCRouter({
    * @async
    * @name getAll
    *
-   * @returns {Promise<Recipe[]>} - A Promise that resolves with an array of
+   * @returns {Promise<Recipe[]>}  A Promise that resolves with an array of
    *                                recipe objects.
    *
    */
@@ -99,7 +99,7 @@ export const recipeRouter = createTRPCRouter({
    * @name createRecipe
    *
    * @param {typeof RecipeSchema} input - An object containing the recipe data to be created.
-   * @returns {Promise<Recipe>} - A Promise that resolves with the newly created recipe object.
+   * @returns {Promise<Recipe>}  A Promise that resolves with the newly created recipe object.
    *
    */
   createRecipe: protectedProcedure
@@ -204,7 +204,7 @@ export const recipeRouter = createTRPCRouter({
    *
    * @param {string} input.id - The ID of the recipe to be deleted.
    *
-   * @returns {Promise<object>} - A Promise that resolves with the updated recipe object.
+   * @returns {Promise<object>}  A Promise that resolves with the updated recipe object.
    *
    */
   delete: protectedProcedure
@@ -395,6 +395,23 @@ export const recipeRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * Retrieves a paginated list of recipes based on specified filters and pagination parameters
+   *
+   * @param {string|null} cursor - The cursor indicating the starting point for pagination.
+   * @param {number} take - The number of recipes to retrieve in a single request.
+   * @param {object} filters - Additional filters for refining the recipe selection.
+   * @param {number|null} filters.categoryId - The ID of the category to filter recipes.
+   * @param {DifficultyLevel|null} filters.difficulty - The difficulty level to filter recipes.
+   * @param {object|null} filters.timeToCook - The time range to filter recipes based on cooking time.
+   * @param {number|null} filters.timeToCook.lower - The lower limit of cooking time.
+   * @param {number|null} filters.timeToCook.higher - The upper limit of cooking time.
+   * @param {OrderBy|null} filters.orderBy - The field by which the recipes should be ordered.
+   * @param {string|null} filters.searched_recipe - The name of the recipe to search for.
+   *
+   * @returns {Promise<{ recipes: Recipe[], nextCursor: string|undefined }>} - The paginated list of recipes and the next cursor.
+   * @throws Will throw an error if there are issues with the database query.
+   */
   getPaginatedRecipes: publicProcedure
     .input(
       z.object({
@@ -433,41 +450,18 @@ export const recipeRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      // if (input.cursor) {
-      //   console.log(`Cursor: ${input.cursor}`);
-      //   console.log(
-      //     `Take: ${input.take ? input.take : Constants.DEFAULT_SELECT_NUMBER}`
-      //   );
-      // }
-      // if (input.filters) {
-      //   if (input.filters.categoryId) {
-      //     console.log(`categoryId: ${input.filters.categoryId}`);
-      //     // passingFilters["category"] = input.filters.categoryId;
-      //   }
-      //   if (input.filters.difficulty) {
-      //     console.log(`Difficulty: ${input.filters.difficulty}`);
-      //   }
-      //   if (input.filters.orderBy) {
-      //     console.log(`orderBy: ${input.filters.orderBy}`);
-      //   }
-      //   if (input.filters.timeToCook) {
-      //     console.log(
-      //       `timeToCook: ${input.filters.timeToCook.lower} - ${input.filters.timeToCook.higher}`
-      //     );
-      //   }
-      // }
-      // console.log("************************");
-      // console.log(input);
-      // console.log("************************");
       let orderBy = {};
       let whereConditions: WhereConditionsType = [];
 
+      // if there are filter pass the to the helper function,
+      // that returns them in object with correct structure for the db query
       if (input.filters) {
         const result = getFiltersForQuery(input.filters);
         orderBy = result.orderBy;
         whereConditions = result.whereConditions;
       }
 
+      // if there are user preferences create an object with them to pass to the query
       let preferencesOptions = {};
       if (ctx.session && ctx.session.user) {
         preferencesOptions = {
@@ -517,6 +511,7 @@ export const recipeRouter = createTRPCRouter({
         },
       });
 
+      // Get the cursor for the next query
       let nextCursor: string | undefined = undefined;
       if (recipes.length > input.take) {
         // return the last item from the array
@@ -527,6 +522,17 @@ export const recipeRouter = createTRPCRouter({
       return { recipes, nextCursor };
     }),
 
+  /**
+   * Handles the user's liking or unliking of a recipe and updating the recipe's total likes
+   *
+   * @function
+   * @async
+   * @name likeRecipe
+   *
+   * @param {string} recipe_id - The ID of the recipe
+   * @returns {Promise<{ liked?: boolean }>}
+   *  A Promise that resolves with the success status, whether the recipe is liked, and an optional error.
+   */
   likeRecipe: protectedProcedure
     .input(
       z.object({
@@ -537,6 +543,7 @@ export const recipeRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       try {
         const user_id = ctx.session.user.id;
+        // Check if the user was liked the recipe already
         const isLiked = await ctx.prisma.userPreferences.findFirst({
           select: {
             liked: true,
@@ -551,6 +558,8 @@ export const recipeRouter = createTRPCRouter({
           },
         });
 
+        // Update user preferences if the recipe was Liked (isLiked !== null)
+        //  Or Like the recipe and save it to the db
         const updateUserLikes = ctx.prisma.userPreferences.upsert({
           where: {
             user_id_recipe_id: {
@@ -573,6 +582,7 @@ export const recipeRouter = createTRPCRouter({
           },
         });
 
+        // Update recipe total likes
         const updateRecipeTotalLikes = ctx.prisma.recipe.update({
           data: {
             total_likes: {
@@ -596,6 +606,17 @@ export const recipeRouter = createTRPCRouter({
       }
     }),
 
+  /**
+   * Handles the user's saveing or unsaving of a recipe and updating the user's preferences
+   *
+   * @function
+   * @async
+   * @name saveRecipe
+   *
+   * @param {string} recipe_id - The ID of the recipe
+   * @returns {Promise<{ success: boolean, saved?: boolean, error?: any }>}
+   * A Promise that resolves with the success status, whether the recipe is saved, and an optional error.
+   */
   saveRecipe: protectedProcedure
     .input(
       z.object({
@@ -604,6 +625,7 @@ export const recipeRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
+        // Check if the user has already saved the recipe
         const user_id = ctx.session.user.id;
         const isSaved = await ctx.prisma.userPreferences.findFirst({
           select: {
@@ -619,6 +641,8 @@ export const recipeRouter = createTRPCRouter({
           },
         });
 
+        // Update user preferences if the recipe was saved (isSaved !== null)
+        //  Or Like the recipe and save it to the db
         const { saved } = await ctx.prisma.userPreferences.upsert({
           where: {
             user_id_recipe_id: {
@@ -646,6 +670,18 @@ export const recipeRouter = createTRPCRouter({
       }
     }),
 
+  /**
+   * Retrieves user preferences for a specific recipe.
+   *
+   * @function
+   * @async
+   * @name getUserPreferences
+   *
+   * @param {string} recipe_id - The ID of the recipe
+   * @returns {Promise<{ preferences?: UserPreferences }>}
+   * A Promise that resolves with user's preferences (saved, liked, made) for a recipe
+   * if they are available
+   */
   getUserPreferences: publicProcedure
     .input(
       z.object({
@@ -674,15 +710,32 @@ export const recipeRouter = createTRPCRouter({
       }
     }),
 
+  /**
+   * Retrieves comments for a specific recipe.
+   *
+   * @function
+   * @async
+   * @name getCommentsForRecipe
+   *
+   * @param {string} recipe_id - The ID of the recipe
+   * @param {number} take - Number of the latest comments to take
+   * @returns {Promise<{ comments?: Comment[] }>} A Promise that resolves with the latest comments or empty array
+   */
   getCommentsForRecipe: publicProcedure
     .input(
       z.object({
         recipe_id: z.string(),
+        take: z
+          .number()
+          .positive()
+          .optional()
+          .default(Constants.COMMENTS_SELECT_NUMBER),
       })
     )
     .query(async ({ ctx, input }) => {
       try {
         const comments = await ctx.prisma.comment.findMany({
+          take: input.take,
           where: {
             recipe_id: input.recipe_id,
           },
@@ -706,6 +759,15 @@ export const recipeRouter = createTRPCRouter({
       }
     }),
 
+  /**
+   * Retrieves recommended recipes based on user preferences (liked or saved).
+   *
+   * @function
+   * @name getRecipesRecomended
+   *
+   * @param {string} user_id - The ID of the user.
+   * @returns {Promise<Recipe[]>} - A Promise that resolves with the retrieved recommended recipes.
+   */
   getRecipesRecomended: publicProcedure
     .input(
       z.object({
@@ -731,6 +793,7 @@ export const recipeRouter = createTRPCRouter({
         },
       });
 
+      // Create an array of recipe ids and fetch the information for them from the db
       const arr = recipe_ids.map((el) => el.recipe_id);
 
       return ctx.prisma.recipe.findMany({
@@ -759,6 +822,16 @@ export const recipeRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * Searches recipes by given string
+   *
+   * @function
+   * @name searchRecipeByName
+   *
+   * @param {string} name - The part of the name to be used for searching recipes
+   * @returns {Promise<{ recipes?: Recipe[], error?: any }>}
+   * A Promise that resolves with the recipes tha match the name if there are any
+   */
   searchRecipeByName: publicProcedure
     .input(
       z.object({
@@ -784,6 +857,23 @@ export const recipeRouter = createTRPCRouter({
       }
     }),
 
+  /**
+   * Retrieves recipes based on user interactions.
+   *
+   * @function
+   * @name getInteractedRecipes
+   *
+   * @param {string} user_id - The ID of the user
+   * @param {string | null} cursor - The cursor for pagination
+   * @param {number} take - The number of recipes to retrieve
+   * @param {object} filters - Object with all filters for user preferences
+   * @param {boolean} filters.saved - Filter for saved recipes
+   * @param {boolean} filters.liked - Filter for liked recipes
+   * @param {boolean} filters.made - Filter for made recipes
+   *
+   * @returns {Promise<{ recipes: Recipe[], nextCursor?: string }>}
+   * A Promise that resolves with the retrieved recipes and an optional next cursor.
+   */
   getInteractedRecipes: publicProcedure
     .input(
       z.object({
@@ -836,6 +926,8 @@ export const recipeRouter = createTRPCRouter({
             saved: boolean;
           }
       )[] = [];
+
+      // Get all filters for the query
       if (input.filters) {
         if (input.filters.liked) {
           preferences.push({ liked: true });
@@ -874,8 +966,8 @@ export const recipeRouter = createTRPCRouter({
         },
       });
 
+      // Create an array of recipe ids and fetch the information for them from the db
       const arr = recipe_ids.map((el) => el.recipe_id);
-
       const recipes = await ctx.prisma.recipe.findMany({
         take: Constants.DEFAULT_SELECT_NUMBER,
         where: {
@@ -919,9 +1011,8 @@ export const recipeRouter = createTRPCRouter({
    * @name getNutrition
    *
    * @param {string} recipe_id - The ID of the recipe for which to retrieve nutrition information.
-   * @returns {Promise<Map<string, { amount: number, unit: string }>>} - Returns a Promise thet
-   *  resolves with an object containing aggregated nutrition information as a Map,
-   *  along with a success status or an error in case of failure.
+   * @returns {Promise<Map<string, { amount: number, unit: string }>>}  Returns a Promise that
+   *  resolves with an object containing aggregated nutrition information as a Map
    */
   getNutrition: publicProcedure
     .input(
@@ -987,7 +1078,7 @@ export const recipeRouter = createTRPCRouter({
    *
    * @param {string[]} product_names - An array of product names to base recommendations on.
    *
-   * @returns {Promise<Recipe[]>} - A Promise that resolves with an array of recommended recipes.
+   * @returns {Promise<Recipe[]>}  A Promise that resolves with an array of recommended recipes.
    */
   getRecomendationBasedOnProducts: publicProcedure
     .input(
