@@ -11,7 +11,7 @@ const ChatPage: React.FC = () => {
   return (
     <Layout>
       <div className="container flex h-[85vh] w-full flex-row items-start">
-        <aside className="h-full rounded-lg border border-orange-400 bg-card p-4 lg:w-1/5">
+        <aside className="h-full rounded-lg bg-card p-4 md:border md:border-orange-400 lg:w-1/5">
           <ChatSidebar />
         </aside>
 

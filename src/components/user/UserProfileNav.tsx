@@ -43,6 +43,9 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
           <Link href={`/user/diet`}>Plan Meals</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
+          <Link href={`/recipe/create`}>Add a Recipe</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link href={`/user/${user.id}/recipes`}>Favourite Recipes</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

@@ -34,7 +34,7 @@ const ChatSidebar = () => {
   if (isLoading)
     return (
       <div>
-        <LoadingSpinner />;
+        <LoadingSpinner />
       </div>
     );
 
