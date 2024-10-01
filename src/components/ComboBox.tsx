@@ -3,20 +3,20 @@
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
-import { cn } from "@/src/utils/cn";
-import { Button } from "@/src/components/ui/Button";
+import { cn } from "@/utils/cn";
+import { Button } from "@/components/ui/Button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/src/components/ui/Command";
+} from "@/components/ui/Command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/src/components/ui/Popover";
+} from "@/components/ui/Popover";
 
 type OptionProps = {
   value: string;
@@ -68,7 +68,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    value === option.value ? "opacity-100" : "opacity-0"
+                    value === option.value ? "opacity-100" : "opacity-0",
                   )}
                 />
                 {option.label}

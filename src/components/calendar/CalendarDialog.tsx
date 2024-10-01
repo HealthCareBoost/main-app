@@ -13,19 +13,19 @@ import { FormSelect } from "../ui/FormSelect";
 import { Input } from "../ui/FormInput";
 import { useZodForm } from "../../hooks/useZodFormHook";
 import { z } from "zod";
-import format from "date-fns/format";
+import { format } from "date-fns/format";
 import { api } from "../../utils/api";
 import { WeeklyCalendarContext, CalendarContext } from "./CalendarContext";
 // import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
 import { Label } from "../ui/Label";
 import { FormSearchBar } from "../recipe/Search";
-import { useToast } from "@/src/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { LogginParagraph } from "../LogginParagraph";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { cn } from "@/src/utils/cn";
+import { cn } from "@/utils/cn";
 // import { useSession } from "next-auth/react";
 
 export const CalendarDialog: React.FC = () => {
@@ -116,7 +116,7 @@ export const CalendarDialog: React.FC = () => {
               variant: "destructive",
             });
           },
-        }
+        },
       );
     } else {
       await saveDiet.mutateAsync(
@@ -142,7 +142,7 @@ export const CalendarDialog: React.FC = () => {
               variant: "destructive",
             });
           },
-        }
+        },
       );
     }
     setDailyDiet(undefined);
@@ -152,7 +152,7 @@ export const CalendarDialog: React.FC = () => {
   };
 
   const onDeleteClick = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     console.log("delete");
     e.preventDefault();
@@ -277,7 +277,7 @@ export const CalendarDialog: React.FC = () => {
             href={`/recipe/${dailyDietInfo.recipe_id}`}
             className={cn(
               buttonVariants({ variant: "ghost" }),
-              "flex items-center text-center text-lg"
+              "flex items-center text-center text-lg",
             )}
           >
             <span>Go To Recipe </span>
