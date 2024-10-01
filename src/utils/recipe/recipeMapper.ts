@@ -16,7 +16,7 @@ import type { z } from "zod";
  * @returns {RecipeForm | undefined} The mapped RecipeForm object, or undefined if the input is invalid
  */
 export function RecipeMapper(
-  result: RecipeToUpdateType
+  result: RecipeToUpdateType,
 ): RecipeForm | undefined {
   if (!result || !result.recipe) return;
   const { recipe } = result;
@@ -62,7 +62,7 @@ export type ImageDataToSave = Omit<
 >;
 
 export function RecipeImageMapper(
-  recipeImages: z.infer<typeof RecipeSchema>["images"]
+  recipeImages: z.infer<typeof RecipeSchema>["images"],
 ): ImageDataToSave[] {
   if (!recipeImages || recipeImages.length === 0) return [];
 

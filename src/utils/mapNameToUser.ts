@@ -1,13 +1,10 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
+import type { InternalArgs } from "@prisma/client/runtime/library";
 import { type Session } from "next-auth";
 
 export const mapNameToUser = async (ctx: {
   session: Session | null;
-  prisma: PrismaClient<
-    Prisma.PrismaClientOptions,
-    never,
-    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-  >;
+  prisma: PrismaClient<Prisma.PrismaClientOptions, never, InternalArgs>;
 }) => {
   try {
     if (
