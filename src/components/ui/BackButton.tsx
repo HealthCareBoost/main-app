@@ -1,10 +1,11 @@
-import * as React from "react";
+"use client";
+import { forwardRef } from "react";
 import { cn } from "../../utils/cn";
 import { buttonVariants } from "./Button";
 import type { ButtonProps } from "./Button";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
-const BackButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const BackButton = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className }) => {
     const router = useRouter();
 
@@ -13,14 +14,8 @@ const BackButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         onClick={() => router.back()}
         className={cn(
           buttonVariants({ variant: "ghost" }),
-          `absolute top-4 left-4 inline-flex h-10 items-center
-           justify-center rounded-md bg-transparent py-2 px-4 
-           font-inter text-lg font-medium transition-colors
-          hover:bg-slate-100  focus:outline-none focus:ring-2
-          focus:ring-slate-400 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-transparent dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 
-           dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-transparent
-           md:top-8 md:left-8`,
-          className
+          `absolute left-4 top-4 inline-flex h-10 items-center justify-center rounded-md bg-transparent px-4 py-2 font-inter text-lg font-medium transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=open]:bg-transparent dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-100 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900 dark:data-[state=open]:bg-transparent md:left-8 md:top-8`,
+          className,
           // className="inline-flex h-10 items-center
           // justify-center rounded-md bg-transparent py-2 px-4 text-sm font-medium
           // transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2
@@ -51,7 +46,7 @@ const BackButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         </>
       </button>
     );
-  }
+  },
 );
 BackButton.displayName = "BackButton";
 

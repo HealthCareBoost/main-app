@@ -1,4 +1,4 @@
-export { LandingBilling } from "./LandingBlling";
+export { LandingShowcase } from "./LandingShowcase";
 export { LandingBusinessSection } from "./LandingBussinessSection";
 export { LandingButton, LandingLoginButton } from "./LandingButton";
 export { LandingCTA } from "./LandingCTA";

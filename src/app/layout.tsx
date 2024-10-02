@@ -1,8 +1,7 @@
 import "@/styles/globals.css";
 
 import { type Metadata } from "next";
-
-import { TRPCReactProvider } from "@/utils/trpc/react";
+import Providers from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "LetMeCook",
@@ -16,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

@@ -1,4 +1,6 @@
+"use client";
 import { toast } from "../hooks/use-toast";
+import { useSearchParams } from "next/navigation";
 
 export const ErrorMap = {
   Signin: "Try signing with a different account.",
@@ -15,14 +17,20 @@ export const ErrorMap = {
   default: "Unable to sign in.",
 } as const;
 
-export const SignInError = (error: string) => {
-  const errorMessage: string =
-    error && (ErrorMap[error as keyof typeof ErrorMap] ?? ErrorMap.default);
+type SignInError = string | string[] | undefined;
+
+export const SignInError = () => {
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+  console.log(error);
+  const errorMessage = error
+    ? ErrorMap[error as keyof typeof ErrorMap]
+    : ErrorMap.default;
+  console.log(errorMessage);
 
   return toast({
     title: "Something went wrong.",
     description: "Your sign in request failed.\n".concat(errorMessage),
     variant: "destructive",
   });
-  // return <div>{errorMessage}</div>;
 };

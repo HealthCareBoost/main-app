@@ -1,9 +1,13 @@
+"use client";
 import React from "react";
 import { Loader2 } from "lucide-react";
-import type { AppProps } from "next/app";
 import { LoginSchema } from "../../utils/validations/authSchema";
 import { useZodForm } from "../../hooks/useZodFormHook";
-import { signIn } from "next-auth/react";
+import {
+  type ClientSafeProvider,
+  type LiteralUnion,
+  signIn,
+} from "next-auth/react";
 import { cn } from "../../utils/cn";
 import { Input } from "../ui/FormInput";
 import { buttonVariants } from "../ui/Button";
@@ -12,6 +16,16 @@ import { DiscordIcon } from "../ui/DiscordIcon";
 import { Form } from "../ui/FormProvider";
 import type { z } from "zod";
 import { useToast } from "../../hooks/use-toast";
+import type { BuiltInProviderType } from "next-auth/providers/index";
+
+interface LoginFormParams {
+  csrfToken: string;
+  className: string;
+  providers: Record<
+    LiteralUnion<BuiltInProviderType, string>,
+    ClientSafeProvider
+  >;
+}
 
 type ProviderName = "Discord" | "Google" | "Email";
 
@@ -25,11 +39,12 @@ type ProviderParams = {
 
 type FormData = z.infer<typeof LoginSchema>;
 
-export const LoginForm: React.FC<{
-  csrfToken: string;
-  className: string;
-  providers: AppProps;
-}> = ({ csrfToken, providers, className, ...props }) => {
+export const LoginForm: React.FC<LoginFormParams> = ({
+  csrfToken,
+  providers,
+  className,
+  ...props
+}) => {
   const { toast } = useToast();
   const [isProviderLoading, setIsProviderLoading] = React.useState<
     Record<ProviderName, boolean>
@@ -117,7 +132,7 @@ export const LoginForm: React.FC<{
           <button
             className={cn(
               buttonVariants(),
-              "bg-orange-gradient hover:text-primaryDark"
+              "bg-orange-gradient hover:text-primaryDark",
             )}
             disabled={isProviderLoading.Email}
           >
@@ -150,15 +165,17 @@ export const LoginForm: React.FC<{
                 type="button"
                 className={cn(buttonVariants({ variant: "outline" }), "h-full")}
                 onClick={() => {
-                  provider.name === "Google"
-                    ? setIsProviderLoading((prev) => ({
-                        ...prev,
-                        Google: true,
-                      }))
-                    : setIsProviderLoading((prev) => ({
-                        ...prev,
-                        Discord: true,
-                      }));
+                  if (provider.name === "Google") {
+                    setIsProviderLoading((prev) => ({
+                      ...prev,
+                      Google: true,
+                    }));
+                  } else if (provider.name === "Discord") {
+                    setIsProviderLoading((prev) => ({
+                      ...prev,
+                      Discord: true,
+                    }));
+                  }
                   signIn(provider.id, {
                     redirect: false,
                   }).catch((error) => {

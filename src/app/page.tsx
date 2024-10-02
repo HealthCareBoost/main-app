@@ -4,6 +4,7 @@ import {
   LandingFeedback,
   LandingFooter,
   LandingStatsSection,
+  LandingShowcase,
 } from "@/components/landing/index";
 
 import { styles } from "@/styles/style";
@@ -26,7 +27,7 @@ const LandingPage = () => {
 
         <div className={`dark:bg-primaryDark ${styles.flexStart}`}>
           <div className={`${styles.boxWidth}`}>
-            <DynamicLandingHeroSection />
+            {/* <DynamicLandingHeroSection /> */}
           </div>
         </div>
 
@@ -36,7 +37,7 @@ const LandingPage = () => {
           <div className={`${styles.boxWidth}`}>
             <LandingStatsSection />
             <LandingBusinessSection />
-            {/* <LandingBilling /> */}
+            <LandingShowcase />
             <LandingFeedback />
             <LandingCTA />
             <LandingFooter />

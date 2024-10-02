@@ -1114,4 +1114,35 @@ export const recipeRouter = createTRPCRouter({
         return [];
       }
     }),
+
+  /**
+   * Retrieves list of recipes based on creation date.
+   *
+   * @function
+   * @async
+   * @name getRecomendationBasedOnProducts
+   *
+   * @param {number} take - The number of recipes to retrieve
+   *
+   * @returns {Promise<Recipe[]>}  A Promise that resolves with an array of recipes.
+   */
+  getLatest: publicProcedure
+    .input(
+      z.object({
+        take: z.number().positive().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        return ctx.prisma.recipe.findMany({
+          take: input.take ?? Constants.MAX_SEARCH,
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    }),
 });

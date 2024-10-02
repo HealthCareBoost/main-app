@@ -33,4 +33,4 @@ export const WEEK_DAYS = [
   { name: "Sunday", short: "Sun" },
 ] as const;
 
-export const CAROUSEL_TYPE: "embla" | "swiper" = "embla" as const;
+export const CAROUSEL_TYPE: "embla" | "swiper" = "embla";
