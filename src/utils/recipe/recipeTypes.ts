@@ -1,6 +1,6 @@
 import type { z } from "zod";
 import type { RecipeSchema } from "../validations/createRecipeSchema";
-import type { RouterOutputs } from "../api";
+import type { RouterOutputs } from "../trpc/react";
 import type {
   Ingredients,
   Recipe as RecipeType,

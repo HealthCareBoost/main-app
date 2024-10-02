@@ -1,4 +1,4 @@
-import type { RouterOutputs } from "@/utils/api";
+import type { RouterOutputs } from "@/utils/trpc/react";
 import type { UserDailyDiet } from "@prisma/client";
 import { type MealTypes } from "@prisma/client";
 import { createContext } from "react";
