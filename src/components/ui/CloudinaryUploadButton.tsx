@@ -1,13 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { CldUploadWidget } from "next-cloudinary";
+import {
+  CldUploadWidget,
+  CloudinaryUploadWidgetInfo,
+  CloudinaryUploadWidgetResults,
+} from "next-cloudinary";
 import { Button } from "./Button";
 import { type ImageInfo } from "../../utils/validations/imageSchema";
 
 export type CloudinaryUploadResponse = {
   event: string;
-  info: ImageInfo;
+  info: ImageInfo | CloudinaryUploadWidgetInfo;
 };
 
 type UploadButtonProps = {
@@ -23,21 +27,31 @@ export const CloudinaryUploadButton: React.FC<UploadButtonProps> = ({
   return (
     <CldUploadWidget
       uploadPreset="unsigned-uploads"
-      onUpload={function (
-        error: Error,
-        result: CloudinaryUploadResponse
-        // widget
-      ) {
-        if (error) {
-          alert(error.message);
-          console.log("error");
-          console.error(error);
-        }
-        console.log("res");
+      // onSuccess={function (
+      //   // error: Error,
+      //   results: CloudinaryUploadResponse,
+      //   // widget
+      // ) {
+      //   // if (error) {
+      //   //   alert(error.message);
+      //   //   console.log("error");
+      //   //   console.error(error);
+      //   // }
+      //   console.log("res");
+      //   console.log(results);
+      //   onUploadSetData((prev) => [...prev, results.info]);
+      //   console.log("wid");
+      //   // console.log(widget);
+      // }}
+      onSuccess={(result: CloudinaryUploadWidgetResults, { widget }) => {
         console.log(result);
-        onUploadSetData((prev) => [...prev, result.info]);
-        console.log("wid");
-        // console.log(widget);
+        if (result && result.info) {
+          console.log(result);
+          onUploadSetData((prev) => [...prev, result.info as any]);
+        }
+      }}
+      onQueuesEnd={(result, { widget }) => {
+        widget.close();
       }}
     >
       {({ open }) => {

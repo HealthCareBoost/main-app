@@ -8,11 +8,11 @@ import type {
 } from "./CalendarContext";
 import { CalendarContext } from "./CalendarContext";
 import { CalendarHeader } from "./CalendarHeader";
-import { GetMonthDays } from "@/src/utils/calendarUtils";
+import { GetMonthDays } from "@/utils/calendarUtils";
 import { CalendarMonth } from "./Month";
 import { CalendarDialog } from "./CalendarDialog";
 import { CalendarSidebar } from "./CalendarSidebar";
-import { api } from "@/src/utils/api";
+import { api } from "@/utils/trpc/react";
 import { endOfMonth, startOfMonth } from "date-fns";
 
 export const Calendar: React.FC = () => {
@@ -24,7 +24,7 @@ export const Calendar: React.FC = () => {
     DietQueryReturnType | undefined
   >(undefined);
   const [dailyDietInfo, setDailyDiet] = useState<DietInfo | undefined>(
-    undefined
+    undefined,
   );
 
   const initial_filters: MealTypeFilter[] = Object.entries(MealTypes).map(
@@ -32,7 +32,7 @@ export const Calendar: React.FC = () => {
       key,
       name: val,
       checked: true,
-    })
+    }),
   );
   const [filters, setFilters] = useState<MealTypeFilter[]>(initial_filters);
 

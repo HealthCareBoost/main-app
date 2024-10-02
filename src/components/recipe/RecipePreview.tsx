@@ -7,10 +7,10 @@ import type { RecipesQueryResult } from "./RecipeReducer";
 import { CldImage } from "next-cloudinary";
 import { minutesToReadableTime } from "../../utils/timeConverter";
 import Link from "next/link";
-import { api } from "../../utils/api";
+import { api } from "@/utils/trpc/react";
 import { Heart, HeartOff } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { getColovByDifficulty } from "@/src/utils/recipe/recipeDifficMapper";
+import { getColovByDifficulty } from "@/utils/recipe/recipeDifficMapper";
 
 type RecipePreviewProps = {
   recipe: NonNullable<RecipesQueryResult>;
@@ -29,7 +29,7 @@ export const RecipePreview: React.FC<RecipePreviewProps> = ({ recipe }) => {
       recipe.user_preferences.length > 0 &&
       recipe.user_preferences[0]
       ? recipe.user_preferences[0]?.liked
-      : false
+      : false,
   );
 
   const onLikeClick = async () => {

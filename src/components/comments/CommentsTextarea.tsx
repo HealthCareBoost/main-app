@@ -5,7 +5,7 @@ import { useZodForm } from "../../hooks/useZodFormHook";
 import { z } from "zod";
 import { buttonVariants } from "../ui/Button";
 import { cn } from "../../utils/cn";
-import { api } from "../../utils/api";
+import { api } from "@/utils/trpc/react";
 import { useToast } from "../../hooks/use-toast";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -72,7 +72,7 @@ export const CommentTextarea: React.FC<CommentTextareaProps> = ({
         rows={6}
         placeholder="Write a comment..."
         className={cn(
-          "mb-6 w-full rounded-lg rounded-t-lg border border-slate-300 bg-white py-2 px-4 text-sm focus:outline-none focus:ring-0 dark:border-slate-700 dark:bg-primaryDark dark:placeholder-slate-400"
+          "mb-6 w-full rounded-lg rounded-t-lg border border-slate-300 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-0 dark:border-slate-700 dark:bg-primaryDark dark:placeholder-slate-400",
         )}
         required
         {...form.register("comment")}
@@ -83,7 +83,7 @@ export const CommentTextarea: React.FC<CommentTextareaProps> = ({
         <button
           className={cn(
             buttonVariants(),
-            "bg-orange-gradient hover:text-primaryDark hover:dark:text-white"
+            "bg-orange-gradient hover:text-primaryDark hover:dark:text-white",
           )}
           disabled={formDisabled}
         >

@@ -6,7 +6,7 @@ import { Dialog, DialogTrigger } from "../ui/Dialog";
 import { Separator } from "../ui/Separator";
 import { WeeklyCalendarContext } from "./CalendarContext";
 import { WeeklyCalendarDialog } from "./CalendarDialog";
-import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
+import { removeTimezoneOffset } from "@/utils/calendarUtils";
 
 type CalendarHeaderProps = {
   getPreviousWeek: () => void;

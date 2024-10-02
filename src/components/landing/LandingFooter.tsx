@@ -5,8 +5,8 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 
 export const DynamicLogo = dynamic(
-  () => import("@/src/components/Logo").then((mod) => mod.Logo),
-  { ssr: false }
+  () => import("@/components/Logo").then((mod) => mod.Logo),
+  { ssr: false },
 );
 
 interface IconsType {

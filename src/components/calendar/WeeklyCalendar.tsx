@@ -3,11 +3,11 @@ import { startOfWeek, addDays, format, subWeeks, addWeeks } from "date-fns";
 import { WeeklyCalendarHeader } from "./WeeklyCalendarHeader";
 import { Dialog } from "../ui/Dialog";
 import { WeeklyCalendarDialog } from "./CalendarDialog";
-import { api } from "../../utils/api";
+import { api } from "@/utils/trpc/react";
 import type { DietInfo } from "./CalendarContext";
 import { WeeklyCalendarContext } from "./CalendarContext";
 import { WEEK_DAYS } from "../../utils/constants";
-import { removeTimezoneOffset } from "@/src/utils/calendarUtils";
+import { removeTimezoneOffset } from "@/utils/calendarUtils";
 
 export const WeeklyCalendar: React.FC = () => {
   const [daysOfWeek, setDaysOfWeek] = useState<string[]>([]);
@@ -17,17 +17,17 @@ export const WeeklyCalendar: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedDay, setSelectedDay] = useState<Date>(currentDate);
   const [dailyDietInfo, setDailyDiet] = useState<DietInfo | undefined>(
-    undefined
+    undefined,
   );
 
   const { data, refetch } = api.diet.getUserDiet.useQuery({
     from: removeTimezoneOffset(
-      new Date(daysOfWeek[0] !== undefined ? daysOfWeek[0] : currentDate)
+      new Date(daysOfWeek[0] !== undefined ? daysOfWeek[0] : currentDate),
     ),
     to: removeTimezoneOffset(
       new Date(
-        daysOfWeek[6] !== undefined ? daysOfWeek[6] : addWeeks(currentDate, 1)
-      )
+        daysOfWeek[6] !== undefined ? daysOfWeek[6] : addWeeks(currentDate, 1),
+      ),
     ),
   });
   // console.log("data");
@@ -101,13 +101,13 @@ export const WeeklyCalendar: React.FC = () => {
                         daysOfWeek[idx] && <p>today</p>}
                       <span className="hidden sm:block">
                         {daysOfWeek[idx] !== undefined
-                          ? format(new Date(daysOfWeek[idx] as string), "dd")
+                          ? format(new Date(daysOfWeek[idx]), "dd")
                           : daysOfWeek[idx]}
                       </span>
                       <span className="block sm:hidden">{short}</span>
                       <span className="block sm:hidden">
                         {daysOfWeek[idx] !== undefined
-                          ? format(new Date(daysOfWeek[idx] as string), "dd")
+                          ? format(new Date(daysOfWeek[idx]), "dd")
                           : daysOfWeek[idx]}
                       </span>
                     </th>
@@ -206,14 +206,12 @@ export const WeeklyCalendar: React.FC = () => {
                               setSelectedDay(new Date(day));
                               setIsOpen(true);
                             }}
-                            className="
-                          lg:w-30 md:w-30 ease
-                          h-40 w-10 cursor-pointer overflow-auto border-2 border-solid p-1 transition duration-500 hover:bg-gray-300 sm:w-20 xl:w-40"
+                            className="lg:w-30 md:w-30 ease h-40 w-10 cursor-pointer overflow-auto border-2 border-solid p-1 transition duration-500 hover:bg-gray-300 sm:w-20 xl:w-40"
                           >
                             {data.recipes.map((dailyDietInfo) => {
                               let returnBody;
                               const columnDate = removeTimezoneOffset(
-                                new Date(day)
+                                new Date(day),
                               );
                               // console.log(dailyDietInfo.date.toDateString());
                               // // // console.log(day);
@@ -229,12 +227,10 @@ export const WeeklyCalendar: React.FC = () => {
                                 returnBody = (
                                   <div
                                     key={`${dailyDietInfo.meal_type}${idx}`}
-                                    className=" lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden border-solid sm:w-full xl:w-40"
+                                    className="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden border-solid sm:w-full xl:w-40"
                                   >
                                     <div
-                                      className="
-                                    event mb-1 rounded
-                                    bg-purple-400 p-1 text-sm text-white"
+                                      className="event mb-1 rounded bg-purple-400 p-1 text-sm text-white"
                                       onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();

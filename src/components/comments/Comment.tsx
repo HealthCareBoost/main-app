@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { CommentOperations } from "./CommentOperations";
-import { UserAvatar } from "@/src/components/user/UserAvatar";
+import { UserAvatar } from "@/components/user/UserAvatar";
 import type { Comment as CommentType } from "@prisma/client";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { UpdateCommentTextarea } from "./CommentUpdate";
-import { api } from "@/src/utils/api";
-import { useToast } from "@/src/hooks/use-toast";
+import { api } from "@/utils/trpc/react";
+import { useToast } from "@/hooks/use-toast";
 
 type CommentProps = CommentType & {
   user: {
@@ -21,7 +21,6 @@ export const PostItem: React.FC<CommentProps> = ({
   id,
   recipe_id,
   edited,
-  createdAt,
   updatedAt,
   text,
   user,
@@ -117,7 +116,7 @@ export const Comment: React.FC<CommentProps> = ({
   const { toast } = useToast();
   const isLoggedIn = sessionData && sessionData.user;
   const ownComment = isLoggedIn && sessionData.user.id === user.id;
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [_isEditing, setIsEditing] = useState<boolean>(false);
   const deleteMutation = api.user.deleteComment.useMutation();
 
   const onDelete = async () => {

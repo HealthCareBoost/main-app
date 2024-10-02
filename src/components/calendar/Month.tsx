@@ -1,4 +1,4 @@
-import { labelColor, removeTimezoneOffset } from "@/src/utils/calendarUtils";
+import { labelColor, removeTimezoneOffset } from "@/utils/calendarUtils";
 import { format } from "date-fns";
 import React, { useContext } from "react";
 import { CalendarContext } from "./CalendarContext";
@@ -36,7 +36,7 @@ export const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
                     )}
                     <p
                       className={`py-1 pb-1 text-center text-base ${currentDay(
-                        day
+                        day,
                       )}`}
                     >
                       {format(day, "dd")}
@@ -95,7 +95,7 @@ export const CalendarMonth: React.FC<{ month: Date[][] }> = ({ month }) => {
                     )}
                     <p
                       className={`py-1 pb-1 text-center text-base ${currentDay(
-                        day
+                        day,
                       )}`}
                     >
                       {format(day, "dd")}

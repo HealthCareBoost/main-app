@@ -1,4 +1,4 @@
-import { labelColor, removeTimezoneOffset } from "@/src/utils/calendarUtils";
+import { labelColor, removeTimezoneOffset } from "@/utils/calendarUtils";
 import React, { useContext } from "react";
 import { Button } from "../ui/Button";
 import { Calendar } from "../ui/Calendar";

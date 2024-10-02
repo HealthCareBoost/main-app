@@ -5,11 +5,11 @@ import ThemeButton from "../ui/ChangeThemeButton";
 import { LandingLoginButton } from "./LandingButton";
 import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
-import { UserAccountNav } from "@/src/components/user/UserProfileNav";
+import { UserAccountNav } from "@/components/user/UserProfileNav";
 
 export const DynamicLogo = dynamic(
-  () => import("@/src/components/Logo").then((mod) => mod.Logo),
-  { ssr: false }
+  () => import("@/components/Logo").then((mod) => mod.Logo),
+  { ssr: false },
 );
 
 export const LandingNavbar: React.FC = () => {
@@ -22,9 +22,7 @@ export const LandingNavbar: React.FC = () => {
         {LandingNavLinks.map((nav) => (
           <li
             key={`${nav.id}`}
-            className={`ml-6 cursor-pointer font-poppins
-          text-[16px] font-medium text-primaryDark hover:text-orange-400 dark:font-normal
-          dark:text-white lg:ml-10`}
+            className={`ml-6 cursor-pointer font-poppins text-[16px] font-medium text-primaryDark hover:text-orange-400 dark:font-normal dark:text-white lg:ml-10`}
           >
             <a href={`${nav.href}`}>{nav.title}</a>
           </li>

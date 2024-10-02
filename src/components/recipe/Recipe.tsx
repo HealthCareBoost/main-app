@@ -5,7 +5,7 @@ import React from "react";
 import { styles } from "../../styles/style";
 import type { RecipeComponentProps } from "../../utils/recipe/recipeTypes";
 import { minutesToReadableTime } from "../../utils/timeConverter";
-import { UserAvatar } from "@/src/components/user/UserAvatar";
+import { UserAvatar } from "@/components/user/UserAvatar";
 import {
   Card,
   CardContent,
@@ -15,9 +15,9 @@ import {
 } from "../ui/Card";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/HoverCard";
 import { Separator } from "../ui/Separator";
-import { roundNumber } from "@/src/utils/numbers";
-import { shortenText } from "@/src/utils/shortenText";
-import { Constants } from "@/src/utils/constants";
+import { roundNumber } from "@/utils/numbers";
+import { shortenText } from "@/utils/shortenText";
+import { Constants } from "@/utils/constants";
 
 export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
   const displayNutrion: () => React.ReactNode[] = () => {
@@ -35,7 +35,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
             <div>
               {roundNumber(amount, 2)} {unit}
             </div>
-          </div>
+          </div>,
         );
       });
     }
@@ -53,7 +53,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
             <div>
               {n.amount} {n.unit}
             </div>
-          </div>
+          </div>,
         );
       });
     }
@@ -77,7 +77,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
           </h1>
 
           <div className="relative mb-2 w-full bg-slate-100 pt-[50%]">
-            <div className="absolute top-0 right-0 flex h-full w-full items-center justify-center overflow-hidden">
+            <div className="absolute right-0 top-0 flex h-full w-full items-center justify-center overflow-hidden">
               {recipe.images.length > 0 &&
               recipe.images[0] &&
               recipe.images[0].path ? (
@@ -104,11 +104,11 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
 
           <p
             id="description"
-            className={`${styles.paragraph} my-0 mx-auto pb-8 pt-1 pr-3 text-left italic`}
+            className={`${styles.paragraph} mx-auto my-0 pb-8 pr-3 pt-1 text-left italic`}
           >
             {shortenText(
               recipe.description,
-              Constants.MAX_DESCRIPTION_SENTENCES
+              Constants.MAX_DESCRIPTION_SENTENCES,
             )}
           </p>
 
@@ -142,7 +142,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
 
               <div className="my-4 flex items-start sm:my-2 md:mr-8 md:pl-10">
                 <div className="pl-0 pr-4">
-                  <div className="break-words text-center font-poppins text-lg text-[20px] font-bold uppercase leading-[32px] tracking-wide">
+                  <div className="break-words text-center font-poppins text-[20px] text-lg font-bold uppercase leading-[32px] tracking-wide">
                     Prep
                   </div>
                   <div className="break-words text-center font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite">
@@ -150,7 +150,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                   </div>
                 </div>
                 <div className="border-l-2 border-l-slate-300 px-4">
-                  <div className="break-words text-center font-poppins text-lg text-[20px] font-bold uppercase leading-[32px] tracking-wide">
+                  <div className="break-words text-center font-poppins text-[20px] text-lg font-bold uppercase leading-[32px] tracking-wide">
                     Cook
                   </div>
                   <div className="break-words text-center font-poppins text-[16px] font-normal leading-[24px] text-dimDark dark:text-dimWhite">
@@ -158,7 +158,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
                   </div>
                 </div>
                 <div className="border-l-2 border-l-slate-300 pl-4 pr-0">
-                  <div className="break-words text-center font-poppins text-lg text-[20px] font-bold uppercase leading-[32px] tracking-wide">
+                  <div className="break-words text-center font-poppins text-[20px] text-lg font-bold uppercase leading-[32px] tracking-wide">
                     Total
                   </div>
                   <div

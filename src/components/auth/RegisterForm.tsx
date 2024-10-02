@@ -4,7 +4,6 @@ import { Loader2 } from "lucide-react";
 import type { AppProps } from "next/app";
 import { RegisterSchema } from "../../utils/validations/authSchema";
 import { useZodForm } from "../../hooks/useZodFormHook";
-import { api } from "../../utils/api";
 import { signIn } from "next-auth/react";
 import { cn } from "../../utils/cn";
 import { Input } from "../ui/FormInput";
@@ -13,6 +12,7 @@ import { GoogleIcon } from "../ui/GoogleIcon";
 import { DiscordIcon } from "../ui/DiscordIcon";
 import { Form } from "../ui/FormProvider";
 import { useToast } from "../../hooks/use-toast";
+import { api } from "@/utils/trpc/react";
 
 type ProviderName = "Discord" | "Google" | "Email";
 
@@ -132,7 +132,7 @@ export const RegisterForm: React.FC<{
           <button
             className={cn(
               buttonVariants(),
-              "bg-orange-gradient hover:text-primaryDark"
+              "bg-orange-gradient hover:text-primaryDark",
             )}
             disabled={isProviderLoading.Email}
           >
@@ -164,20 +164,31 @@ export const RegisterForm: React.FC<{
               type="button"
               className={cn(buttonVariants({ variant: "outline" }), "h-full")}
               onClick={() => {
-                provider.name === "Google"
-                  ? setIsProviderLoading((prev) => ({
+                try {
+                  if (provider.name === "Google") {
+                    setIsProviderLoading((prev) => ({
                       ...prev,
                       Google: true,
-                    }))
-                  : setIsProviderLoading((prev) => ({
+                    }));
+                  } else {
+                    setIsProviderLoading((prev) => ({
                       ...prev,
                       Discord: true,
                     }));
-                signIn(provider.id, {
-                  redirect: true,
-                }).catch((error) => {
+                  }
+                  signIn(provider.id, {
+                    redirect: true,
+                  }).catch((error) => {
+                    console.error(error);
+                  });
+                } catch (error) {
                   console.error(error);
-                });
+                  return toast({
+                    variant: "destructive",
+                    title: "Something went wrong.",
+                    description: "",
+                  });
+                }
               }}
               disabled={
                 isProviderLoading.Email ||

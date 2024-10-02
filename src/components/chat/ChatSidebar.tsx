@@ -5,15 +5,15 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/src/components/ui/Sheet";
+} from "@/components/ui/Sheet";
 import {
   Bars3BottomLeftIcon,
   PencilSquareIcon,
 } from "@heroicons/react/24/solid";
-import { Button, buttonVariants } from "@/src/components/ui/Button";
-import { ScrollArea } from "@/src/components/ui/ScrollArea";
-import { cn } from "@/src/utils/cn";
-import { api } from "@/src/utils/api";
+import { Button, buttonVariants } from "@/components/ui/Button";
+import { ScrollArea } from "@/components/ui/ScrollArea";
+import { cn } from "@/utils/cn";
+import { api } from "@/utils/trpc/react";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { LoadingSpinner } from "../Loading";

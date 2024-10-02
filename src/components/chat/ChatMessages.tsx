@@ -1,7 +1,7 @@
 import type { ChatMessage } from "@prisma/client";
 import { ScrollArea } from "../ui/ScrollArea";
-import { cn } from "@/src/utils/cn";
-import { styles } from "@/src/styles/style";
+import { cn } from "@/utils/cn";
+import { styles } from "@/styles/style";
 import { UserAvatar } from "../user/UserAvatar";
 import { useSession } from "next-auth/react";
 
@@ -57,8 +57,7 @@ export const ChatMessages = ({ chatId, messages }: ChatMessagesProps) => {
               {m.prompt}
             </div>
             <div
-              className="w-full border-b border-black/10 bg-gray-50 p-2
-               dark:border-slate-600/50 dark:bg-primaryDark"
+              className="w-full border-b border-black/10 bg-gray-50 p-2 dark:border-slate-600/50 dark:bg-primaryDark"
               //  bg-[#444654]
             >
               {m.responce}

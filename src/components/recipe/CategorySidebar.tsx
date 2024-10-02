@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { api } from "../../utils/api";
+import { api } from "@/utils/trpc/react";
 import { DifficultyLevel, TimeIntervals } from "../../utils/enumsMap";
 import { RecipeContext } from "./RecipeContext";
 import { RecipeReducerActions } from "./RecipeReducer";

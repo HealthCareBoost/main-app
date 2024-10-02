@@ -2,10 +2,10 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/src/components/ui/Popover";
-import { useDebounce } from "@/src/hooks/useDebounce";
-import { api } from "@/src/utils/api";
-import { cn } from "@/src/utils/cn";
+} from "@/components/ui/Popover";
+import { useDebounce } from "@/hooks/useDebounce";
+import { api } from "@/utils/trpc/react";
+import { cn } from "@/utils/cn";
 import type { Recipe } from "@prisma/client";
 import { Check, ChevronsUpDown, Search } from "lucide-react";
 import type { ComponentProps } from "react";
@@ -85,10 +85,10 @@ export const SearchBar: React.FC<{
                     console.log("click");
                     setOpen(false);
                     setSelected((prev) =>
-                      prev === recipe.name ? "" : recipe.name
+                      prev === recipe.name ? "" : recipe.name,
                     );
                     onSearchFinish(
-                      selectedValue === recipe.name ? "" : recipe.name
+                      selectedValue === recipe.name ? "" : recipe.name,
                     );
                   }}
                   aria-selected={selectedValue === recipe.name}
@@ -100,7 +100,7 @@ export const SearchBar: React.FC<{
                       "mr-2 h-4 w-4",
                       selectedValue === recipe.name
                         ? "opacity-100"
-                        : "opacity-0"
+                        : "opacity-0",
                     )}
                   />
                   {recipe.name}
@@ -124,7 +124,7 @@ export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
   (props, ref) => {
     const { searchedValue, setSearchedValue, ...rest } = props;
     const [selectedValue, setSelected] = useState<Recipe | undefined>(
-      undefined
+      undefined,
     );
     const [openDropdown, setDropdownOpen] = React.useState(false);
 
@@ -209,7 +209,7 @@ export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
                         "mr-2 h-4 w-4",
                         selectedValue && selectedValue.name === recipe.name
                           ? "opacity-100"
-                          : "opacity-0"
+                          : "opacity-0",
                       )}
                     />
                     {recipe.name}
@@ -222,6 +222,6 @@ export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
         </div>
       </div>
     );
-  }
+  },
 );
 FormSearchBar.displayName = "FormRecipeSearchBar";

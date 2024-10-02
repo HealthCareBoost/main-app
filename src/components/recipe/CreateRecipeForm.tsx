@@ -1,7 +1,7 @@
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { Card, CardContent } from "../ui/Card";
 import React, { useState } from "react";
-import { api } from "../../utils/api";
+import { api } from "@/utils/trpc/react";
 import type { ImageInfo } from "../../utils/validations/imageSchema";
 import { useZodForm } from "../../hooks/useZodFormHook";
 import { RecipeSchema } from "../../utils/validations/createRecipeSchema";
@@ -236,7 +236,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
               >
                 Recipe Info
               </h2>
-              <p className={`${styles.paragraph} mt-1 mr-3 text-sm leading-6`}>
+              <p className={`${styles.paragraph} mr-3 mt-1 text-sm leading-6`}>
                 Elevate your recipes from mere instructions to mouthwatering
                 masterpieces. Upload tantalizing images that showcase your
                 dish&apos;s allure. Craft a captivating description that
@@ -310,7 +310,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
                   >
                     {Object.entries(DifficultyLevel).map(([key, value]) => (
                       <option
-                        className="cursor-default select-none rounded-sm py-1.5 pr-2 pl-8 text-sm font-medium capitalize outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                        className="cursor-default select-none rounded-sm py-1.5 pl-8 pr-2 text-sm font-medium capitalize outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                         key={key}
                         value={value}
                       >
@@ -371,7 +371,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
               >
                 Recipe Ingredients & Steps
               </h2>
-              <p className={`${styles.paragraph} mt-1 mr-3 text-sm leading-6`}>
+              <p className={`${styles.paragraph} mr-3 mt-1 text-sm leading-6`}>
                 Bring your culinary creations to life by filling out our
                 intuitive. Add the finest ingredients, specify quantities, and
                 describe preparation techniques with ease. Whether you&apos;re
@@ -409,7 +409,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
                     <DialogTrigger asChild>
                       <Button
                         variant={"outline"}
-                        className="mx-auto w-full text-center hover:bg-orange-400 "
+                        className="mx-auto w-full text-center hover:bg-orange-400"
                       >
                         Import List
                       </Button>
@@ -430,7 +430,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
                             <textarea
                               id="text"
                               className={
-                                "flex w-full rounded-md border border-slate-300 bg-transparent py-2 px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-50 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900"
+                                "flex w-full rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-50 dark:focus:ring-slate-400 dark:focus:ring-offset-slate-900"
                               }
                               placeholder={`Example:\n2 cups of flour, sifted\n1 cup sugar\n2 tablespoons butter, softened`}
                               rows={8}
@@ -450,6 +450,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
                             const ingredientsArray =
                               transformIngredientsFromList(ingredientText);
                             // remove old ingredients
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             for (const _ of fields) {
                               remove();
                             }

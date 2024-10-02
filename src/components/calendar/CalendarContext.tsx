@@ -1,4 +1,4 @@
-import type { RouterOutputs } from "@/src/utils/api";
+import type { RouterOutputs } from "@/utils/api";
 import type { UserDailyDiet } from "@prisma/client";
 import { type MealTypes } from "@prisma/client";
 import { createContext } from "react";
@@ -30,7 +30,7 @@ export type MealTypeFilter = {
 };
 
 export const WeeklyCalendarContext = createContext<WeeklyCalendarContextType>(
-  {} as WeeklyCalendarContextType
+  {} as WeeklyCalendarContextType,
 );
 
 export type DietResult = RouterOutputs["diet"]["getUserDiet"];
@@ -78,5 +78,5 @@ type CalendarContextType = {
 };
 
 export const CalendarContext = createContext<CalendarContextType>(
-  {} as CalendarContextType
+  {} as CalendarContextType,
 );

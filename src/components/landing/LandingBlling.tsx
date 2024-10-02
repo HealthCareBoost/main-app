@@ -1,7 +1,7 @@
 import React from "react";
 import { styles } from "../../styles/style";
 import { RecomendedRecipes } from "../recipe/Recomended";
-import { api } from "@/src/utils/api";
+import { api } from "@/utils/trpc/react";
 
 export const LandingBilling: React.FC = () => {
   const { data } = api.recipe.getPaginatedRecipes.useQuery({

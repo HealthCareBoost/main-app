@@ -9,12 +9,12 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/src/components/ui/Carousel";
+} from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
 
 import useWindowDimensions from "../../hooks/useMediaQuery";
 import { WindowSizes } from "../../utils/constants";
-import { CAROUSEL_TYPE } from "@/src/utils/constants";
+import { CAROUSEL_TYPE } from "@/utils/constants";
 
 export const RecomendedRecipes: React.FC<{
   recipes: RecipesQueryResult[];

@@ -9,7 +9,7 @@ import {
   Trash,
 } from "lucide-react";
 import { BookmarkMinus } from "lucide-react";
-import { api } from "../../utils/api";
+import { api } from "@/utils/trpc/react";
 import { useRouter } from "next/navigation";
 import { useToast } from "../../hooks/use-toast";
 import { useSession } from "next-auth/react";
@@ -42,12 +42,12 @@ export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
   const [isLiked, setIsLiked] = useState<boolean>(
     data && data.preferences && data.preferences.liked
       ? data.preferences.liked
-      : false
+      : false,
   );
   const [isSaved, setIsSaved] = useState<boolean>(
     data && data.preferences && data.preferences.saved
       ? data.preferences.saved
-      : false
+      : false,
   );
   const likeMutation = api.recipe.likeRecipe.useMutation();
   const saveMutation = api.recipe.saveRecipe.useMutation();

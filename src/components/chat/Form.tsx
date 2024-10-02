@@ -1,11 +1,11 @@
-import { useZodForm } from "@/src/hooks/useZodFormHook";
-import { api } from "@/src/utils/api";
+import { useZodForm } from "@/hooks/useZodFormHook";
+import { api } from "@/utils/trpc/react";
 import { z } from "zod";
 import { Form } from "../ui/FormProvider";
 import { Input } from "../ui/FormInput";
 import { Button } from "../ui/Button";
 import { ArrowBigUp } from "lucide-react";
-import { useToast } from "@/src/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatFormProps {
   currentChatId: string | null;
