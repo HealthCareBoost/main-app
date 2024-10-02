@@ -96,15 +96,17 @@ export const chatRouter = createTRPCRouter({
 
       // Combine previous messages for context
 
-      // const previousMessagesCombined = previousMessages
-      //   .map((message) => {
-      //     return `${message.prompt}\n\n${message.responce}`;
-      //   })
-      //   .join("\n\n");
+      const previousMessagesCombined = previousMessages
+        .map((message) => {
+          return `${message.prompt}\n\n${message.responce}`;
+        })
+        .join("\n\n");
 
       if (!env.OPENAI_ENABLED) throw new Error("No API Credits");
       const completion = await openai.chat.completions.create({
-        messages: [{ role: "user", content: input.message }],
+        messages: [
+          { role: "user", content: previousMessagesCombined + input.message },
+        ],
         model: "gpt-3.5-turbo",
       });
 

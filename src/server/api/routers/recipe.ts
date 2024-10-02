@@ -13,7 +13,7 @@ import type {
   IngredientToUpdate,
   NewIngredient,
 } from "../../../utils/recipe/recipeTypes";
-import { RecipeImageMapper } from "@/src/utils/recipe/recipeMapper";
+import { RecipeImageMapper } from "@/utils/recipe/recipeMapper";
 
 export const recipeRouter = createTRPCRouter({
   /**
@@ -123,15 +123,15 @@ export const recipeRouter = createTRPCRouter({
           name: input.name,
           cooking_time_minutes: timeToMinutes(
             input.cookingHours,
-            input.cookingMinutes
+            input.cookingMinutes,
           ),
           preparation_time_minutes: timeToMinutes(
             input.preparationHours,
-            input.preparationMinutes
+            input.preparationMinutes,
           ),
           total_time_minutes: timeToMinutes(
             input.preparationHours + input.cookingHours,
-            input.preparationMinutes + input.cookingMinutes
+            input.preparationMinutes + input.cookingMinutes,
           ),
           description: input.description,
           difficulty_level: input.difficultyLevel,
@@ -169,7 +169,7 @@ export const recipeRouter = createTRPCRouter({
       // Get all the nutrition values of the all ingredients
       for (const ingredient of recipe.ingredients) {
         const nutritionData = await getIngredientNutritionsCollection(
-          ingredient.name
+          ingredient.name,
         );
 
         if (nutritionData) {
@@ -184,7 +184,7 @@ export const recipeRouter = createTRPCRouter({
                 data: [...ingredientNutritionData],
               });
             },
-            { timeout: 10000 }
+            { timeout: 10000 },
           );
         }
       }
@@ -307,11 +307,11 @@ export const recipeRouter = createTRPCRouter({
             name: recipe_data.name,
             cooking_time_minutes: timeToMinutes(
               recipe_data.cookingHours,
-              recipe_data.cookingMinutes
+              recipe_data.cookingMinutes,
             ),
             preparation_time_minutes: timeToMinutes(
               recipe_data.preparationHours,
-              recipe_data.preparationMinutes
+              recipe_data.preparationMinutes,
             ),
             description: recipe_data.description,
             difficulty_level: recipe_data.difficultyLevel,
@@ -328,13 +328,13 @@ export const recipeRouter = createTRPCRouter({
         await ctx.prisma.$transaction(async (prisma) => {
           for (const ingredient of updateRecipe.ingredients) {
             const isNew = !!newIngrediensAdded.find(
-              (i: NewIngredient) => i.name === ingredient.name
+              (i: NewIngredient) => i.name === ingredient.name,
             );
 
             console.log(`${ingredient.name} ${isNew ? "new" : "not"}`);
             if (isNew) {
               const nutritionData = await getIngredientNutritionsCollection(
-                ingredient.name
+                ingredient.name,
               );
               console.log("nutritionData");
               console.log(nutritionData);
@@ -447,7 +447,7 @@ export const recipeRouter = createTRPCRouter({
             searched_recipe: z.string().optional(),
           })
           .optional(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       let orderBy = {};
@@ -538,7 +538,7 @@ export const recipeRouter = createTRPCRouter({
       z.object({
         recipe_id: z.string(),
         // isLiked: z.boolean(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       try {
@@ -594,7 +594,8 @@ export const recipeRouter = createTRPCRouter({
           },
         });
 
-        const [{ liked }, recipeData] = await ctx.prisma.$transaction([
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [{ liked }, _recipeData] = await ctx.prisma.$transaction([
           updateUserLikes,
           updateRecipeTotalLikes,
         ]);
@@ -621,7 +622,7 @@ export const recipeRouter = createTRPCRouter({
     .input(
       z.object({
         recipe_id: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       try {
@@ -686,7 +687,7 @@ export const recipeRouter = createTRPCRouter({
     .input(
       z.object({
         recipe_id: z.string(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       try {
@@ -730,7 +731,7 @@ export const recipeRouter = createTRPCRouter({
           .positive()
           .optional()
           .default(Constants.COMMENTS_SELECT_NUMBER),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       try {
@@ -772,7 +773,7 @@ export const recipeRouter = createTRPCRouter({
     .input(
       z.object({
         user_id: z.string().min(1),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const recipe_ids = await ctx.prisma.userPreferences.findMany({
@@ -836,7 +837,7 @@ export const recipeRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
-      })
+      }),
     )
     .query(({ ctx, input }) => {
       try {
@@ -912,7 +913,7 @@ export const recipeRouter = createTRPCRouter({
             //   .optional(),
           })
           .optional(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       const preferences: (
@@ -1018,7 +1019,7 @@ export const recipeRouter = createTRPCRouter({
     .input(
       z.object({
         recipe_id: z.string(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       try {
@@ -1084,7 +1085,7 @@ export const recipeRouter = createTRPCRouter({
     .input(
       z.object({
         product_names: z.string().array(),
-      })
+      }),
     )
     .query(async ({ ctx, input }) => {
       try {

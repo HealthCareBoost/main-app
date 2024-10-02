@@ -1,6 +1,6 @@
 import { z } from "zod";
 // import { Prisma } from "@prisma/client";
-import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 import type { AxiosResponse } from "axios";
 import axios from "axios";
 import { env } from "../../../env/server.mjs";
@@ -36,7 +36,7 @@ export const ingredientsRouter = createTRPCRouter({
         ingredientName: z.string(),
         measurement_unit: z.string(),
         quantity: z.number(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       try {
@@ -87,6 +87,7 @@ export const ingredientsRouter = createTRPCRouter({
         }
         return { success: true, ingredient };
       } catch (error) {
+        console.error(error);
         return { success: false };
       }
     }),
@@ -156,9 +157,9 @@ export const ingredientsRouter = createTRPCRouter({
 });
 
 export const getIngredientNutritions: (
-  ingredientName: string
+  ingredientName: string,
 ) => Promise<Map<string, { amount: number; unit: string }> | null> = async (
-  ingredientName
+  ingredientName,
 ) => {
   const options = {
     method: "GET",
@@ -182,7 +183,7 @@ export const getIngredientNutritions: (
     const fetchedIngredients = responce.data.results;
     // console.log(fetchedIngredients);
     const ingredient = fetchedIngredients.find(
-      (item) => item.name === ingredientName
+      (item) => item.name === ingredientName,
     );
 
     if (ingredient && ingredient !== undefined) {
@@ -195,7 +196,7 @@ export const getIngredientNutritions: (
             "X-RapidAPI-Key": env.FOOD_API_KEY,
             "X-RapidAPI-Host": env.FOOD_API_HOST,
           },
-        }
+        },
       );
       // console.log("2222222222222222222222");
       // console.log(res.data);
@@ -225,7 +226,7 @@ export const getIngredientNutritions: (
 };
 
 export const getIngredientNutritionsCollection: (
-  ingredientName: string
+  ingredientName: string,
 ) => Promise<NutrientData[] | null> = async (ingredientName) => {
   const options = {
     method: "GET",
@@ -249,7 +250,7 @@ export const getIngredientNutritionsCollection: (
     const fetchedIngredients = responce.data.results;
     // console.log(fetchedIngredients);
     const ingredient = fetchedIngredients.find(
-      (item) => item.name === ingredientName
+      (item) => item.name === ingredientName,
     );
 
     if (ingredient && ingredient !== undefined) {
@@ -262,7 +263,7 @@ export const getIngredientNutritionsCollection: (
             "X-RapidAPI-Key": env.FOOD_API_KEY,
             "X-RapidAPI-Host": env.FOOD_API_HOST,
           },
-        }
+        },
       );
       // console.log("2222222222222222222222");
       // console.log(res.data);
@@ -324,7 +325,7 @@ type IngridientDetailsResponce = {
         amount: number;
         unit: string;
         percentOfDailyNeeds: number;
-      }
+      },
     ];
     properties: [];
     flavonoids: [
@@ -332,7 +333,7 @@ type IngridientDetailsResponce = {
         name: string;
         amount: number;
         unit: string;
-      }
+      },
     ];
     caloricBreakdown: {
       percentProtein: number;

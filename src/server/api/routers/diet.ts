@@ -4,13 +4,13 @@ import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import type {
   RecipeInfoResponce,
   GenarateMealResponce,
-} from "@/src/utils/apiTypes";
+} from "@/utils/apiTypes";
 import type { AxiosResponse } from "axios";
 import axios from "axios";
-import { env } from "@/src/env/server.mjs";
+import { env } from "@/env/server.mjs";
 import { v2 as cloudinary } from "cloudinary";
 import { getIngredientNutritionsCollection } from "./ingredients";
-import { removeWordsFromArray } from "@/src/utils/removeHTML";
+import { removeWordsFromArray } from "@/utils/removeHTML";
 import { MealTypes } from "@prisma/client";
 
 cloudinary.config({
@@ -54,7 +54,7 @@ export const dietRouter = createTRPCRouter({
       z.object({
         recipe_id: z.string().min(1),
         image_url: z.string().min(1),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const imageInfo = await cloudinary.uploader.upload(input.image_url);
@@ -85,7 +85,7 @@ export const dietRouter = createTRPCRouter({
         // date: z.string(),
         recipe_name: z.string(),
         meal_type: z.nativeEnum(MealTypes),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       try {
@@ -124,7 +124,7 @@ export const dietRouter = createTRPCRouter({
           })
           .array()
           .nullish(),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       try {
@@ -187,7 +187,7 @@ export const dietRouter = createTRPCRouter({
       z.object({
         date: z.date(),
         recipe_id: z.string(),
-      })
+      }),
     )
     .query(({ input, ctx }) => {
       try {
@@ -227,7 +227,7 @@ export const dietRouter = createTRPCRouter({
         previous_recipe_id: z.string(),
         new_recipe_name: z.string().optional(),
         meal_type: z.nativeEnum(MealTypes),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       try {
@@ -270,7 +270,7 @@ export const dietRouter = createTRPCRouter({
         }),
         recipe_id: z.string(),
         meal_type: z.nativeEnum(MealTypes),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       try {
@@ -316,7 +316,7 @@ export const dietRouter = createTRPCRouter({
         targetCalories: z.number().min(0),
         diet: z.string().optional(),
         exclude: z.string().array().optional(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const user_id = ctx.session.user.id;
@@ -448,7 +448,7 @@ export const dietRouter = createTRPCRouter({
               await ctx.prisma.$transaction(
                 async (prisma) => {
                   const nutritionData = await getIngredientNutritionsCollection(
-                    ingredient.name
+                    ingredient.name,
                   );
                   console.log("nutritionData");
                   console.log(nutritionData);
@@ -467,7 +467,7 @@ export const dietRouter = createTRPCRouter({
                 {
                   maxWait: 5000, // default: 2000
                   timeout: 10000, // default: 5000
-                }
+                },
               );
             }
           } else {
@@ -490,10 +490,10 @@ export const dietRouter = createTRPCRouter({
                 count === 1
                   ? "BREAKFAST"
                   : count === 2
-                  ? "LUNCH"
-                  : count === 3
-                  ? "DINNER"
-                  : "SNACK",
+                    ? "LUNCH"
+                    : count === 3
+                      ? "DINNER"
+                      : "SNACK",
               date: input.date,
               // removeTimezoneOffset()
             },
