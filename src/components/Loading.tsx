@@ -20,7 +20,7 @@ const LoadingInternal = (props: { size?: number }) => {
 export const LoadingSpinner = React.memo(LoadingInternal);
 
 const LoadingPageInternal = () => (
-  <div className="absolute top-0 right-0 flex h-screen w-screen items-center justify-center">
+  <div className="absolute right-0 top-0 flex h-screen w-screen items-center justify-center">
     <LoadingInternal size={Constants.LOADING_SPINNER_SIZE_PX} />
   </div>
 );

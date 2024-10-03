@@ -24,7 +24,7 @@ const TermsAndConditionsPage = () => {
                 <a
                   key={`${idx + 1}${term.title}`}
                   href={`#${term.title}`}
-                  className="text-start font-poppins text-xl font-semibold uppercase text-primaryDark dark:text-white sm:w-1/2 sm:text-base"
+                  className="text-start font-poppins text-xl font-semibold uppercase text-primaryDark dark:text-white sm:w-full sm:text-base md:text-center"
                 >
                   {idx + 1}. {term.title}
                 </a>
