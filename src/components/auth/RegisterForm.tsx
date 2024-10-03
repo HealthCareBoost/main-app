@@ -1,18 +1,32 @@
+"use client";
+import { api } from "@/utils/trpc/react";
+import { Loader2 } from "lucide-react";
+import { type BuiltInProviderType } from "next-auth/providers/index";
+import {
+  type ClientSafeProvider,
+  type LiteralUnion,
+  signIn,
+} from "next-auth/react";
 import React from "react";
 import type { z } from "zod";
-import { Loader2 } from "lucide-react";
-import type { AppProps } from "next/app";
-import { RegisterSchema } from "../../utils/validations/authSchema";
-import { useZodForm } from "../../hooks/useZodFormHook";
-import { signIn } from "next-auth/react";
-import { cn } from "../../utils/cn";
-import { Input } from "../ui/FormInput";
-import { buttonVariants } from "../ui/Button";
-import { GoogleIcon } from "../ui/GoogleIcon";
-import { DiscordIcon } from "../ui/DiscordIcon";
-import { Form } from "../ui/FormProvider";
 import { useToast } from "../../hooks/use-toast";
-import { api } from "@/utils/trpc/react";
+import { useZodForm } from "../../hooks/useZodFormHook";
+import { cn } from "../../utils/cn";
+import { RegisterSchema } from "../../utils/validations/authSchema";
+import { buttonVariants } from "../ui/Button";
+import { DiscordIcon } from "../ui/DiscordIcon";
+import { Input } from "../ui/FormInput";
+import { Form } from "../ui/FormProvider";
+import { GoogleIcon } from "../ui/GoogleIcon";
+
+interface RegisterFormParams {
+  csrfToken: string;
+  className: string;
+  providers: Record<
+    LiteralUnion<BuiltInProviderType, string>,
+    ClientSafeProvider
+  >;
+}
 
 type ProviderName = "Discord" | "Google" | "Email";
 
@@ -26,11 +40,12 @@ type ProviderParams = {
 
 type FormData = z.infer<typeof RegisterSchema>;
 
-export const RegisterForm: React.FC<{
-  csrfToken: string;
-  className: string;
-  providers: AppProps;
-}> = ({ csrfToken, providers, className, ...props }) => {
+export const RegisterForm = ({
+  csrfToken,
+  providers,
+  className,
+  ...props
+}: RegisterFormParams) => {
   const saveName = api.user.saveName.useMutation();
   const { toast } = useToast();
   const [isProviderLoading, setIsProviderLoading] = React.useState<
