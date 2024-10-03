@@ -102,24 +102,36 @@ export const chatRouter = createTRPCRouter({
         })
         .join("\n\n");
 
-      if (!env.OPENAI_ENABLED) throw new Error("No API Credits");
-      const completion = await openai.chat.completions.create({
-        messages: [
-          { role: "user", content: previousMessagesCombined + input.message },
-        ],
-        model: "gpt-3.5-turbo",
-      });
+      if (!Boolean(env.OPENAI_ENABLED)) {
+        // throw new Error("No API Credits");
+        const defaultResponse = `It looks like chat functionality is currently paused or disabled. Please check back later or refresh the page to try again. If the issue persists, feel free to contact support for further assistance.`;
+        await ctx.prisma.chatMessage.create({
+          data: {
+            prompt: input.message,
+            responce: defaultResponse,
+            chat_id: input.chatId,
+          },
+        });
+        return defaultResponse;
+      } else {
+        const completion = await openai.chat.completions.create({
+          messages: [
+            { role: "user", content: previousMessagesCombined + input.message },
+          ],
+          model: "gpt-3.5-turbo",
+        });
 
-      const responce = completion.choices[0]?.message.content ?? "";
+        const responce = completion.choices[0]?.message.content ?? "";
 
-      await ctx.prisma.chatMessage.create({
-        data: {
-          prompt: input.message,
-          responce: responce,
-          chat_id: input.chatId,
-        },
-      });
-      return completion.choices[0]?.message.content ?? "";
+        await ctx.prisma.chatMessage.create({
+          data: {
+            prompt: input.message,
+            responce: responce,
+            chat_id: input.chatId,
+          },
+        });
+        return completion.choices[0]?.message.content ?? "";
+      }
     }),
 
   /**

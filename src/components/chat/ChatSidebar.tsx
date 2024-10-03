@@ -1,3 +1,4 @@
+"use client";
 import {
   Sheet,
   SheetContent,
@@ -33,7 +34,7 @@ const ChatSidebar = () => {
 
   if (isLoading)
     return (
-      <div>
+      <div className="flex h-full w-full items-center justify-center py-20">
         <LoadingSpinner />
       </div>
     );
@@ -53,9 +54,9 @@ const ChatSidebar = () => {
           side={"left"}
         >
           <SheetHeader className="mb-4 h-[90%]">
-            <SheetTitle>Are you sure absolutely sure?</SheetTitle>
+            <SheetTitle>Your chats</SheetTitle>
             <ScrollArea className="py-2">
-              <ol>
+              <ul>
                 {userChats &&
                   userChats.length > 0 &&
                   userChats.map((chat, idx) => (
@@ -76,7 +77,7 @@ const ChatSidebar = () => {
                       <div className="my-2" />
                     </>
                   ))}
-              </ol>
+              </ul>
             </ScrollArea>
           </SheetHeader>
           <SheetFooter>
@@ -94,7 +95,7 @@ const ChatSidebar = () => {
 
       <div className="hidden h-full md:flex md:flex-col">
         <ScrollArea className="py-2">
-          <ol>
+          <ul>
             {userChats &&
               userChats.length > 0 &&
               userChats.map((chat, idx) => (
@@ -115,7 +116,7 @@ const ChatSidebar = () => {
                   <div className="my-2" />
                 </>
               ))}
-          </ol>
+          </ul>
         </ScrollArea>
 
         <Button
