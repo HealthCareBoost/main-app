@@ -1,3 +1,4 @@
+"use client";
 import { MealTypes } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import { Dialog } from "../ui/Dialog";
