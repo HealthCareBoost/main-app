@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { RecipePreview } from "../../components/recipe/RecipePreview";
 import type { RecipesQueryResult } from "../../components/recipe/RecipeReducer";
