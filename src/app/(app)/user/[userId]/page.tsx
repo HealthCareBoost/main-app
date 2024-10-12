@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import type { StatsKey } from "@/utils/statsTitleMap";
 import { statsToTitleMap } from "@/utils/statsTitleMap";
 import { RecomendedRecipes } from "@/components/recipe/Recomended";
-import EditUserProfile from "@/components/user/editUserProfile";
+import EditUserProfile from "@/components/user/EditUserProfile";
 import { getServerAuthSession } from "@/server/auth";
 import SignOutButton from "@/components/user/SignOutButton";
 import { redirect } from "next/navigation";

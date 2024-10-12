@@ -36,7 +36,7 @@ const ChatPage = async () => {
           </div>
         </section>
         <div className="mb-0 mt-auto w-full">
-          <ChatForm currentChatId={null} />
+          <ChatForm currentChatId={undefined} />
         </div>
       </div>
     </div>
