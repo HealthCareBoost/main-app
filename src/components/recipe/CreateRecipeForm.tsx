@@ -1,3 +1,4 @@
+"use client";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { Card, CardContent } from "../ui/Card";
 import React, { useState } from "react";
@@ -18,7 +19,6 @@ import { styles } from "../../styles/style";
 import { Separator } from "../ui/Separator";
 import { useToast } from "../../hooks/use-toast";
 import { useRouter } from "next/navigation";
-import type { RecipeToUpdateType } from "../../utils/recipe/recipeTypes";
 import type { z } from "zod";
 import { RecipeMapper } from "../../utils/recipe/recipeMapper";
 import {
@@ -32,7 +32,7 @@ import {
 } from "../ui/Dialog";
 
 type CreateRecipeFormProps = {
-  recipeToUpdate?: RecipeToUpdateType;
+  recipeToUpdateId?: string;
 };
 
 type FormData = z.infer<typeof RecipeSchema>;
@@ -78,8 +78,13 @@ const transformIngredientsFromList = (ingredientText: string) => {
 };
 
 export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
-  recipeToUpdate,
+  recipeToUpdateId,
 }) => {
+  const [{ recipe: recipeToUpdate }] =
+    api.recipe.getRecipeByID.useSuspenseQuery({
+      id: recipeToUpdateId ?? "",
+    });
+
   const createRecipeMutation = api.recipe.createRecipe.useMutation();
   const updateRecipeMutation = api.recipe.update.useMutation();
 
@@ -95,7 +100,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
   const form = useZodForm({
     schema: RecipeSchema,
     defaultValues: recipeToUpdate
-      ? RecipeMapper(recipeToUpdate)
+      ? RecipeMapper({ recipe: recipeToUpdate })
       : {
           ingredients: [
             {
@@ -197,7 +202,7 @@ export const CreateRecipeForm: React.FC<CreateRecipeFormProps> = ({
     // then create new recipe
     const { success, recipe } = await updateRecipeMutation.mutateAsync({
       recipe_data: { ...data, images: imageData },
-      recipe_id: recipeToUpdate.recipe.id,
+      recipe_id: recipeToUpdate.id,
     });
     setIsSubmitting(false);
 

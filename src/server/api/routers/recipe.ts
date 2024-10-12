@@ -32,6 +32,10 @@ export const recipeRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       try {
+        if (!input.id) {
+          throw new Error("No recipe ID provided");
+        }
+
         const recipe = await ctx.prisma.recipe.findUniqueOrThrow({
           where: {
             id: input.id,
