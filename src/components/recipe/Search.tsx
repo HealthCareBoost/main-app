@@ -122,7 +122,7 @@ interface Props extends ComponentProps<"input"> {
 
 export const FormSearchBar = forwardRef<HTMLInputElement, Props>(
   (props, ref) => {
-    const { searchedValue, setSearchedValue, ...rest } = props;
+    const { searchedValue, ...rest } = props;
     const [selectedValue, setSelected] = useState<Recipe | undefined>(
       undefined,
     );

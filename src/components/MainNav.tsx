@@ -1,13 +1,12 @@
-"use client";
-
 import * as React from "react";
 import { MobileNav } from "./MobileNav";
 import { MainNavLinks } from "../utils/NavlinksTypes";
 import ThemeButton from "./ui/ChangeThemeButton";
 import { UserAccountNav } from "./user/UserProfileNav";
 import { LandingLoginButton } from "./landing/LandingButton";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
+import { getServerAuthSession } from "@/server/auth";
 
 interface MainNavProps {
   children?: React.ReactNode;
@@ -15,15 +14,17 @@ interface MainNavProps {
 
 export const DynamicLogo = dynamic(
   () => import("../components/Logo").then((mod) => mod.Logo),
-  { ssr: false }
+  { ssr: false },
 );
 
-export function MainNav({}: MainNavProps) {
+export async function MainNav({}: MainNavProps) {
   //   const segment = useSelectedLayoutSegment();
   // const user = getCurrentUser().then((res) => console.log(res));
-  const { data: sessionData } = useSession();
+  // const { data: sessionData } = useSession();
   // console.log(sessionData);
   // console.log(sessionData?.user);
+
+  const sessionData = await getServerAuthSession();
 
   return (
     <nav className="navbar flex w-full items-center justify-between py-6">
@@ -32,9 +33,7 @@ export function MainNav({}: MainNavProps) {
         {MainNavLinks.map((nav) => (
           <li
             key={`${nav.id}`}
-            className={`ml-6 cursor-pointer font-poppins
-        text-[16px] font-medium text-primaryDark hover:text-orange-400 dark:font-normal
-        dark:text-white lg:ml-10`}
+            className={`ml-6 cursor-pointer font-poppins text-[16px] font-medium text-primaryDark hover:text-orange-400 dark:font-normal dark:text-white lg:ml-10`}
           >
             <a href={`${nav.href}`}>{nav.title}</a>
           </li>

@@ -1,4 +1,4 @@
-type Result<T> =
+export type Result<T> =
   | {
       success: true;
       value: T;
@@ -9,7 +9,7 @@ type Result<T> =
     };
 
 export const makeSafe =
-  <TArgs extends any[], TReturn>(func: (...args: TArgs) => TReturn) =>
+  <TArgs extends unknown[], TReturn>(func: (...args: TArgs) => TReturn) =>
   (...args: TArgs): Result<TReturn> => {
     try {
       return {

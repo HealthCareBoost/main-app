@@ -3,13 +3,12 @@
 import * as React from "react";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, ...props }, ref) => {
     return <button className={className} ref={ref} {...props} />;
-  }
+  },
 );
 Button.displayName = "Button";
 

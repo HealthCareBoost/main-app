@@ -1,6 +1,6 @@
+"use client";
 import * as React from "react";
 import Link from "next/link";
-import { useLockBody } from "../hooks/useLockBody";
 import ThemeButton from "./ui/ChangeThemeButton";
 import { styles } from "../styles/style";
 import type { NavItem } from "../utils/NavlinksTypes";
@@ -14,15 +14,15 @@ interface MobileNavProps {
 
 export const DynamicCloseMenuIcon = dynamic(
   () => import("./svgs/Menu").then((mod) => mod.CloseMenuIcon),
-  { ssr: false }
+  { ssr: false },
 );
 
 export const DynamicMenuIcon = dynamic(
   () => import("./svgs/Menu").then((mod) => mod.MenuIcon),
-  { ssr: false }
+  { ssr: false },
 );
 
-export function MobileNav({ children, items }: MobileNavProps) {
+export function MobileNav({ items }: MobileNavProps) {
   // useLockBody();
   const { data: sessionData } = useSession();
   const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false);
@@ -46,12 +46,11 @@ export function MobileNav({ children, items }: MobileNavProps) {
       <div
         className={`${
           showMobileMenu ? "flex" : "hidden"
-        } min-w[140px] sidebar absolute top-20 right-0 mx-4 my-2 rounded-xl bg-slate-200 p-6 dark:bg-slate-800`}
+        } min-w[140px] sidebar absolute right-0 top-20 mx-4 my-2 rounded-xl bg-slate-200 p-6 dark:bg-slate-800`}
       >
         <ul className="flex list-none flex-col items-center justify-end">
           <li
-            className={`mb-4 cursor-pointer
-          font-poppins text-[16px] font-medium text-primaryDark  hover:text-orange-400 dark:font-normal dark:text-white dark:hover:text-orange-400`}
+            className={`mb-4 cursor-pointer font-poppins text-[16px] font-medium text-primaryDark hover:text-orange-400 dark:font-normal dark:text-white dark:hover:text-orange-400`}
           >
             {sessionData && sessionData.user ? (
               <Link href={`/user/${sessionData.user.id}`}>My Profile</Link>
@@ -63,9 +62,7 @@ export function MobileNav({ children, items }: MobileNavProps) {
           {items.map((nav, idx) => (
             <li
               key={`${nav.id}`}
-              className={`cursor-pointer font-poppins
-    text-[16px] font-medium text-primaryDark hover:text-orange-400  dark:font-normal dark:text-white dark:hover:text-orange-400
-    ${idx === items.length - 1 ? "mb-0" : "mb-4"}`}
+              className={`cursor-pointer font-poppins text-[16px] font-medium text-primaryDark hover:text-orange-400 dark:font-normal dark:text-white dark:hover:text-orange-400 ${idx === items.length - 1 ? "mb-0" : "mb-4"}`}
             >
               <a href={`${nav.href}`}>{nav.title}</a>
             </li>

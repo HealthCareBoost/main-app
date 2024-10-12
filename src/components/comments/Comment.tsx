@@ -116,7 +116,7 @@ export const Comment: React.FC<CommentProps> = ({
   const { toast } = useToast();
   const isLoggedIn = sessionData && sessionData.user;
   const ownComment = isLoggedIn && sessionData.user.id === user.id;
-  const [_isEditing, setIsEditing] = useState<boolean>(false);
+  const [, setIsEditing] = useState<boolean>(false);
   const deleteMutation = api.user.deleteComment.useMutation();
 
   const onDelete = async () => {

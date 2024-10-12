@@ -1,11 +1,11 @@
 "use client";
 
 import * as React from "react";
-import {
-  CldUploadWidget,
+import type {
   CloudinaryUploadWidgetInfo,
   CloudinaryUploadWidgetResults,
 } from "next-cloudinary";
+import { CldUploadWidget } from "next-cloudinary";
 import { Button } from "./Button";
 import { type ImageInfo } from "../../utils/validations/imageSchema";
 
@@ -43,15 +43,18 @@ export const CloudinaryUploadButton: React.FC<UploadButtonProps> = ({
       //   console.log("wid");
       //   // console.log(widget);
       // }}
-      onSuccess={(result: CloudinaryUploadWidgetResults, { widget }) => {
+      onSuccess={(result: CloudinaryUploadWidgetResults) => {
         console.log(result);
         if (result && result.info) {
           console.log(result);
-          onUploadSetData((prev) => [...prev, result.info as any]);
+          onUploadSetData((prev) => [
+            ...prev,
+            result.info as unknown as ImageInfo,
+          ]);
         }
       }}
       onQueuesEnd={(result, { widget }) => {
-        widget.close();
+        (widget as unknown as { close: () => void }).close();
       }}
     >
       {({ open }) => {
