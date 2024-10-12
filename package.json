@@ -47,7 +47,7 @@
     "cloudinary": "^2.5.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
-    "date-fns": "^4.1.0",
+    "date-fns": "^3.0.0",
     "embla-carousel-autoplay": "^8.3.0",
     "embla-carousel-react": "^8.3.0",
     "lucide-react": "^0.446.0",
