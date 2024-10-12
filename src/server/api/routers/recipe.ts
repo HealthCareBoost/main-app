@@ -1120,7 +1120,7 @@ export const recipeRouter = createTRPCRouter({
    *
    * @function
    * @async
-   * @name getRecomendationBasedOnProducts
+   * @name getLatest
    *
    * @param {number} take - The number of recipes to retrieve
    *
@@ -1143,6 +1143,38 @@ export const recipeRouter = createTRPCRouter({
       } catch (error) {
         console.error(error);
         return [];
+      }
+    }),
+
+  /**
+   * Retrieves list of recipes based on creation date.
+   *
+   * @function
+   * @async
+   * @name getRecipeOwner
+   * @param {string} recipe_id - The ID of the recipe to get the owner of
+   *
+   * @returns {Promise<User>}  A Promise that resolves with the user that owns the recipe.
+   */
+  getRecipeOwner: publicProcedure
+    .input(
+      z.object({
+        recipe_id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      try {
+        return ctx.prisma.recipe.findUniqueOrThrow({
+          where: {
+            id: input.recipe_id,
+          },
+          select: {
+            user: true,
+          },
+        });
+      } catch (error) {
+        console.error(error);
+        return null;
       }
     }),
 });

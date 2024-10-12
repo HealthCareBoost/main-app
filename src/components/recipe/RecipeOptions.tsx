@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import {
   Bookmark,
@@ -13,7 +14,6 @@ import { api } from "@/utils/trpc/react";
 import { useRouter } from "next/navigation";
 import { useToast } from "../../hooks/use-toast";
 import { useSession } from "next-auth/react";
-import type { User } from "@prisma/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,29 +25,29 @@ import {
   AlertDialogTitle,
 } from "../ui/AlertDialog";
 
-export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
+export const RecipeOptions: React.FC<{ recipe_id: string }> = ({
   recipe_id,
-  user,
 }) => {
   const { toast } = useToast();
   const router = useRouter();
-  const { data } = api.recipe.getUserPreferences.useQuery({
+  const { data: userPreferencesData } = api.recipe.getUserPreferences.useQuery({
+    recipe_id,
+  });
+  const { preferences } = userPreferencesData || {};
+
+  const { data: recipeOwner } = api.recipe.getRecipeOwner.useQuery({
     recipe_id,
   });
 
   const { data: sessionData } = useSession();
   const isLoggedIn = sessionData && sessionData.user;
-  const ownRecipe = isLoggedIn && sessionData.user.id === user.id;
+  const ownRecipe = isLoggedIn && sessionData.user.id === recipeOwner?.user?.id;
 
   const [isLiked, setIsLiked] = useState<boolean>(
-    data && data.preferences && data.preferences.liked
-      ? data.preferences.liked
-      : false,
+    preferences && preferences.liked ? preferences.liked : false,
   );
   const [isSaved, setIsSaved] = useState<boolean>(
-    data && data.preferences && data.preferences.saved
-      ? data.preferences.saved
-      : false,
+    preferences && preferences.saved ? preferences.saved : false,
   );
   const likeMutation = api.recipe.likeRecipe.useMutation();
   const saveMutation = api.recipe.saveRecipe.useMutation();
@@ -55,10 +55,11 @@ export const RecipeOptions: React.FC<{ recipe_id: string; user: User }> = ({
   const [showDeleteAlert, setShowDeleteAlert] = useState<boolean>(false);
 
   useEffect(() => {
-    if (data && data.preferences) {
-      setIsLiked(data.preferences.liked);
+    if (userPreferencesData && userPreferencesData.preferences) {
+      setIsLiked(userPreferencesData.preferences.liked);
+      setIsSaved(userPreferencesData.preferences.saved);
     }
-  }, [data]);
+  }, [userPreferencesData]);
 
   const onSaveClick = async () => {
     console.log("save");

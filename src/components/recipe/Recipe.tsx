@@ -1,9 +1,10 @@
+"use client";
+
 import { AlertTriangle } from "lucide-react";
 import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 import React from "react";
 import { styles } from "../../styles/style";
-import type { RecipeComponentProps } from "../../utils/recipe/recipeTypes";
 import { minutesToReadableTime } from "../../utils/timeConverter";
 import { UserAvatar } from "@/components/user/UserAvatar";
 import {
@@ -18,12 +19,21 @@ import { Separator } from "../ui/Separator";
 import { roundNumber } from "@/utils/numbers";
 import { shortenText } from "@/utils/shortenText";
 import { Constants } from "@/utils/constants";
+import { api } from "@/utils/trpc/react";
 
-export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
+export const Recipe = ({ recipe_id }: { recipe_id: string }) => {
+  const [{ recipe, success }] = api.recipe.getRecipeByID.useSuspenseQuery({
+    id: recipe_id,
+  });
+  const [{ nutrition }] = api.recipe.getNutrition.useSuspenseQuery({
+    recipe_id,
+  });
+
   const displayNutrion: () => React.ReactNode[] = () => {
+    if (!nutrition) return [];
     const nodes: React.ReactNode[] = [];
-    if (recipe.nutrition) {
-      const sortedByKey = new Map([...recipe.nutrition].sort());
+    if (nutrition) {
+      const sortedByKey = new Map([...nutrition].sort());
 
       sortedByKey.forEach(({ amount, unit }, key) => {
         if (key === "Sugar") return;
@@ -40,7 +50,7 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
       });
     }
 
-    if (recipe.nutrition === undefined || recipe.nutrition.size === 0) {
+    if (nutrition === undefined || nutrition.size === 0) {
       [
         { name: "CALORIES", amount: 522, unit: "g" },
         { name: "FAT", amount: 33, unit: "g" },
@@ -60,6 +70,8 @@ export const Recipe: React.FC<RecipeComponentProps> = ({ recipe }) => {
 
     return nodes;
   };
+
+  if (!success || !recipe) return null;
 
   return (
     <>
